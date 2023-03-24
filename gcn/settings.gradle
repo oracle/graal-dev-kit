@@ -1,0 +1,25 @@
+rootProject.name = 'gcn'
+
+file('.').eachDir {
+    if (it.name.startsWith('gcn-')) {
+        include it.name
+    }
+}
+
+enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
+
+String micronautVersion = new File(rootProject.projectDir, 'micronautVersion.txt').text.trim()
+
+dependencyResolutionManagement {
+    repositories {
+        maven {
+            url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+        }
+        mavenCentral()
+    }
+    versionCatalogs {
+        mnLibs {
+            from 'io.micronaut:micronaut-bom:' + micronautVersion
+        }
+    }
+}

@@ -1,0 +1,57 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).controller
+
+}
+import @(rootPackage)domain.Genre
+import @(rootPackage)service.GenreService
+import io.micronaut.data.model.Pageable
+import io.micronaut.http.HttpHeaders.LOCATION
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus.NO_CONTENT
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Put
+import io.micronaut.http.annotation.Status
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+import java.net.URI
+import java.util.Optional
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
+
+@@ExecuteOn(TaskExecutors.IO)
+@@Controller("/genres")
+open class GenreController(private val genreService: GenreService) {
+
+    @@Get("/{id}")
+    fun show(id: Long): Optional<Genre> = genreService.findById(id)
+
+    @@Put("/{id}/{name}")
+    fun update(id: Long, name: String): HttpResponse<*> {
+        genreService.update(id, name)
+        return HttpResponse
+            .noContent<Any>()
+            .header(LOCATION, URI.create("/genres/$id").path)
+    }
+
+    @@Get("/list")
+    open fun list(@@Valid pageable: Pageable): List<Genre> = genreService.list(pageable)
+
+    @@Post
+    open fun save(@@Body("name") @@NotBlank name: String): HttpResponse<Genre> {
+        val genre = genreService.save(name)
+        return HttpResponse
+            .created(genre)
+            .headers { it.location(URI.create("/genres/" + genre.id)) }
+    }
+
+    @@Delete("/{id}")
+    @@Status(NO_CONTENT)
+    fun delete(id: Long) = genreService.delete(id)
+}

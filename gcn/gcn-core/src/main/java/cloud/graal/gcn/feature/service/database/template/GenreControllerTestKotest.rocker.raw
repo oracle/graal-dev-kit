@@ -1,0 +1,89 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import @(rootPackage)domain.Genre
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpHeaders.LOCATION
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus.CREATED
+import io.micronaut.http.HttpStatus.NOT_FOUND
+import io.micronaut.http.HttpStatus.NO_CONTENT
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+
+@@MicronautTest
+class GenreControllerTest(@@Client("/") private val client: HttpClient) : StringSpec({
+
+    "find non-existing genre should return 404" {
+        val thrown = shouldThrow<HttpClientResponseException> {
+            client.toBlocking().exchange<Any, Any>(HttpRequest.GET("/genres/99999"))
+        }
+
+        thrown.response shouldNotBe null
+        thrown.status shouldBe NOT_FOUND
+    }
+
+    "genre CRUD operations" {
+        var response: HttpResponse<*> = client.toBlocking().exchange<Map<String, String>, Any>(
+            HttpRequest.POST("/genres", mapOf("name" to "DevOps")))
+        response.status shouldBe CREATED
+
+        response = client.toBlocking().exchange<Map<String, String>, Any>(
+            HttpRequest.POST("/genres", mapOf("name" to "Microservices")))
+        response.status shouldBe CREATED
+
+        val id = entityId(response)
+
+        var genre = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/$id"), Genre::class.java)
+        genre.name shouldBe "Microservices"
+
+        response = client.toBlocking().exchange<Any?, Any>(
+            HttpRequest.PUT("/genres/$id/Micro-services", null))
+        response.status shouldBe NO_CONTENT
+
+        genre = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/$id"), Genre::class.java)
+        genre.name shouldBe "Micro-services"
+
+        var genres = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/list"), Argument.listOf(Genre::class.java))
+        genres.size shouldBe 2
+
+        genres = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/list?size=1"), Argument.listOf(Genre::class.java))
+        genres.size shouldBe 1
+        genres[0].name shouldBe "DevOps"
+
+        genres = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/list?size=1&sort=name,desc"), Argument.listOf(Genre::class.java))
+        genres.size shouldBe 1
+        genres[0].name shouldBe "Micro-services"
+
+        genres = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/genres/list?size=1&page=2"), Argument.listOf(Genre::class.java))
+        genres.size shouldBe 0
+
+        response = client.toBlocking().exchange<Any, Any>(
+            HttpRequest.DELETE("/genres/$id"))
+        response.status shouldBe NO_CONTENT
+    }
+})
+
+fun entityId(response: HttpResponse<*>): Long? {
+    val value = response.header(LOCATION) ?: return null
+    val path = "/genres/"
+    val index = value.indexOf(path)
+    return if (index == -1) null else value.substring(index + path.length).toLong()
+}

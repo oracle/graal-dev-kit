@@ -1,0 +1,25 @@
+@import io.micronaut.starter.application.Project
+
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).client
+
+}
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Header
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.tracing.annotation.ContinueSpan
+import io.opentelemetry.extension.annotations.SpanAttribute
+
+@@Client("/trace")
+interface TracingClient {
+
+    @@Get("/test")
+    @@ContinueSpan
+    fun test(@@SpanAttribute @@Header("X-TrackingId") tracingId: String): String
+
+    @@Get("/test2")
+    @@ContinueSpan
+    fun test2(@@SpanAttribute @@Header("X-TrackingId") tracingId: String): String
+}

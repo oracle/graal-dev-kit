@@ -1,0 +1,81 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.multipart.MultipartBody
+import io.micronaut.objectstorage.ObjectStorageEntry
+import io.micronaut.objectstorage.ObjectStorageOperations
+import io.micronaut.objectstorage.response.UploadResponse
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
+
+import static io.micronaut.http.HttpHeaders.ETAG
+import static io.micronaut.http.HttpHeaders.LOCATION
+import static io.micronaut.http.HttpStatus.CREATED
+import static io.micronaut.http.HttpStatus.NO_CONTENT
+import static io.micronaut.http.HttpStatus.OK
+import static io.micronaut.http.MediaType.MULTIPART_FORM_DATA_TYPE
+
+@@MicronautTest
+class ProfilePicturesControllerSpec extends Specification {
+
+    @@Inject
+    @@Client(ProfilePicturesController.PREFIX)
+    HttpClient client
+
+    @@Inject
+    ObjectStorageOperations<?, ?, ?> objectStorageOperations
+
+    @@MockBean(ObjectStorageOperations<?, ?, ?>)
+    ObjectStorageOperations<?, ?, ?> objectStorageOperations() {
+        Mock(ObjectStorageOperations<?, ?, ?>)
+    }
+
+    void "upload test"() {
+        given:
+        objectStorageOperations.upload(_) >> Stub(UploadResponse) { ETag >> "etag" }
+
+        def body = MultipartBody.builder()
+                .addPart(
+                        "fileUpload",
+                        "picture.jpg",
+                        "picture".getBytes())
+
+        def request = HttpRequest.POST("/avatar", body)
+                .contentType(MULTIPART_FORM_DATA_TYPE)
+
+        when:
+        def response = client.toBlocking().exchange(request)
+
+        then:
+        response.status() == CREATED
+        response.header(LOCATION).endsWith("/pictures/avatar")
+        response.header(ETAG) == "etag"
+    }
+
+    void "download test"() {
+        when:
+        def response = client.toBlocking().exchange("/avatar")
+
+        then:
+        response.status() == OK
+        1 * objectStorageOperations.retrieve("avatar.jpg") >> Optional.of(Mock(ObjectStorageEntry))
+    }
+
+    void "delete test"() {
+        when:
+        def response = client.toBlocking().exchange(HttpRequest.DELETE("/avatar"))
+
+        then:
+        response.status() == NO_CONTENT
+        1 * objectStorageOperations.delete("avatar.jpg")
+    }
+}

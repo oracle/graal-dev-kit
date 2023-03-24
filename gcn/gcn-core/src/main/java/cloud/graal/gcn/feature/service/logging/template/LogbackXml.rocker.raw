@@ -1,0 +1,37 @@
+@args (String appenderName,
+       String appenderClass,
+       String jsonFormatter,
+       String cloud)
+
+<configuration debug='false'>
+
+    <!--
+    You can un-comment the STDOUT appender and <appender-ref ref='STDOUT'/> in
+    the cloud appender to log to STDOUT as the 'emergency' appender.
+    -->
+
+    <!--
+    <appender name='STDOUT' class='ch.qos.logback.core.ConsoleAppender'>
+        <encoder>
+            <pattern>%cyan(%d{HH:mm:ss.SSS}) %gray([%thread]) %highlight(%-5level) %magenta(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+    -->
+
+    <appender name='@appenderName' class='@appenderClass'>
+        <!-- <appender-ref ref='STDOUT'/> -->
+@if ("oci".equals(cloud)) {
+        <logId><!-- TODO set the value of the Oracle Cloud log OCID here --></logId>
+}
+        <encoder class='ch.qos.logback.core.encoder.LayoutWrappingEncoder'>
+            <layout class='ch.qos.logback.contrib.json.classic.JsonLayout'>
+                <jsonFormatter class='@jsonFormatter'/>
+            </layout>
+        </encoder>
+    </appender>
+
+    <root level='INFO'>
+        <appender-ref ref='@appenderName'/>
+    </root>
+
+</configuration>

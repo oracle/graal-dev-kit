@@ -1,0 +1,41 @@
+= gcn-core
+
+This is the core library used by the CLI and REST API. It primarily depends on the Micronaut `io.micronaut.starter:micronaut-starter-api` library.
+
+== Determining features
+
+Most (TBD) features are selectable, but "service" features (under package `cloud.graal.gcn.feature.service`) which represent Micronaut/Oracle supported features will replace standard features to add additional GCN functionality.
+
+In addition, when users choose clouds, there are "create" features (under package `cloud.graal.gcn.feature.create`) that represent those and add functionality to the cloud-specific project modules.
+
+There is a "create" feature for each combination of cloud and project type, e.g., `GcnAwsCloudApp` for `create-app` with AWS or `GcnGcpCloudFunction` for `create-function` with GCP.
+
+There is a "service" feature for each combination of cloud and service type, e.g., `OciEmail` for OCI and email or `AzureStreaming` for Azure and streaming.
+
+Based on the user's selection of clouds and services, the corresponding GCN "create" and "service" features are added to the collection of user-selected features for generating the apps.
+
+The "create" features build an application or function for the corresponding cloud. Most of the work will be in the base class (e.g., `AbstractGcnCloudApp`) with any required cloud-specific customizations being done in the feature class.
+
+The "create" features are only responsible for generating content that's not related to any selected services. The "service" features handle those changes.
+
+Generally the "service" features delegate to existing micronaut-starter features. For example `OciSecretManagement` currently just dependency-injects the `io.micronaut.starter.feature.oraclecloud.OracleCloudVault` feature (which is what's selected in starter if you select `oracle-cloud-secretmanagement`) which does the real work.
+
+== GcnProjectGenerator
+
+The primary difference between `GcnProjectGenerator` and `io.micronaut.starter.application.generator.DefaultProjectGenerator` from micronaut-starter is the partitioning of work. Some support for multi-module builds was added recently to micronaut-starter to support AWS CDK, but most of the library still runs under the assumption that a single application will be created.
+
+`GcnGeneratorContext` helps with this partitioning. It extends the default `io.micronaut.starter.application.generator.GeneratorContext` and supports various states that determine which config settings and dependencies are "active".
+
+Features make their changes when their `apply(GcnGeneratorContext)` method is called, and they make application or bootstrap config changes by calling `GeneratorContext.getConfiguration()` / `GeneratorContext.getBootstrapConfiguration()`, and register dependencies via `GeneratorContext.addDependency()`.
+
+`GcnProjectGenerator` sets the "cloud" to `NONE` initially when generating the "lib" module, then sets the "cloud" from each cloud module. This way `GcnGeneratorContext` knows which configuration or dependency context to use to separate out cloud-specific config and dependencies.
+
+== Rocker templates
+
+The project has support for Rocker templates to generate application source code and other files. Template files must end in `.rocker.raw` and can be in any package under `src/main/java`, but the current convention is to keep templates with the features that use them in a `templates` folder, e.g., see the templates used by the "database" service in `src/main/java/cloud/graal/gcn/feature/service/database/templates`.
+
+The build is configured to regenerate Java source for the templates in `build/generated/rocker` before compiling; the generated Java source files are compiled with the main project source.
+
+== Tests
+
+Add tests in the `gcn-test` module.

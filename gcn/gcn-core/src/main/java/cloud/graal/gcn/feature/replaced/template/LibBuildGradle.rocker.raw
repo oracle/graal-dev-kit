@@ -1,0 +1,113 @@
+@import io.micronaut.starter.application.ApplicationType
+@import io.micronaut.starter.application.Project
+@import io.micronaut.starter.build.gradle.GradleBuild
+@import io.micronaut.starter.build.gradle.GradleDsl
+@import io.micronaut.starter.build.gradle.GradlePlugin
+@import io.micronaut.starter.feature.build.gradle.templates.dependencies
+@import io.micronaut.starter.feature.Features
+@import io.micronaut.starter.feature.github.workflows.docker.AbstractDockerRegistryWorkflow
+@import io.micronaut.starter.options.TestFramework
+@import io.micronaut.starter.util.VersionInfo
+
+@args (
+ApplicationType applicationType,
+Project project,
+Features features,
+GradleBuild gradleBuild
+)
+
+@for (String importLine : gradleBuild.getPluginsImports()) {
+@(importLine)
+}
+plugins {
+@for (GradlePlugin gradlePlugin : gradleBuild.getPlugins()) {
+    id("@gradlePlugin.getId()") @(gradlePlugin.getVersion() != null ? "version \"" + gradlePlugin.getVersion() + "\"" : "")
+}
+}
+
+version = "1.0-SNAPSHOT"
+group = "@project.getPackageName()"
+
+@if(features.language().isKotlin() && gradleBuild.getDsl() == GradleDsl.KOTLIN) {
+val kotlinVersion=project.properties.get("kotlinVersion")
+}
+
+repositories {
+@gradleBuild.renderRepositories()
+}
+
+@dependencies.template(applicationType, project, features, gradleBuild)
+
+java {
+    sourceCompatibility = JavaVersion.toVersion("@features.getTargetJdk()")
+@if (!features.language().isKotlin()) {
+    targetCompatibility = JavaVersion.toVersion("@features.getTargetJdk()")
+}
+}
+
+@if (features.language().isKotlin() || features.testFramework().isKotlinTestFramework()) {
+tasks {
+@if (features.language().isKotlin()) {
+    compileKotlin {
+        kotlinOptions {
+            jvmTarget = "@features.getTargetJdk()"
+        }
+    }
+}
+
+@if (features.testFramework().isKotlinTestFramework() || features.language().isKotlin()) {
+    compileTestKotlin {
+        kotlinOptions {
+            jvmTarget = "@features.getTargetJdk()"
+        }
+    }
+}
+
+}
+
+}
+
+@if (features.contains("grpc")) {
+sourceSets {
+    main {
+        java {
+            srcDirs("build/generated/source/proto/main/grpc")
+            srcDirs("build/generated/source/proto/main/java")
+        }
+    }
+}
+
+@if(gradleBuild.getDsl() == GradleDsl.KOTLIN) {
+protobuf {
+    protoc {
+        artifact = "com.google.protobuf:protoc:@VersionInfo.getBomVersion("protobuf")"
+    }
+    plugins {
+        id("grpc") {
+            artifact = "io.grpc:protoc-gen-grpc-java:@VersionInfo.getBomVersion("grpc")"
+        }
+    }
+    generateProtoTasks {
+        ofSourceSet("main").forEach {
+            it.plugins {
+                // Apply the "grpc" plugin whose spec is defined above, without options.
+                id("grpc")
+            }
+        }
+    }
+}
+} else {
+protobuf {
+    protoc { artifact = "com.google.protobuf:protoc:@VersionInfo.getBomVersion("protobuf")" }
+    plugins {
+        grpc { artifact = "io.grpc:protoc-gen-grpc-java:@VersionInfo.getBomVersion("grpc")" }
+    }
+    generateProtoTasks {
+        all()*.plugins { grpc {} }
+    }
+}
+}
+}
+@gradleBuild.renderExtensions()
+
+@gradleBuild.renderSubstitutions()

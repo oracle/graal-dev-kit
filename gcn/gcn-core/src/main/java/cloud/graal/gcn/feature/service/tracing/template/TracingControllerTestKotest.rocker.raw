@@ -1,0 +1,22 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).controller
+
+import @(project.getPackageName()).client.TracingClient
+}
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.shouldBe
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import java.util.UUID
+
+@@MicronautTest
+class TracingControllerTest(private val tracingClient: TracingClient) : StringSpec({
+
+    "test tracing controller" {
+        val traceId = UUID.randomUUID().toString()
+        tracingClient.test(traceId) shouldBe traceId
+        tracingClient.test2(traceId) shouldBe traceId
+    }
+})

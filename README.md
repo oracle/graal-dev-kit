@@ -1,28 +1,24 @@
-*This repository acts as a template for all of Oracle’s GitHub repositories. It contains information about the guidelines for those repositories. All files and sections contained in this template are mandatory, and a GitHub app ensures alignment with these guidelines. To get started with a new repository, replace the italic paragraphs with the respective text for your project.*
+# Graal Cloud Native (GCN)
 
-# Project name
-
-*Describe your project's features, functionality and target audience*
+Graal Cloud Native (GCN) is a full stack framework for building portable cloud-native applications using the Java ecosystem on top of managed services in the public cloud. GCN is built on top of the GraalVM native image, the Micronaut® framework, public cloud SDKs, popular drivers, and a set of open source libraries tested, certified, and supported by Oracle. Oracle has optimized this stack for native image as well as for cloud portability. With GCN, cloud users can focus less on language portability and more on portability across cloud vendors.
 
 ## Installation
 
-*Provide detailed step-by-step installation instructions*
+TODO
 
 ## Documentation
 
-*Developer-oriented documentation can be published on GitHub, but all product documentation must be published on <https://docs.oracle.com>*
+TODO link to website
 
 ## Examples
 
-*Describe any included examples or provide a link to a demo/tutorial*
+TODO link to guides on the website
 
 ## Help
 
-*Inform users on where to get help or how to receive official support from Oracle (if applicable)*
+TODO
 
 ## Contributing
-
-*If your project has specific contribution requirements, update the CONTRIBUTING.md file to ensure those requirements are clearly explained*
 
 This project welcomes contributions from the community. Before submitting a pull request, please [review our contribution guide](./CONTRIBUTING.md)
 
@@ -32,13 +28,6 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 ## License
 
-*The correct copyright notice format for both documentation and software is*
-    "Copyright (c) [year,] year Oracle and/or its affiliates."
-*You must include the year the content was first released (on any platform) and the most recent year in which it was revised*
+Copyright (c) 2023 Oracle and/or its affiliates.
 
-Copyright (c) 2022 Oracle and/or its affiliates.
-
-*Replace this statement if your project is not licensed under the UPL*
-
-Released under the Universal Permissive License v1.0 as shown at
-<https://oss.oracle.com/licenses/upl/>.
+GCN is open source and distributed under the [Apache License version 2.0](LICENSE.txt).

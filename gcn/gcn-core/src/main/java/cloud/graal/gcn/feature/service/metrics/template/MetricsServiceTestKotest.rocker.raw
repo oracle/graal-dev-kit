@@ -1,0 +1,87 @@
+@import io.micronaut.starter.application.Project
+
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service
+
+}
+import io.kotest.core.spec.style.StringSpec
+import io.kotest.matchers.booleans.shouldBeTrue
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.types.shouldBeInstanceOf
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+
+@@MicronautTest
+class MetricsServiceTest(
+    @@Client("/") private val client: HttpClient,
+    private val meterRegistry: MeterRegistry,
+    private val metricsService: MetricsService
+) : StringSpec({
+
+    "test expected meters" {
+        val names = meterRegistry.meters.map { it.id.name }
+
+        // check that a subset of expected meters exist
+        names.contains("jvm.memory.max").shouldBeTrue()
+        names.contains("process.uptime").shouldBeTrue()
+        names.contains("system.cpu.usage").shouldBeTrue()
+        names.contains("process.files.open").shouldBeTrue()
+        names.contains("logback.events").shouldBeTrue()
+        names.contains("custom.thread.count.value").shouldBeTrue()
+    }
+
+    "test metrics endpoint" {
+        val response = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/metrics"),
+            Argument.mapOf(String::class.java, Any::class.java)
+        )
+
+        response.containsKey("names").shouldBeTrue()
+        response["names"].shouldBeInstanceOf<List<*>>()
+
+        val names = response["names"] as List<String>
+
+        // check that a subset of expected meters exist
+        names.contains("jvm.memory.max").shouldBeTrue()
+        names.contains("process.uptime").shouldBeTrue()
+        names.contains("system.cpu.usage").shouldBeTrue()
+        names.contains("process.files.open").shouldBeTrue()
+        names.contains("logback.events").shouldBeTrue()
+        names.contains("custom.thread.count.value").shouldBeTrue()
+    }
+
+    "test one metric endpoint" {
+        val response = client.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/metrics/jvm.memory.used"),
+            Argument.mapOf(String::class.java, Any::class.java)
+        )
+
+        val name = response["name"] as String
+        name shouldBe "jvm.memory.used"
+
+        val measurements = response["measurements"] as List<Map<String, Any>>
+        measurements.size shouldBe 1
+
+        val value = measurements[0]["value"] as Double
+        (value > 0).shouldBeTrue()
+    }
+
+    "test metrics updates" {
+
+        val checks = 3
+
+        for (i in 1..3) {
+            metricsService.refreshThreadCount();
+        }
+
+        val timer = meterRegistry.meters.find { it.id.name == "custom.thread.count.time" } as Timer
+        timer.count().toInt() shouldBe checks
+    }
+})

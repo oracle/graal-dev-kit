@@ -1,0 +1,20 @@
+@args (String title, String login)
+
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <title>GCN - @title</title>
+</head>
+<body>
+<h1>GCN - @title</h1>
+
+<h2>username: <span th:text="${username}"></span></h2>
+
+<nav>
+    <ul>
+        <li th:unless="${security}"><a href="/oauth/login/@(login)">Enter</a></li>
+        <li th:if="${security}"><a href="/logout">Logout</a></li>
+    </ul>
+</nav>
+</body>
+</html>

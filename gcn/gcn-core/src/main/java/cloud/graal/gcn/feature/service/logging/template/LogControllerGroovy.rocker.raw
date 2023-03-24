@@ -1,0 +1,21 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import groovy.util.logging.Slf4j
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Post
+
+@@Slf4j('LOG')
+@@Controller
+class LogController {
+
+    @@Post('/log')
+    void log(@@Body String message) {
+        LOG.info(message)
+    }
+}

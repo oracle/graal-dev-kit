@@ -1,0 +1,40 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+}
+
+version = new File(rootProject.projectDir, 'version.txt').text.trim()
+group = 'gcn'
+
+ext.micronautVersion = new File(rootProject.projectDir, 'micronautVersion.txt').text.trim()
+
+repositories {
+    maven {
+        url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+    }
+    mavenCentral()
+}
+
+dependencies {
+    compileOnly mnLibs.jsr305 // for 'warning: unknown enum constant When.MAYBE'
+    implementation mnLibs.jakarta.annotation.api
+    runtimeOnly mnLibs.logback
+}
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_11
+    targetCompatibility = JavaVersion.VERSION_11
+}
+
+java {
+    withJavadocJar()
+    withSourcesJar()
+}
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            from components.java
+        }
+    }
+}

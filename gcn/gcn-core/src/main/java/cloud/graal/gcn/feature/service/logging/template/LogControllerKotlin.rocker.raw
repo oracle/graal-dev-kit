@@ -1,0 +1,22 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Post
+import org.slf4j.LoggerFactory
+
+@@Controller
+class LogController {
+
+    @@Post("/log")
+    fun log(@@Body message: String) = LOG.info(message)
+
+    companion object {
+        private val LOG = LoggerFactory.getLogger(LogController::class.java)
+    }
+}

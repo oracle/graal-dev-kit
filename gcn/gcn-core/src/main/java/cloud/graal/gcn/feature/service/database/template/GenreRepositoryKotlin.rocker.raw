@@ -1,0 +1,21 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage, String dialect)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).repository
+
+}
+import @(rootPackage)domain.Genre
+import io.micronaut.data.annotation.Id
+import io.micronaut.data.jdbc.annotation.JdbcRepository
+import io.micronaut.data.model.query.builder.sql.Dialect.@(dialect)
+import io.micronaut.data.repository.PageableRepository
+import javax.validation.constraints.NotBlank
+
+@@JdbcRepository(dialect = @(dialect))
+interface GenreRepository : PageableRepository<Genre, Long> {
+
+    fun save(@@NotBlank name: String) : Genre
+
+    fun update(@@Id id: Long, @@NotBlank name: String) : Long
+}

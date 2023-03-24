@@ -1,0 +1,26 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.context.ApplicationContext
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import org.junit.jupiter.api.Test
+import software.amazon.awssdk.http.SdkHttpClient
+
+import static org.junit.jupiter.api.Assertions.assertTrue
+
+@@MicronautTest(startApplication = false)
+class SdkHttpClientTest {
+
+    @@Inject
+    ApplicationContext applicationContext
+
+    @@Test
+    void testBeanOfTypeSdkHttpClientExists() {
+        assertTrue(applicationContext.containsBean(SdkHttpClient))
+    }
+}

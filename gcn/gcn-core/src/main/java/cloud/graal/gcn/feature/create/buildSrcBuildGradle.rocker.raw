@@ -1,0 +1,12 @@
+@import cloud.graal.gcn.GcnGeneratorContext
+@args (GcnGeneratorContext gc)
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+@for (String gav : gc.getBuildPluginsGAV()) {
+    implementation("@gav")
+}
+}

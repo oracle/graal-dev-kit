@@ -1,0 +1,76 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.http.HttpHeaders.ETAG
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.MediaType.IMAGE_JPEG_TYPE
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.multipart.CompletedFileUpload
+import io.micronaut.http.server.types.files.StreamedFile
+import io.micronaut.http.server.util.HttpHostResolver
+import io.micronaut.http.uri.UriBuilder
+import io.micronaut.objectstorage.ObjectStorageEntry
+import io.micronaut.objectstorage.ObjectStorageOperations
+import io.micronaut.objectstorage.request.UploadRequest
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+import java.net.URI
+import java.util.Optional
+
+@@Controller(ProfilePicturesController.PREFIX)
+@@ExecuteOn(TaskExecutors.IO)
+class ProfilePicturesController(
+    private val objectStorage: ObjectStorageOperations<*, *, *>,
+    private val httpHostResolver: HttpHostResolver
+) : ProfilePicturesApi {
+
+    override fun upload(
+        fileUpload: CompletedFileUpload,
+        userId: String,
+        request: HttpRequest<*>
+    ): HttpResponse<*> {
+        val key = buildKey(userId)
+        val objectStorageUpload = UploadRequest.fromCompletedFileUpload(fileUpload, key)
+        val response = objectStorage.upload(objectStorageUpload)
+        return HttpResponse
+            .created<Any>(location(request, userId))
+            .header(ETAG, response.eTag)
+    }
+
+    private fun location(request: HttpRequest<*>, userId: String): URI {
+        return UriBuilder.of(httpHostResolver.resolve(request))
+            .path(PREFIX)
+            .path(userId)
+            .build()
+    }
+
+    override fun download(userId: String): Optional<HttpResponse<StreamedFile>> {
+        val key = buildKey(userId)
+        return objectStorage.retrieve<ObjectStorageEntry<*>>(key)
+            .map { entry -> buildStreamedFile(entry) }
+    }
+
+    override fun delete(userId: String) {
+        val key = buildKey(userId)
+        objectStorage.delete(key)
+    }
+
+    companion object {
+
+        const val PREFIX = "/pictures"
+
+        private fun buildKey(userId: String): String = "$userId.jpg"
+
+        private fun buildStreamedFile(entry: ObjectStorageEntry<*>): HttpResponse<StreamedFile> {
+            val file = StreamedFile(entry.inputStream, IMAGE_JPEG_TYPE).attach(entry.key)
+            val httpResponse = HttpResponse.ok<Any>()
+            file.process(httpResponse)
+            return httpResponse.body(file)
+        }
+    }
+}

@@ -1,0 +1,23 @@
+plugins {
+    id 'groovy-gradle-plugin'
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+    implementation libs.nohttp
+    implementation libs.rocker
+    implementation libs.spotless
+}
+
+gradlePlugin {
+    plugins {
+        rockerPlugin {
+            id = 'gcn.rocker'
+            implementationClass = 'cloud.graal.gcn.rocker.plugin.RockerPlugin'
+        }
+    }
+}
