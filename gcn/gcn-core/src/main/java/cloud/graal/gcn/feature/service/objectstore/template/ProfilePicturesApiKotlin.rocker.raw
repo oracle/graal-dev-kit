@@ -1,0 +1,31 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.HttpStatus.NO_CONTENT
+import io.micronaut.http.MediaType.MULTIPART_FORM_DATA
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Status
+import io.micronaut.http.multipart.CompletedFileUpload
+import io.micronaut.http.server.types.files.StreamedFile
+import java.util.Optional
+
+interface ProfilePicturesApi {
+
+    @@Post(uri = "/{userId}", consumes = [MULTIPART_FORM_DATA])
+    fun upload(fileUpload: CompletedFileUpload, userId: String, request: HttpRequest<*>): HttpResponse<*>
+
+    @@Get("/{userId}")
+    fun download(userId: String): Optional<HttpResponse<StreamedFile>>
+
+    @@Status(NO_CONTENT)
+    @@Delete("/{userId}")
+    fun delete(userId: String)
+}

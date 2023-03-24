@@ -1,0 +1,70 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).controller
+
+}
+import @(rootPackage)domain.Genre
+import @(rootPackage)service.GenreService
+import io.micronaut.data.model.Pageable
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Delete
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Put
+import io.micronaut.http.annotation.Status
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+
+import javax.validation.Valid
+import javax.validation.constraints.NotBlank
+
+import static io.micronaut.http.HttpHeaders.LOCATION
+import static io.micronaut.http.HttpStatus.NO_CONTENT
+
+@@ExecuteOn(TaskExecutors.IO)
+@@Controller('/genres')
+class GenreController {
+
+    private final GenreService genreService
+
+    GenreController(GenreService genreService) {
+        this.genreService = genreService
+    }
+
+    @@Get('/{id}')
+    Optional<Genre> show(Long id) {
+        return genreService.findById(id)
+    }
+
+    @@Put('/{id}/{name}')
+    HttpResponse<?> update(long id, String name) {
+        genreService.update(id, name)
+        return HttpResponse
+                .noContent()
+                .header(LOCATION, URI.create('/genres/' + id).path)
+    }
+
+    @@Get('/list')
+    List<Genre> list(@@Valid Pageable pageable) {
+        return genreService.list(pageable)
+    }
+
+    @@Post
+    HttpResponse<Genre> save(@@Body('name') @@NotBlank String name) {
+        Genre genre = genreService.save(name)
+
+        return HttpResponse
+                .created(genre)
+                .headers(headers -> headers.location(URI.create('/genres/' + genre.id)))
+    }
+
+    @@Delete('/{id}')
+    @@Status(NO_CONTENT)
+    void delete(Long id) {
+        genreService.delete(id)
+    }
+}

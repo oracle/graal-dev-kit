@@ -1,0 +1,36 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String nameAttr)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.core.annotation.Nullable
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.security.annotation.Secured
+import io.micronaut.security.authentication.Authentication
+import io.micronaut.security.rules.SecurityRule.IS_ANONYMOUS
+import io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED
+import io.micronaut.views.View
+
+@@Controller
+class AuthController {
+
+    @@Secured(IS_ANONYMOUS)
+    @@View("auth")
+    @@Get
+    fun index(@@Nullable authentication: Authentication?): Map<String, Any?> {
+        val model = mutableMapOf<String, Any?>()
+        if (authentication != null) {
+            model["username"] = authentication.attributes["email"]
+        } else {
+            model["username"] = "Anonymous"
+        }
+        return model
+    }
+
+    @@Secured(IS_AUTHENTICATED)
+    @@Get("/secure")
+    fun secured(): Map<String, Any> = mapOf("secured" to true)
+}

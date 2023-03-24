@@ -1,0 +1,31 @@
+[versions]
+docker = '3.2.13'
+groovy = '3.0.13' # TODO keep in sync when changing Micronaut version
+jansi = '1.18'
+micronaut-plugins = '3.6.0' # TODO keep in sync when changing Micronaut version
+nohttp = '0.0.10'
+reflections = '0.10.2'
+rocker = '1.3.0'
+shadow = '7.1.2'
+slf4j = '1.7.36'
+spotless = '6.10.0'
+test-logger = '3.2.0'
+
+[libraries]
+docker = { module = 'com.github.docker-java:docker-java-core', version.ref = 'docker' }
+docker-transport = { module = 'com.github.docker-java:docker-java-transport-zerodep', version.ref = 'docker' }
+groovy-ant = { module = 'org.codehaus.groovy:groovy-ant', version.ref = 'groovy' }
+groovy-xml = { module = 'org.codehaus.groovy:groovy-xml', version.ref = 'groovy' }
+jansi = { module = 'org.fusesource.jansi:jansi', version.ref = 'jansi' }
+jul-slf4j = { module = 'org.slf4j:jul-to-slf4j', version.ref = 'slf4j' }
+nohttp = { module = 'io.spring.nohttp:nohttp-gradle', version.ref = 'nohttp' }
+reflections = { module = 'org.reflections:reflections', version.ref = 'reflections' }
+rocker = { module = 'com.fizzed:rocker-compiler', version.ref = 'rocker' }
+slf4j-nop = { module = 'org.slf4j:slf4j-nop', version.ref = 'slf4j' }
+spotless = { module = 'com.diffplug.spotless:spotless-plugin-gradle', version.ref = 'spotless' }
+
+[plugins]
+micronaut-application = { id = 'io.micronaut.application', version.ref = 'micronaut-plugins' }
+micronaut-library = { id = 'io.micronaut.library', version.ref = 'micronaut-plugins' }
+shadow = { id = 'com.github.johnrengelman.shadow', version.ref = 'shadow' }
+test-logger = { id = 'com.adarshr.test-logger', version.ref = 'test-logger' }

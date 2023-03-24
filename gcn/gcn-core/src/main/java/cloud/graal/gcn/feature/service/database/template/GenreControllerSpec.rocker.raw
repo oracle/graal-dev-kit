@@ -1,0 +1,129 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import @(rootPackage)domain.Genre
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
+import spock.lang.Unroll
+
+import static io.micronaut.http.HttpHeaders.LOCATION
+import static io.micronaut.http.HttpStatus.CREATED
+import static io.micronaut.http.HttpStatus.NOT_FOUND
+import static io.micronaut.http.HttpStatus.NO_CONTENT
+
+@@MicronautTest
+class GenreControllerSpec extends Specification {
+
+    @@Inject
+    @@Client('/')
+    HttpClient client
+
+    void 'find non-existing genre should return 404'() {
+        when:
+        client.toBlocking().exchange(HttpRequest.GET('/genres/99999'))
+
+        then:
+        HttpClientResponseException exception = thrown()
+
+        exception.response
+        exception.status == NOT_FOUND
+    }
+
+    @@Unroll
+    void 'genre CRUD operations'() {
+
+        when:
+        HttpResponse<?> response = client.toBlocking().exchange(
+                HttpRequest.POST('/genres', [name: 'DevOps']))
+
+        then:
+        response.status == CREATED
+
+        when:
+        response = client.toBlocking().exchange(
+                HttpRequest.POST('/genres', [name: 'Microservices']))
+
+        then:
+        response.status == CREATED
+
+        when: 'verify get/read operation'
+        Long id = entityId(response)
+        Genre genre = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/' + id), Genre)
+
+        then:
+        genre.name == 'Microservices'
+
+        when: 'verify put/update operation'
+        response = client.toBlocking().exchange(
+                HttpRequest.PUT('/genres/' + id + '/Micro-services', null))
+
+        then:
+        response.status == NO_CONTENT
+
+        when:
+        genre = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/' + id), Genre)
+
+        then:
+        genre.name == 'Micro-services'
+
+        when: 'verify list operation'
+        List<Genre> genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list'), Argument.listOf(Genre))
+
+        then:
+        genres.size() == 2
+
+        when: 'verify pageable operation'
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list?size=1'), Argument.listOf(Genre))
+
+        then:
+        genres.size() == 1
+        genres[0].name == 'DevOps'
+
+        when: 'verify pageable sort operation'
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET("/genres/list?size=1&sort=name,desc"), Argument.listOf(Genre))
+
+        then:
+        genres.size() == 1
+        genres[0].name == 'Micro-services'
+
+        when: 'verify pageable empty page'
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET("/genres/list?size=1&page=2"), Argument.listOf(Genre))
+
+        then:
+        genres.size() == 0
+
+        when: 'verify delete operation - id: #id'
+        response = client.toBlocking().exchange(
+                HttpRequest.DELETE('/genres/' + id))
+
+        then:
+        response.status == NO_CONTENT
+    }
+
+    private Long entityId(HttpResponse<?> response) {
+        String value = response.header(LOCATION)
+        if (value == null) {
+            return null
+        }
+        String path = '/genres/'
+        int index = value.indexOf(path)
+        return index == -1 ? null : value.substring(index + path.length()).toLong()
+    }
+}

@@ -1,0 +1,25 @@
+= gcn-cli
+
+This submodule generates the GCN CLI application which is compiled to a native executable `gcn`, which works similarly to the Micronaut `mn` CLI with the addition of being able to generate GCN applications by specifying clouds and services.
+
+== GcnStarter
+
+The main class is `GcnStarter` which defines the "core" command and the 3 subcommands "create-app" (`GcnCreateAppCommand`), "create-function" (`GcnCreateFunctionCommand`), and "create-gateway-function" (`GcnCreateGatewayFunctionCommand`).
+
+When you run the application and provide valid arguments, the `ProjectGenerator` bean (`GcnProjectGenerator`) creates the applications or functions. These are generated as a multi-module project with the core library "lib" and one module for each selected cloud.
+
+== Generating projects
+
+There are a few ways to generate a project.
+
+* Run `./gradlew clean assemble` from the project root to build the jars in each submodule's `build/libs` directory. Then run `java -jar path/to/gcn/gcn-cli/build/libs/gcn-cli-0.1-SNAPSHOT-all.jar create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
+
+* Run `./gradlew clean :gcn-cli:nativeCompile` from the project root to build a native executable in `build/native/nativeCompile`, then run `path/to/gcn/gcn-cli/build/native/nativeCompile/gcn create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
+
+* Run in IntelliJ by creating a Micronaut run configuration with `Main class` `cloud.graal.gcn.GcnStarter`. Set the `Working directory` to the location where you want to generate the project, and specify the command and args in the `Program arguments` field, e.g., `create-app com.example.demo --services=... --clouds=... --features=...`
+
+* Generate projects in-memory with tests
+
+== Tests
+
+Add tests in the `gcn-test` module.

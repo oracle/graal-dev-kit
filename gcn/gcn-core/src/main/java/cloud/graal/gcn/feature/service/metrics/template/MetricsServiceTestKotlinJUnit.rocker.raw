@@ -1,0 +1,95 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service
+
+}
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import org.junit.jupiter.api.Test
+
+@@MicronautTest
+class MetricsServiceTest {
+
+    @@Inject
+    lateinit var meterRegistry: MeterRegistry
+
+    @@Inject
+    @@field:Client("/")
+    lateinit var httpClient: HttpClient
+
+    @@Inject
+    lateinit var metricsService: MetricsService
+
+    @@Test
+    fun testExpectedMeters() {
+        val names = meterRegistry.meters.map { it.id.name }
+
+        // check that a subset of expected meters exist
+        assertTrue(names.contains("jvm.memory.max"))
+        assertTrue(names.contains("process.uptime"))
+        assertTrue(names.contains("system.cpu.usage"))
+        assertTrue(names.contains("process.files.open"))
+        assertTrue(names.contains("logback.events"))
+        assertTrue(names.contains("custom.thread.count.value"))
+    }
+
+    @@Test
+    fun testMetricsEndpoint() {
+        val response = httpClient.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/metrics"),
+            Argument.mapOf(String::class.java, Any::class.java)
+        )
+
+        assertTrue(response.containsKey("names"))
+        assertTrue(response["names"] is List<*>)
+        val names = response["names"] as List<String>
+
+        // check that a subset of expected meters exist
+        assertTrue(names.contains("jvm.memory.max"))
+        assertTrue(names.contains("process.uptime"))
+        assertTrue(names.contains("system.cpu.usage"))
+        assertTrue(names.contains("process.files.open"))
+        assertTrue(names.contains("logback.events"))
+        assertTrue(names.contains("custom.thread.count.value"))
+    }
+
+    @@Test
+    fun testOneMetricEndpoint() {
+        val response = httpClient.toBlocking().retrieve(
+            HttpRequest.GET<Any>("/metrics/jvm.memory.used"),
+            Argument.mapOf(String::class.java, Any::class.java)
+        )
+
+        val name = response["name"] as String
+        assertEquals("jvm.memory.used", name)
+
+        val measurements = response["measurements"] as List<Map<String, Any>>
+        assertEquals(1, measurements.size)
+
+        val value = measurements[0]["value"] as Double
+        assertTrue(value > 0)
+    }
+
+    @@Test
+    fun testMetricsUpdates() {
+
+        val checks = 3
+
+        for (i in 1..3) {
+            metricsService.refreshThreadCount();
+        }
+
+        val timer = meterRegistry.meters.find { it.id.name == "custom.thread.count.time" } as Timer
+        assertEquals(checks, timer.count().toInt())
+    }
+}

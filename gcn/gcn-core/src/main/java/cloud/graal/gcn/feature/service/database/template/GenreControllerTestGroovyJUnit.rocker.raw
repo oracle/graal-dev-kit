@@ -1,0 +1,101 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import @(rootPackage)domain.Genre
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.exceptions.HttpClientResponseException
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import org.junit.jupiter.api.Test
+
+import static io.micronaut.http.HttpHeaders.LOCATION
+import static io.micronaut.http.HttpStatus.CREATED
+import static io.micronaut.http.HttpStatus.NOT_FOUND
+import static io.micronaut.http.HttpStatus.NO_CONTENT
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+import static org.junit.jupiter.api.Assertions.assertThrows
+
+@@MicronautTest
+class GenreControllerTest {
+
+    @@Inject
+    @@Client('/')
+    HttpClient client
+
+    @@Test
+    void testFindNonExistingGenreReturns404() {
+        HttpClientResponseException thrown = assertThrows(HttpClientResponseException, () -> {
+            client.toBlocking().exchange(HttpRequest.GET('/genres/99999'))
+        })
+
+        assertNotNull(thrown.response)
+        assertEquals(NOT_FOUND, thrown.status)
+    }
+
+    @@Test
+    void testGenreCrudOperations() {
+
+        HttpResponse<?> response = client.toBlocking().exchange(
+                HttpRequest.POST('/genres', [name: 'DevOps']))
+        assertEquals(CREATED, response.status)
+
+        response = client.toBlocking().exchange(
+                HttpRequest.POST('/genres', [name: 'Microservices']))
+        assertEquals(CREATED, response.status)
+
+        Long id = entityId(response)
+
+        Genre genre = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/' + id), Genre)
+        assertEquals('Microservices', genre.name)
+
+        response = client.toBlocking().exchange(
+                HttpRequest.PUT('/genres/' + id + '/Micro-services', null))
+        assertEquals(NO_CONTENT, response.status)
+
+        genre = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/' + id), Genre)
+        assertEquals('Micro-services', genre.name)
+
+        List<Genre> genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list'), Argument.listOf(Genre))
+        assertEquals(2, genres.size())
+
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list?size=1'), Argument.listOf(Genre))
+        assertEquals(1, genres.size())
+        assertEquals('DevOps', genres[0].name)
+
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list?size=1&sort=name,desc'), Argument.listOf(Genre))
+        assertEquals(1, genres.size())
+        assertEquals('Micro-services', genres[0].name)
+
+        genres = client.toBlocking().retrieve(
+                HttpRequest.GET('/genres/list?size=1&page=2'), Argument.listOf(Genre))
+        assertEquals(0, genres.size())
+
+        response = client.toBlocking().exchange(
+                HttpRequest.DELETE('/genres/' + id))
+        assertEquals(NO_CONTENT, response.status)
+    }
+
+    private Long entityId(HttpResponse<?> response) {
+        String value = response.header(LOCATION)
+        if (value == null) {
+            return null
+        }
+        String path = '/genres/'
+        int index = value.indexOf(path)
+        return index == -1 ? null : value.substring(index + path.length()).toLong()
+    }
+}

@@ -1,0 +1,40 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.context.annotation.Replaces
+import io.micronaut.context.annotation.Requires
+import io.micronaut.email.AsyncTransactionalEmailSender
+import io.micronaut.email.Email
+import io.micronaut.email.EmailException
+import io.micronaut.email.ses.AsyncSesEmailSender
+import jakarta.inject.Named
+import jakarta.inject.Singleton
+import org.reactivestreams.Publisher
+import reactor.core.publisher.Mono
+import software.amazon.awssdk.services.ses.model.SendEmailResponse
+import software.amazon.awssdk.services.ses.model.SesRequest
+import software.amazon.awssdk.services.ses.model.SesResponse
+import java.util.function.Consumer
+import javax.validation.Valid
+
+@@Requires(property = "spec.name", value = "MailControllerTest")
+@@Singleton
+@@Replaces(AsyncSesEmailSender::class)
+@@Named(AsyncSesEmailSender.NAME)
+class EmailSenderReplacement : AsyncTransactionalEmailSender<SesRequest, SesResponse> {
+
+    val emails = mutableListOf<Email>()
+
+    override fun getName(): String = AsyncSesEmailSender.NAME
+
+    @@Throws(EmailException::class)
+    override fun sendAsync(email: @@Valid Email,
+                           emailRequest: Consumer<SesRequest>): Publisher<SesResponse> {
+        emails.add(email)
+        return Mono.just(SendEmailResponse.builder().messageId("xxx-yyy-zzz").build())
+    }
+}

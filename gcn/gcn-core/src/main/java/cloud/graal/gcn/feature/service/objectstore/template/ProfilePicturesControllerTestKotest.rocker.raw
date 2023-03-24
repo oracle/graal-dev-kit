@@ -1,0 +1,81 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.kotest.core.spec.style.StringSpec
+import io.micronaut.http.HttpHeaders.ETAG
+import io.micronaut.http.HttpHeaders.LOCATION
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpStatus.CREATED
+import io.micronaut.http.HttpStatus.NO_CONTENT
+import io.micronaut.http.HttpStatus.OK
+import io.micronaut.http.MediaType.MULTIPART_FORM_DATA_TYPE
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.multipart.MultipartBody
+import io.micronaut.objectstorage.ObjectStorageEntry
+import io.micronaut.objectstorage.ObjectStorageOperations
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.kotest.MicronautKotestExtension.getMock
+import io.micronaut.test.extensions.kotest.annotation.MicronautTest
+import io.mockk.every
+import io.mockk.mockk
+import io.mockk.verify
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertTrue
+import java.util.Optional
+
+@@MicronautTest
+class ProfilePicturesControllerTest(
+    @@Client(ProfilePicturesController.PREFIX) private val client: HttpClient,
+    private val objectStorageOperations: ObjectStorageOperations<*, *, *>
+) : StringSpec({
+
+    "upload test" {
+        val mock = getMock(objectStorageOperations)
+        every { mock.upload(any()) } returns mockk {
+            every { eTag } returns "etag"
+        }
+
+        val body = MultipartBody.builder()
+            .addPart(
+                "fileUpload",
+                "picture.jpg",
+                "picture".toByteArray()
+            )
+
+        val request = HttpRequest.POST("/avatar", body)
+            .contentType(MULTIPART_FORM_DATA_TYPE)
+
+        val response = client.toBlocking().exchange<MultipartBody.Builder, Any>(request)
+
+        assertEquals(CREATED, response.status())
+        response.header(LOCATION)?.let { assertTrue(it.endsWith("/pictures/avatar")) }
+        assertEquals("etag", response.header(ETAG))
+    }
+
+    "download test" {
+        val mock = getMock(objectStorageOperations)
+        every { mock.retrieve<ObjectStorageEntry<*>>("avatar.jpg") } returns Optional.of(
+            mockk(relaxed = true) { every { inputStream } returns "pictures".byteInputStream() }
+        )
+
+        val response = client.toBlocking().exchange<Any>("/avatar")
+
+        assertEquals(OK, response.status())
+        verify { mock.retrieve<ObjectStorageEntry<*>>("avatar.jpg") }
+    }
+
+    "delete test" {
+        val response = client.toBlocking().exchange<Any, Any>(HttpRequest.DELETE("/avatar"))
+
+        assertEquals(NO_CONTENT, response.status())
+        verify { objectStorageOperations.delete("avatar.jpg") }
+    }
+}) {
+    @@MockBean(ObjectStorageOperations::class)
+    fun objectStorageOperations() = mockk<ObjectStorageOperations<*, *, *>>(relaxed = true)
+}

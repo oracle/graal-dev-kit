@@ -1,0 +1,30 @@
+@import io.micronaut.starter.application.Project
+@args (Project project, String rootPackage)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service
+
+}
+import @(rootPackage)domain.Genre
+import @(rootPackage)repository.GenreRepository
+import io.micronaut.data.model.Pageable
+import jakarta.inject.Singleton
+import java.util.Optional
+import javax.transaction.Transactional
+
+@@Singleton
+open class GenreService(private val genreRepository: GenreRepository) {
+
+    fun findById(id: Long): Optional<Genre> = genreRepository.findById(id)
+
+    @@Transactional
+    open fun update(id: Long, name: String): Long = genreRepository.update(id, name)
+
+    fun list(pageable: Pageable): List<Genre> = genreRepository.findAll(pageable).content
+
+    @@Transactional
+    open fun save(name: String): Genre = genreRepository.save(name)
+
+    @@Transactional
+    open fun delete(id: Long) = genreRepository.deleteById(id)
+}

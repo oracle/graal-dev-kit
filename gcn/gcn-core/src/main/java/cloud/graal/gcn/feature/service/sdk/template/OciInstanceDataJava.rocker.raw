@@ -1,0 +1,62 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName());
+
+}
+import com.oracle.bmc.core.model.Instance;
+import com.oracle.bmc.core.model.Instance.LifecycleState;
+import io.micronaut.core.annotation.Introspected;
+
+import java.util.Date;
+
+@@Introspected
+public class OciInstanceData {
+
+    private final String availabilityDomain;
+    private final String compartmentOcid;
+    private final String displayName;
+    private final LifecycleState lifecycleState;
+    private final String ocid;
+    private final String region;
+    private final Date timeCreated;
+
+    public OciInstanceData(Instance instance) {
+        availabilityDomain = instance.getAvailabilityDomain();
+        compartmentOcid = instance.getCompartmentId();
+        displayName = instance.getDisplayName();
+        lifecycleState = instance.getLifecycleState();
+        ocid = instance.getId();
+        region = instance.getRegion();
+        timeCreated = instance.getTimeCreated();
+    }
+
+    public String getAvailabilityDomain() {
+        return availabilityDomain;
+    }
+
+    public String getCompartmentOcid() {
+        return compartmentOcid;
+    }
+
+    public String getDisplayName() {
+        return displayName;
+    }
+
+    public LifecycleState getLifecycleState() {
+        return lifecycleState;
+    }
+
+    public String getOcid() {
+        return ocid;
+    }
+
+    public String getRegion() {
+        return region;
+    }
+
+    public Date getTimeCreated() {
+        return timeCreated;
+    }
+}

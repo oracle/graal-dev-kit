@@ -1,0 +1,40 @@
+@import io.micronaut.starter.application.Project
+
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service;
+
+}
+import io.micrometer.core.annotation.Timed;
+import io.micrometer.core.instrument.MeterRegistry;
+import io.micronaut.scheduling.annotation.Scheduled;
+import jakarta.inject.Singleton;
+
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
+import java.util.Random;
+import java.util.concurrent.atomic.AtomicLong;
+
+@@Singleton
+public class MetricsService {
+
+    private final AtomicLong threadCount = new AtomicLong();
+    private final ThreadMXBean threadMXBean;
+    private final Random random = new Random();
+
+    MetricsService(MeterRegistry meterRegistry) {
+        threadMXBean = ManagementFactory.getThreadMXBean();
+        threadCount.set(threadMXBean.getThreadCount());
+        meterRegistry.gauge("custom.thread.count.value", threadCount);
+    }
+
+    @@Scheduled(fixedRate = "${custom.thread.count.updateFrequency:15s}",
+            initialDelay = "${custom.thread.count.initialDelay:0s}")
+    @@Timed("custom.thread.count.time")
+    public void refreshThreadCount() throws InterruptedException {
+        threadCount.set(threadMXBean.getThreadCount());
+        // do something that takes time
+        Thread.sleep(random.nextInt(501));
+    }
+}

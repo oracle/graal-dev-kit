@@ -1,0 +1,103 @@
+@import io.micronaut.starter.application.Project
+
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service
+
+}
+import io.micrometer.core.instrument.MeterRegistry
+import io.micrometer.core.instrument.Timer
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
+
+@@MicronautTest
+class MetricsServiceSpec extends Specification {
+
+    @@Inject
+    MeterRegistry meterRegistry
+
+    @@Inject
+    @@Client('/')
+    HttpClient httpClient
+
+    @@Inject
+    MetricsService metricsService
+
+    void 'test expected meters'() {
+        when:
+        Set<String> names = meterRegistry.meters.id.name
+
+        // check that a subset of expected meters exist
+        then:
+        names.contains('jvm.memory.max')
+        names.contains('process.uptime')
+        names.contains('system.cpu.usage')
+        names.contains('process.files.open')
+        names.contains('logback.events')
+        names.contains('custom.thread.count.value')
+    }
+
+    void 'test metrics endpoint'() {
+
+        when:
+        Map<String, Object> response = httpClient.toBlocking().retrieve(
+                HttpRequest.GET('/metrics'),
+                Argument.mapOf(String, Object))
+
+        then:
+        response.containsKey('names')
+        response.names instanceof List
+
+        when:
+        List<String> names = response.names as List
+
+        then:
+        names.contains('jvm.memory.max')
+        names.contains('process.uptime')
+        names.contains('system.cpu.usage')
+        names.contains('process.files.open')
+        names.contains('logback.events')
+        names.contains('custom.thread.count.value')
+    }
+
+    void 'test one metric endpoint'() {
+
+        when:
+        Map<String, Object> response = httpClient.toBlocking().retrieve(
+                HttpRequest.GET('/metrics/jvm.memory.used'),
+                Argument.mapOf(String, Object))
+
+        String name = response.name
+
+        then:
+        'jvm.memory.used' == name
+
+        when:
+        List<Map<String, Object>> measurements = response.measurements as List
+
+        then:
+        1 == measurements.size()
+        double value = measurements[0].value
+        value > 0
+    }
+
+    void 'test metrics updates'() {
+
+        when:
+        int checks = 3
+
+        for (int i = 0; i < checks; i++) {
+            metricsService.refreshThreadCount()
+        }
+
+        then:
+        Timer timer = meterRegistry.meters.find { it.id.name == 'custom.thread.count.time' } as Timer
+        checks == timer.count()
+    }
+}

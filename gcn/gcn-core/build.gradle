@@ -1,0 +1,55 @@
+plugins {
+    id 'gcn-module'
+    id 'gcn.rocker'
+    alias libs.plugins.micronaut.library
+}
+
+dependencies {
+    // not in libs.versions.toml to keep Micronaut version in 1 place (micronautVersion.txt)
+    api("io.micronaut.starter:micronaut-starter-api:$micronautVersion") {
+        exclude group: 'io.micronaut', module: 'micronaut-buffer-netty'
+        exclude group: 'io.micronaut', module: 'micronaut-http-client'
+        exclude group: 'io.micronaut', module: 'micronaut-http-client-core'
+        exclude group: 'io.micronaut', module: 'micronaut-http-netty'
+        exclude group: 'io.micronaut', module: 'micronaut-websocket'
+        exclude group: 'io.micronaut.testresources', module: 'micronaut-test-resources-build-tools'
+        exclude group: 'io.netty', module: 'netty-buffer'
+        exclude group: 'io.netty', module: 'netty-codec'
+        exclude group: 'io.netty', module: 'netty-codec-http'
+        exclude group: 'io.netty', module: 'netty-codec-http2'
+        exclude group: 'io.netty', module: 'netty-codec-socks'
+        exclude group: 'io.netty', module: 'netty-common'
+        exclude group: 'io.netty', module: 'netty-handler'
+        exclude group: 'io.netty', module: 'netty-handler-proxy'
+        exclude group: 'io.netty', module: 'netty-resolver'
+        exclude group: 'io.netty', module: 'netty-transport'
+        exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
+        exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
+    }
+}
+
+sourceSets {
+    main {
+        rocker {
+            srcDir 'src/main/java'
+        }
+        java {
+            srcDir 'build/generated/rocker'
+        }
+    }
+}
+
+micronaut {
+    processing {
+        incremental true
+        annotations 'cloud.graal.gcn.*'
+    }
+}
+
+nohttp {
+    source.exclude '**/template/**'
+}
+
+javadoc {
+    exclude '**/template/**'
+}

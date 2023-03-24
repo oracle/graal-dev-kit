@@ -1,0 +1,93 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.context.annotation.Replaces
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.http.client.multipart.MultipartBody
+import io.micronaut.objectstorage.ObjectStorageEntry
+import io.micronaut.objectstorage.ObjectStorageOperations
+import io.micronaut.objectstorage.response.UploadResponse
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import jakarta.inject.Singleton
+import org.junit.jupiter.api.Test
+
+import static io.micronaut.http.HttpHeaders.ETAG
+import static io.micronaut.http.HttpHeaders.LOCATION
+import static io.micronaut.http.HttpStatus.CREATED
+import static io.micronaut.http.HttpStatus.NO_CONTENT
+import static io.micronaut.http.HttpStatus.OK
+import static io.micronaut.http.MediaType.MULTIPART_FORM_DATA_TYPE
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertTrue
+import static org.mockito.ArgumentMatchers.any
+import static org.mockito.Mockito.mock
+import static org.mockito.Mockito.verify
+import static org.mockito.Mockito.when
+
+@@MicronautTest
+class ProfilePicturesControllerTest {
+
+    @@Inject
+    @@Client(ProfilePicturesController.PREFIX)
+    HttpClient client
+
+    @@Inject
+    ObjectStorageOperations<?, ?, ?> objectStorageOperations
+
+    @@Singleton
+    @@Replaces(ObjectStorageOperations<?, ?, ?>)
+    ObjectStorageOperations<?, ?, ?> objectStorageOperations() {
+        mock(ObjectStorageOperations<?, ?, ?>)
+    }
+
+    @@Test
+    void upload() {
+
+        when(objectStorageOperations.upload(any()))
+                .then(invocation ->
+                        when(mock(UploadResponse).getETag())
+                                .thenReturn("etag")
+                                .getMock())
+
+        def body = MultipartBody.builder()
+                    .addPart(
+                        "fileUpload",
+                        "picture.jpg",
+                        "picture".getBytes())
+
+        def request = HttpRequest.POST("/avatar", body)
+                        .contentType(MULTIPART_FORM_DATA_TYPE)
+
+        def response = client.toBlocking().exchange(request)
+
+        assertEquals(CREATED, response.status())
+        assertTrue(response.header(LOCATION).endsWith("/pictures/avatar"))
+        assertEquals("etag", response.header(ETAG))
+    }
+
+    @@Test
+    void download() {
+        when(objectStorageOperations.retrieve("avatar.jpg"))
+                .then(invocation -> Optional.of(mock(ObjectStorageEntry)))
+
+        def response = client.toBlocking().exchange("/avatar")
+
+        assertEquals(OK, response.status())
+        verify(objectStorageOperations).retrieve("avatar.jpg")
+    }
+
+    @@Test
+    void delete() {
+        def response = client.toBlocking().exchange(HttpRequest.DELETE("/avatar"))
+
+        assertEquals(NO_CONTENT, response.status())
+        verify(objectStorageOperations).delete("avatar.jpg")
+    }
+}

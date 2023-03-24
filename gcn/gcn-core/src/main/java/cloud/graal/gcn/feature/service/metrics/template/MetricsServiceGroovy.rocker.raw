@@ -1,0 +1,41 @@
+@import io.micronaut.starter.application.Project
+
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName()).service
+
+}
+import groovy.transform.CompileStatic
+import io.micrometer.core.annotation.Timed
+import io.micrometer.core.instrument.MeterRegistry
+import io.micronaut.scheduling.annotation.Scheduled
+import jakarta.inject.Singleton
+
+import java.lang.management.ManagementFactory
+import java.lang.management.ThreadMXBean
+import java.util.concurrent.atomic.AtomicLong
+
+@@CompileStatic
+@@Singleton
+class MetricsService {
+
+    private final AtomicLong threadCount = new AtomicLong()
+    private final ThreadMXBean threadMXBean
+    private final Random random = new Random()
+
+    MetricsService(MeterRegistry meterRegistry) {
+        threadMXBean = ManagementFactory.getThreadMXBean()
+        threadCount.set(threadMXBean.threadCount)
+        meterRegistry.gauge('custom.thread.count.value', threadCount)
+    }
+
+    @@Scheduled(fixedRate = '${custom.thread.count.updateFrequency:15s}',
+            initialDelay = '${custom.thread.count.initialDelay:0s}')
+    @@Timed("custom.thread.count.time")
+    void refreshThreadCount() {
+        threadCount.set(threadMXBean.threadCount)
+        // do something that takes time
+        sleep(random.nextInt(501))
+    }
+}
