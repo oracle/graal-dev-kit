@@ -80,34 +80,32 @@ public class GcnYamlTemplate extends DefaultTemplate {
         outputStream.write(yaml.getBytes());
     }
 
-    @SuppressWarnings("unchecked")
+    /**
+     * Convert entries like "com.foo.bar: wahoo" to nested.
+     * @param config the initial config
+     * @return the config nested
+     */
+    @SuppressWarnings({"unchecked", "rawtypes"})
     private Map<String, Object> transform(Map<String, Object> config) {
         Map<String, Object> transformed = new LinkedHashMap<>();
         for (Map.Entry<String, Object> entry : config.entrySet()) {
-            Map<String, Object> finalMap = transformed;
             String key = entry.getKey();
             Object value = entry.getValue();
-            int index = key.indexOf('.');
-            if (index != -1) {
-                String[] keys = DOT_PATTERN.split(key);
-                if (!keys[0].equals("micronaut") && config.keySet().stream().filter(k -> k.startsWith(keys[0] + ".")).count() == 1) {
-                    finalMap.put(key, value);
-                } else {
-                    for (int i = 0; i < keys.length - 1; i++) {
-                        String subKey = keys[i];
+            String[] keys = DOT_PATTERN.split(key);
 
-                        if (!finalMap.containsKey(subKey)) {
-                            finalMap.put(subKey, new LinkedHashMap<>());
-                        }
-                        Object next = finalMap.get(subKey);
-                        if (next instanceof Map) {
-                            finalMap = ((Map<String, Object>) next);
-                        }
+            Map<String, Object> currentNested = transformed;
+            for (int i = 0; i < keys.length; i++) {
+                String subKey = keys[i];
+                if (i == keys.length - 1) {
+                    Object currentValue = currentNested.get(subKey);
+                    if (value instanceof Map && currentValue instanceof Map) {
+                        ((Map) currentValue).putAll((Map) value);
+                    } else {
+                        currentNested.put(subKey, value);
                     }
-                    finalMap.put(keys[keys.length - 1], value);
+                } else {
+                    currentNested = (Map<String, Object>) currentNested.computeIfAbsent(subKey, k -> new LinkedHashMap<>(5));
                 }
-            } else {
-                finalMap.put(key, value);
             }
         }
         return transformed;

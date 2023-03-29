@@ -35,6 +35,11 @@ import static io.micronaut.starter.options.BuildTool.MAVEN;
 @Singleton
 public class GcnKoTest extends KoTest {
 
+    // mirrored from base class for the UI
+    protected static final String ARTIFACT_ID_KOTEST_RUNNER_JUNIT_5_JVM = KoTest.ARTIFACT_ID_KOTEST_RUNNER_JUNIT_5_JVM;
+    protected static final String ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM = KoTest.ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM;
+    protected static final Dependency DEPENDENCY_MICRONAUT_TEST_KOTEST = KoTest.DEPENDENCY_MICRONAUT_TEST_KOTEST;
+
     @Override
     public void doApply(GeneratorContext generatorContext) {
 

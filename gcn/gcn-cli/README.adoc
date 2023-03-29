@@ -12,14 +12,8 @@ When you run the application and provide valid arguments, the `ProjectGenerator`
 
 There are a few ways to generate a project.
 
-* Run `./gradlew clean assemble` from the project root to build the jars in each submodule's `build/libs` directory. Then run `java -jar path/to/gcn/gcn-cli/build/libs/gcn-cli-0.1-SNAPSHOT-all.jar create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
+* Run `./gradlew clean assemble` from the project root to build the jars in each submodule's `build/libs` directory. Then run `java -jar path/to/gcn/gcn-cli/build/libs/gcn-cli-<VERSION>-all.jar create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
 
 * Run `./gradlew clean :gcn-cli:nativeCompile` from the project root to build a native executable in `build/native/nativeCompile`, then run `path/to/gcn/gcn-cli/build/native/nativeCompile/gcn create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
 
 * Run in IntelliJ by creating a Micronaut run configuration with `Main class` `cloud.graal.gcn.GcnStarter`. Set the `Working directory` to the location where you want to generate the project, and specify the command and args in the `Program arguments` field, e.g., `create-app com.example.demo --services=... --clouds=... --features=...`
-
-* Generate projects in-memory with tests
-
-== Tests
-
-Add tests in the `gcn-test` module.

@@ -4,7 +4,7 @@ This is the core library used by the CLI and REST API. It primarily depends on t
 
 == Determining features
 
-Most (TBD) features are selectable, but "service" features (under package `cloud.graal.gcn.feature.service`) which represent Micronaut/Oracle supported features will replace standard features to add additional GCN functionality.
+Most features are selectable, but "service" features (under package `cloud.graal.gcn.feature.service`) which represent Micronaut/Oracle supported features will replace standard features to add additional GCN functionality.
 
 In addition, when users choose clouds, there are "create" features (under package `cloud.graal.gcn.feature.create`) that represent those and add functionality to the cloud-specific project modules.
 
@@ -32,10 +32,6 @@ Features make their changes when their `apply(GcnGeneratorContext)` method is ca
 
 == Rocker templates
 
-The project has support for Rocker templates to generate application source code and other files. Template files must end in `.rocker.raw` and can be in any package under `src/main/java`, but the current convention is to keep templates with the features that use them in a `templates` folder, e.g., see the templates used by the "database" service in `src/main/java/cloud/graal/gcn/feature/service/database/templates`.
+The project has support for Rocker templates to generate application source code and other files. Template files must end in `.rocker.raw` and can be in any package under `src/main/java`, but the current convention is to keep templates with the features that use them in a `template` folder, e.g., see the templates used by the "database" service in `src/main/java/cloud/graal/gcn/feature/service/database/template`.
 
 The build is configured to regenerate Java source for the templates in `build/generated/rocker` before compiling; the generated Java source files are compiled with the main project source.
-
-== Tests
-
-Add tests in the `gcn-test` module.

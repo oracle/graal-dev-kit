@@ -57,13 +57,9 @@ public enum GcnCloud {
      */
     TESTING("testing", "-testing", "TESTING", "testing", "");
 
-    private static final GcnCloud[] SUPPORTED;
-
-    static {
-        SUPPORTED = Arrays.stream(values())
-                .filter(c -> c != GcnCloud.TESTING && c != GcnCloud.NONE)
-                .toArray(GcnCloud[]::new);
-    }
+    private static final GcnCloud[] SUPPORTED = Arrays.stream(values())
+            .filter(c -> c != GcnCloud.TESTING && c != GcnCloud.NONE)
+            .toArray(GcnCloud[]::new);
 
     private final String environmentName;
     private final String environmentNameSuffix;

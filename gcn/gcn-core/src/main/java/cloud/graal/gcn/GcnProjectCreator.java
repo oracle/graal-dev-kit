@@ -30,7 +30,6 @@ import io.micronaut.starter.options.JdkVersion;
 import io.micronaut.starter.options.Language;
 import io.micronaut.starter.options.Options;
 import io.micronaut.starter.options.TestFramework;
-import io.micronaut.starter.util.VersionInfo;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -69,7 +68,7 @@ public class GcnProjectCreator {
      * @param clouds            selected clouds
      * @param services          selected services
      * @param features          selected features
-     * @param javaVersion       selected (or default) JDK version
+     * @param jdkMajorVersion   selected (or default) JDK version
      * @param operatingSystem   inferred OS
      * @param additionalOptions currently only the "example code" boolean
      * @param outputHandler     destination for rendered templates
@@ -85,7 +84,7 @@ public class GcnProjectCreator {
                        List<GcnCloud> clouds,
                        List<GcnService> services,
                        List<String> features,
-                       Integer javaVersion,
+                       Integer jdkMajorVersion,
                        OperatingSystem operatingSystem,
                        Map<String, Object> additionalOptions,
                        OutputHandler outputHandler,
@@ -109,10 +108,35 @@ public class GcnProjectCreator {
             features.remove(0);
         }
 
-        JdkVersion jdkVersion = javaVersion == null ? VersionInfo.getJavaVersion() : JdkVersion.valueOf(javaVersion);
-        Options options = new Options(lang, test, build, jdkVersion, additionalOptions);
+        Options options = new Options(lang, test, build, jdkVersion(jdkMajorVersion), additionalOptions);
         projectGenerator.generate(projectType.applicationType(), project, options, operatingSystem,
                 derivedFeatures(clouds, services, features, projectType), outputHandler, consoleOutput);
+    }
+
+    private JdkVersion jdkVersion(Integer majorVersion) {
+
+        if (majorVersion == null) {
+            String property = System.getProperty("java.version");
+            if (property.startsWith("1.")) {
+                property = property.substring(2);
+            }
+            // Allow these formats:
+            // 1.8.0_72-ea
+            // 9-ea
+            // 9
+            // 9.0.1
+            int dotPos = property.indexOf('.');
+            int dashPos = property.indexOf('-');
+            majorVersion = Integer.parseInt(property.substring(0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : property.length()));
+        }
+
+        for (JdkVersion version : JdkVersion.values()) {
+            if (version.majorVersion() == majorVersion) {
+                return version;
+            }
+        }
+
+        throw new IllegalArgumentException("Unsupported JDK version: " + majorVersion + ". Supported values are " + GcnUtils.SUPPORTED_JDKS);
     }
 
     private List<String> derivedFeatures(List<GcnCloud> clouds,

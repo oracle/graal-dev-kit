@@ -17,12 +17,18 @@ package cloud.graal.gcn.feature.service.email;
 
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerSpec;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestGroovyJUnit;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestJava;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestKotest;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestKotlinJUnit;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerGroovy;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerJava;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerKotlin;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderGroovy;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderJava;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderKotlin;
+import cloud.graal.gcn.feature.service.email.template.EmailHtml;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
@@ -30,7 +36,10 @@ import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
 import io.micronaut.starter.feature.email.TemplateEmailFeature;
 import io.micronaut.starter.feature.view.Thymeleaf;
+import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.OCI;
 
@@ -102,6 +111,27 @@ public class OciEmail extends AbstractEmailFeature {
 
         if (generatorContext.generateExampleCode()) {
 
+//            micronaut:
+//              email:
+//                from:
+//                  email: test@test.com
+//                  name: Email Test
+//            smtp:
+//              password: password
+//              user: user
+//            javamail:
+//              properties:
+//                mail:
+//                  smtp:
+//                   host: smtp.com
+            generatorContext.getTestConfiguration().addNested(Map.of(
+                    "micronaut.email.from.email", "test@test.com",
+                    "micronaut.email.from.name", "Email Test",
+                    "smtp.password", "password",
+                    "smtp.user", "user",
+                    "javamail.properties.mail.smtp.host", "smtp.com"
+            ));
+
             Project project = generatorContext.getProject();
 
             generatorContext.addTemplate(getModuleName(), "OciSessionProvider",
@@ -115,6 +145,18 @@ public class OciEmail extends AbstractEmailFeature {
                     OciEmailControllerJava.template(project),
                     OciEmailControllerKotlin.template(project),
                     OciEmailControllerGroovy.template(project));
+
+            generatorContext.addTemplate("email.html-OCI",
+                    new RockerTemplate(getModuleName(), "src/main/resources/views/email.html",
+                            EmailHtml.template()));
+
+            generatorContext.addTestTemplate(getModuleName(), "OciEmailControllerTest",
+                    generatorContext.getTestSourcePath("/{packagePath}/EmailController"),
+                    OciEmailControllerSpec.template(project),
+                    OciEmailControllerTestJava.template(project),
+                    OciEmailControllerTestGroovyJUnit.template(project),
+                    OciEmailControllerTestKotlinJUnit.template(project),
+                    OciEmailControllerTestKotest.template(project));
         }
     }
 

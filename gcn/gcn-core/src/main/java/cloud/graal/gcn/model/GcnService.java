@@ -46,7 +46,8 @@ public enum GcnService {
      */
     K8S(
         "Kubernetes",
-        "Provides integration with Kubernetes"
+        "Provides integration with Kubernetes",
+        "kubernetes"
     ),
 
     /**

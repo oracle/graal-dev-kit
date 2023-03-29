@@ -64,6 +64,12 @@ public class NonCloudEmail extends AbstractEmailFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
 
+//        micronaut:
+//          email:
+//            from:
+//              email: 'mo@gcn.example'
+        generatorContext.getConfiguration().addNested("micronaut.email.from.email", "mo@gcn.example");
+
         if (generatorContext.generateExampleCode()) {
 
             Project project = generatorContext.getProject();

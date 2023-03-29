@@ -15,7 +15,12 @@
  */
 package cloud.graal.gcn;
 
+import io.micronaut.starter.options.JdkVersion;
 import io.micronaut.starter.util.VersionInfo;
+
+import java.util.List;
+
+import static io.micronaut.starter.options.JdkVersion.JDK_17;
 
 /**
  * Utility methods.
@@ -34,6 +39,16 @@ public final class GcnUtils {
      * The name of the shared library module.
      */
     public static final String LIB_MODULE = "lib";
+
+    /**
+     * The default JDK version if none is specified.
+     */
+    public static final JdkVersion DEFAULT_JDK = JDK_17;
+
+    /**
+     * All supported JDK versions.
+     */
+    public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_17.majorVersion());
 
     private GcnUtils() {
     }
