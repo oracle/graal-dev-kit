@@ -16,6 +16,7 @@
 package cloud.graal.gcn.feature.create;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.buildtool.GcnGradleBuild;
 import cloud.graal.gcn.buildtool.GradleProjectDependency;
 import cloud.graal.gcn.buildtool.MavenProjectDependency;
 import cloud.graal.gcn.feature.AbstractGcnFeature;
@@ -30,13 +31,11 @@ import io.micronaut.starter.application.Project;
 import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.gradle.GradleBuild;
-import io.micronaut.starter.build.gradle.GradleBuildCreator;
 import io.micronaut.starter.build.gradle.GradleDependency;
 import io.micronaut.starter.build.gradle.GradleDsl;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
 import io.micronaut.starter.build.maven.MavenBuild;
-import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.feature.Features;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
 import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
@@ -93,8 +92,8 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
     // Message: gcn.feature.create.function.AbstractGcnCloudFunction: method 'void <init>()' not found
     // Path Taken: FooSpec.setProjectCreator([GcnProjectCreator projectCreator]) --> new GcnProjectCreator(ProjectGenerator projectGenerator,[Collection createFeatures],Collection serviceFeatures)
     //    at app//io.micronaut.context.DefaultBeanContext.resolveByBeanFactory(DefaultBeanContext.java:2367)
-    private GradleBuildCreator gradleBuildCreator;
-    private MavenBuildCreator mavenBuildCreator;
+    private GcnGradleBuildCreator gradleBuildCreator;
+    private GcnMavenBuildCreator mavenBuildCreator;
 
     /**
      * Temporary dependency injection method for GradleBuildCreator.
@@ -102,7 +101,7 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
      * @param gradleBuildCreator GradleBuildCreator
      */
     @Inject
-    public void setGradleBuildCreator(GradleBuildCreator gradleBuildCreator) {
+    public void setGradleBuildCreator(GcnGradleBuildCreator gradleBuildCreator) {
         this.gradleBuildCreator = gradleBuildCreator;
     }
 
@@ -112,7 +111,7 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
      * @param mavenBuildCreator MavenBuildCreator
      */
     @Inject
-    public void setMavenBuildCreator(MavenBuildCreator mavenBuildCreator) {
+    public void setMavenBuildCreator(GcnMavenBuildCreator mavenBuildCreator) {
         this.mavenBuildCreator = mavenBuildCreator;
     }
 
@@ -198,7 +197,7 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
 
         GradleDsl dsl = generatorContext.getBuildTool().getGradleDsl().orElse(GradleDsl.GROOVY);
 
-        GradleBuild build = new GradleBuild(
+        GradleBuild build = new GcnGradleBuild(
                 original.getDsl(), dependencies, copiedPlugins,
                 GradleRepository.listOf(dsl, repositories));
 
@@ -210,10 +209,10 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                         generatorContext.getFeatures(getCloud()),
                         build)
         ));
-        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true));
+        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.isPlatformIndependent()));
 
         // for lib/build.gradle
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false));
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.isPlatformIndependent()));
 
         String path = "buildSrc/build.gradle";
         if (dsl == GradleDsl.KOTLIN) {

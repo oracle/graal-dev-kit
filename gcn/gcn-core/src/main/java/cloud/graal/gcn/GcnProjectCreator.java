@@ -16,6 +16,7 @@
 package cloud.graal.gcn;
 
 import cloud.graal.gcn.feature.create.AbstractGcnCreateFeature;
+import cloud.graal.gcn.feature.create.PlatformIndependent;
 import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
 import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.model.GcnProjectType;
@@ -93,6 +94,11 @@ public class GcnProjectCreator {
         if (clouds.isEmpty()) {
             // platform independent, will generate a single-module application
             clouds = List.of(NONE);
+        }
+
+        if (clouds.size() == 1 && clouds.get(0) == NONE) {
+            features = new ArrayList<>(features);
+            features.add(PlatformIndependent.NAME);
         }
 
         if (lang == null) {

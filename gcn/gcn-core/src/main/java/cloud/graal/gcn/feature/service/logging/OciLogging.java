@@ -16,6 +16,7 @@
 package cloud.graal.gcn.feature.service.logging;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.OracleCloudNettyClientDependencies;
 import cloud.graal.gcn.feature.service.logging.template.LogControllerGroovy;
 import cloud.graal.gcn.feature.service.logging.template.LogControllerJava;
 import cloud.graal.gcn.feature.service.logging.template.LogControllerKotlin;
@@ -35,7 +36,7 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
  * @since 1.0.0
  */
 @Singleton
-public class OciLogging extends AbstractLoggingFeature {
+public class OciLogging extends AbstractLoggingFeature implements OracleCloudNettyClientDependencies {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
@@ -44,6 +45,8 @@ public class OciLogging extends AbstractLoggingFeature {
                 .groupId("io.micronaut.oraclecloud")
                 .artifactId("micronaut-oraclecloud-logging")
                 .compile());
+
+        addNettyDependencies(generatorContext);
 
         // TODO delete these two dependencies and change the JSON formatter back to
         //  "io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" (from

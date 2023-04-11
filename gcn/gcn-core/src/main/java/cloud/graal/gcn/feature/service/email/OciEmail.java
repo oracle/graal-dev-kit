@@ -117,8 +117,8 @@ public class OciEmail extends AbstractEmailFeature {
 //                  email: test@test.com
 //                  name: Email Test
 //            smtp:
-//              password: password
-//              user: user
+//              password: example-password
+//              user: gcndemo
 //            javamail:
 //              properties:
 //                mail:
@@ -127,8 +127,8 @@ public class OciEmail extends AbstractEmailFeature {
             generatorContext.getTestConfiguration().addNested(Map.of(
                     "micronaut.email.from.email", "test@test.com",
                     "micronaut.email.from.name", "Email Test",
-                    "smtp.password", "password",
-                    "smtp.user", "user",
+                    "smtp.password", "example-password",
+                    "smtp.user", "gcndemo",
                     "javamail.properties.mail.smtp.host", "smtp.com"
             ));
 

@@ -36,8 +36,6 @@ import io.micronaut.starter.template.RenderResult;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.Template;
 import jakarta.inject.Singleton;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -55,8 +53,6 @@ import static io.micronaut.starter.template.Template.ROOT;
 @Singleton
 @Replaces(ProjectGenerator.class)
 public class GcnProjectGenerator implements ProjectGenerator {
-
-    private static final Logger LOG = LoggerFactory.getLogger(GcnProjectGenerator.class);
 
     private final GcnContextFactory contextFactory;
     private final List<Feature> features;
@@ -98,7 +94,8 @@ public class GcnProjectGenerator implements ProjectGenerator {
 
         generatorContext.applyFeatures();
 
-        try (GcnTemplateRenderer templateRenderer = new GcnTemplateRenderer(project, outputHandler, generatorContext.getPostProcessors(), generatorContext.getClouds())) {
+        try (GcnTemplateRenderer templateRenderer = new GcnTemplateRenderer(project, outputHandler,
+                generatorContext.getPostProcessors(), generatorContext.getRegexPostProcessors(), generatorContext.getClouds())) {
             for (Map.Entry<String, Template> entry : generatorContext.getTemplates().entrySet()) {
                 RenderResult renderResult = templateRenderer.render(entry.getValue(), entry.getKey());
                 if (renderResult.getError() != null) {
@@ -106,8 +103,6 @@ public class GcnProjectGenerator implements ProjectGenerator {
                 }
             }
         }
-
-        LOG.debug("{}", generatorContext);
     }
 
     private void addMicronautCli(GcnGeneratorContext generatorContext,

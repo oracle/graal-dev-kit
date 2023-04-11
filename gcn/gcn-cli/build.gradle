@@ -45,9 +45,13 @@ dependencies {
         exclude group: 'io.netty', module: 'netty-transport'
         exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
         exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
+        exclude group: 'org.jline', module: 'jline'
     }
-    implementation libs.jansi
-    implementation libs.slf4j.nop
+    runtimeOnly libs.bouncycastle.bcpkix
+    runtimeOnly libs.bouncycastle.bcprov
+    runtimeOnly libs.jansi
+    runtimeOnly libs.jline
+    runtimeOnly libs.slf4j.nop
     implementation mnLibs.micronaut.jackson.databind
     implementation mnLibs.micronaut.picocli
     implementation mnLibs.micronaut.validation

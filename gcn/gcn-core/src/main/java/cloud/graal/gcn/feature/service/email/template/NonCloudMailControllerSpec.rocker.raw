@@ -5,3 +5,66 @@
 package @(project.getPackageName())
 
 }
+import io.micronaut.context.annotation.Property
+import io.micronaut.email.Email
+import io.micronaut.email.TransactionalEmailSender
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import jakarta.inject.Named
+import spock.lang.Specification
+
+import java.util.function.Consumer
+
+import static io.micronaut.email.BodyType.HTML
+import static io.micronaut.http.HttpStatus.ACCEPTED
+
+@@Property(name = 'FROM_EMAIL', value = 'bob@@gcn.example')
+@@Property(name = 'FROM_PASSWORD', value = 'password')
+@@MicronautTest
+class EmailControllerSpec extends Specification {
+
+    @@Inject
+    @@Client('/')
+    HttpClient client
+
+    Email sentEmail
+
+    void 'email test'() {
+        when:
+        def response = client.toBlocking().exchange(
+                HttpRequest.POST('/email/send',
+                        [to: 'alice@@gcn.example']))
+
+        then:
+        response.status() == ACCEPTED
+
+        sentEmail
+        sentEmail.from.email == 'bob@@gcn.example'
+        sentEmail.to.size() == 1
+        sentEmail.to.first().email == 'alice@@gcn.example'
+        sentEmail.subject == 'Sending email with JavaMail is Fun'
+        sentEmail.body
+        sentEmail.body.get(HTML).get() == 'and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>'
+    }
+
+    @@MockBean(TransactionalEmailSender)
+    @@Named('mock')
+    TransactionalEmailSender mockSender() {
+        new TransactionalEmailSender() {
+
+            @@Override
+            String getName() {
+                'test'
+            }
+
+            @@Override
+            def send(Email email, Consumer emailRequest) {
+                sentEmail = email
+            }
+        }
+    }
+}

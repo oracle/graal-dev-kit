@@ -5,3 +5,34 @@
 package @(project.getPackageName())
 
 }
+import io.micronaut.email.Email
+import io.micronaut.email.EmailException
+import io.micronaut.email.EmailSender
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.annotation.Body
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Post
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+
+import io.micronaut.email.BodyType.HTML
+
+@@ExecuteOn(TaskExecutors.IO)
+@@Controller("/email")
+class EmailController(private val emailSender: EmailSender<*, *>) {
+
+    @@Post("/send")
+    fun send(@@Body("to") to: String): HttpResponse<*> {
+        try {
+            emailSender.send(
+                Email.builder()
+                    .to(to)
+                    .subject("Sending email with JavaMail is Fun")
+                    .body("and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>", HTML)
+            )
+        } catch (ignored: EmailException) {
+            return HttpResponse.unprocessableEntity<Any>()
+        }
+        return HttpResponse.accepted<Any>()
+    }
+}

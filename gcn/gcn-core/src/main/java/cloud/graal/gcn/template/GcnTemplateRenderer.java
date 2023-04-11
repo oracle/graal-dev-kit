@@ -29,6 +29,8 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
 import static cloud.graal.gcn.model.GcnCloud.NONE;
@@ -43,14 +45,17 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public class GcnTemplateRenderer extends DefaultTemplateRenderer {
 
     private final Map<String, Set<TemplatePostProcessor>> postProcessors;
+    private final Map<Pattern, Set<TemplatePostProcessor>> regexPostProcessors;
     private final Map<String, Map<String, String>> replacementsByModule = new HashMap<>();
 
     public GcnTemplateRenderer(Project libProject,
                                OutputHandler outputHandler,
                                Map<String, Set<TemplatePostProcessor>> postProcessors,
+                               Map<Pattern, Set<TemplatePostProcessor>> regexPostProcessors,
                                Set<GcnCloud> clouds) {
         super(Collections.emptyMap(), outputHandler);
         this.postProcessors = postProcessors;
+        this.regexPostProcessors = regexPostProcessors;
 
         for (GcnCloud cloud : clouds) {
             if (cloud == NONE) {
@@ -87,8 +92,16 @@ public class GcnTemplateRenderer extends DefaultTemplateRenderer {
 
     private Template process(Template template,
                              String templateKey) throws IOException {
+
+        Set<TemplatePostProcessor> regexProcessors = regexPostProcessors.entrySet()
+                .stream()
+                .filter(e -> e.getKey().matcher(template.getPath()).find())
+                .map(Map.Entry::getValue)
+                .flatMap(Set::stream)
+                .collect(Collectors.toSet());
+
         Set<TemplatePostProcessor> processors = postProcessors.get(templateKey);
-        if (processors == null) {
+        if (processors == null && regexProcessors.isEmpty()) {
             return template;
         }
 
@@ -96,7 +109,14 @@ public class GcnTemplateRenderer extends DefaultTemplateRenderer {
         template.write(out);
 
         String rendered = out.toString(UTF_8);
-        for (TemplatePostProcessor processor : processors) {
+
+        if (processors != null) {
+            for (TemplatePostProcessor processor : processors) {
+                rendered = processor.process(rendered);
+            }
+        }
+
+        for (TemplatePostProcessor processor : regexProcessors) {
             rendered = processor.process(rendered);
         }
 

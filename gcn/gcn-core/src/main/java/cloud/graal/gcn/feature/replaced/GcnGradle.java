@@ -16,14 +16,17 @@
 package cloud.graal.gcn.feature.replaced;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.buildtool.GcnGradleBuild;
+import cloud.graal.gcn.feature.create.GcnGradleBuildCreator;
+import cloud.graal.gcn.feature.create.GcnRepository;
 import cloud.graal.gcn.feature.replaced.template.LibBuildGradle;
 import cloud.graal.gcn.feature.replaced.template.LibMicronautGradle;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.gradle.GradleBuild;
-import io.micronaut.starter.build.gradle.GradleBuildCreator;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
 import io.micronaut.starter.feature.build.KotlinBuildPlugins;
@@ -67,7 +70,7 @@ public class GcnGradle extends Gradle {
      * @param kotlinBuildPlugins   KotlinBuildPlugins feature
      * @param coordinateResolver   CoordinateResolver bean
      */
-    public GcnGradle(GradleBuildCreator gradleBuildCreator,
+    public GcnGradle(GcnGradleBuildCreator gradleBuildCreator,
                      MicronautBuildPlugin micronautBuildPlugin,
                      KotlinBuildPlugins kotlinBuildPlugins,
                      CoordinateResolver coordinateResolver) {
@@ -93,15 +96,18 @@ public class GcnGradle extends Gradle {
     @Override
     protected GradleBuild createBuild(GeneratorContext generatorContext) {
 
+        List<Repository> repositories = micronautRepositories();
+        repositories.add(0, new GcnRepository());
+
         if (((GcnGeneratorContext) generatorContext).isPlatformIndependent()) {
-            return super.createBuild(generatorContext);
+            return dependencyResolver.create(generatorContext, repositories, Gradle.DEFAULT_USER_VERSION_CATALOGUE);
         }
 
-        GradleBuild original = super.createBuild(generatorContext);
+        GradleBuild original = dependencyResolver.create(generatorContext, repositories, Gradle.DEFAULT_USER_VERSION_CATALOGUE);
 
-        List<GradleRepository> repositories = GradleRepository.listOf(
+        List<GradleRepository> gradleRepositories = GradleRepository.listOf(
                 generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY),
-                micronautRepositories());
+                repositories);
 
         List<GradlePlugin> plugins = new ArrayList<>();
 
@@ -123,8 +129,8 @@ public class GcnGradle extends Gradle {
             plugins.add(p);
         }
 
-        return new GradleBuild(original.getDsl(),
-                original.getDependencies(), plugins, repositories);
+        return new GcnGradleBuild(original.getDsl(),
+                original.getDependencies(), plugins, gradleRepositories);
     }
 
     // TODO this override is here to upgrade Gradle to v7.6 to add support for JDK 19;

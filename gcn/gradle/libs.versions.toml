@@ -15,9 +15,11 @@
 #
 
 [versions]
+bouncycastle = '1.70'
 docker = '3.2.13'
 groovy = '3.0.13' # TODO keep in sync when changing Micronaut version
-jansi = '1.18'
+jansi = '2.4.0'
+jline = '3.23.0'
 micronaut-plugins = '3.6.0' # TODO keep in sync when changing Micronaut version
 nohttp = '0.0.10'
 reflections = '0.10.2'
@@ -28,11 +30,14 @@ spotless = '6.10.0'
 test-logger = '3.2.0'
 
 [libraries]
+bouncycastle-bcprov = { module = 'org.bouncycastle:bcprov-jdk15on', version.ref = 'bouncycastle' }
+bouncycastle-bcpkix = { module = 'org.bouncycastle:bcpkix-jdk15on', version.ref = 'bouncycastle' }
 docker = { module = 'com.github.docker-java:docker-java-core', version.ref = 'docker' }
 docker-transport = { module = 'com.github.docker-java:docker-java-transport-zerodep', version.ref = 'docker' }
 groovy-ant = { module = 'org.codehaus.groovy:groovy-ant', version.ref = 'groovy' }
 groovy-xml = { module = 'org.codehaus.groovy:groovy-xml', version.ref = 'groovy' }
 jansi = { module = 'org.fusesource.jansi:jansi', version.ref = 'jansi' }
+jline = { module = 'org.jline:jline', version.ref = 'jline' }
 jul-slf4j = { module = 'org.slf4j:jul-to-slf4j', version.ref = 'slf4j' }
 nohttp = { module = 'io.spring.nohttp:nohttp-gradle', version.ref = 'nohttp' }
 reflections = { module = 'org.reflections:reflections', version.ref = 'reflections' }

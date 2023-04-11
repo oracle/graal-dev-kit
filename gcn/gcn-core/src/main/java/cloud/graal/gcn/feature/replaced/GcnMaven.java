@@ -16,13 +16,13 @@
 package cloud.graal.gcn.feature.replaced;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.create.GcnMavenBuildCreator;
 import cloud.graal.gcn.feature.replaced.template.LibPom;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.Property;
 import io.micronaut.starter.build.maven.MavenBuild;
-import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.feature.build.maven.Maven;
 import jakarta.inject.Singleton;
 
@@ -44,7 +44,7 @@ public class GcnMaven extends Maven {
     /**
      * @param mavenBuildCreator MavenBuildCreator bean
      */
-    public GcnMaven(MavenBuildCreator mavenBuildCreator) {
+    public GcnMaven(GcnMavenBuildCreator mavenBuildCreator) {
         super(mavenBuildCreator);
     }
 

@@ -5,43 +5,40 @@
 package @(project.getPackageName());
 
 }
-import com.sendgrid.Request;
-import com.sendgrid.Response;
-import io.micronaut.email.AsyncEmailSender;
 import io.micronaut.email.Email;
+import io.micronaut.email.EmailException;
+import io.micronaut.email.EmailSender;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.annotation.Body;
 import io.micronaut.http.annotation.Controller;
 import io.micronaut.http.annotation.Post;
-import org.reactivestreams.Publisher;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import reactor.core.publisher.Mono;
+import io.micronaut.scheduling.TaskExecutors;
+import io.micronaut.scheduling.annotation.ExecuteOn;
 
 import static io.micronaut.email.BodyType.HTML;
 
-@@Controller("/mail")
-public class MailController {
+@@ExecuteOn(TaskExecutors.IO)
+@@Controller("/email")
+public class EmailController {
 
-    private static final Logger LOG = LoggerFactory.getLogger(MailController.class);
+    private final EmailSender<?, ?> emailSender;
 
-    private final AsyncEmailSender<Request, Response> emailSender;
-
-    public MailController(AsyncEmailSender<Request, Response> emailSender) {
+    EmailController(EmailSender<?, ?> emailSender) {
         this.emailSender = emailSender;
     }
 
     @@Post("/send")
-    public Publisher<HttpResponse<?>> send(@@Body("to") String to) {
-        return Mono.from(emailSender.sendAsync(Email.builder()
-                        .to(to)
-                        .subject("Sending email with Twilio Sendgrid is Fun")
-                        .body("and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>", HTML)))
-                .doOnNext(rsp -> {
-                    LOG.info("response status {}\nresponse body {}\nresponse headers {}",
-                            rsp.getStatusCode(), rsp.getBody(), rsp.getHeaders());
-                }).map(rsp -> rsp.getStatusCode() >= 400 ?
-                        HttpResponse.unprocessableEntity() :
-                        HttpResponse.accepted()); //
+    public HttpResponse<?> send(@@Body("to") String to) {
+
+        try {
+            emailSender.send(Email.builder()
+                    .to(to)
+                    .subject("Sending email with JavaMail is Fun")
+                    .body("and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>", HTML));
+        } catch (EmailException ignored) {
+            return HttpResponse.unprocessableEntity();
+        }
+
+        return HttpResponse.accepted();
     }
 }

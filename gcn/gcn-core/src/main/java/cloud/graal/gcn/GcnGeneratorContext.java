@@ -71,6 +71,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
@@ -125,6 +126,7 @@ public class GcnGeneratorContext extends GeneratorContext {
     private final Map<GcnCloud, Map<String, BootstrapConfiguration>> cloudBootstrapEnvConfigurations = new HashMap<>(GcnCloud.supportedValues().length);
     private final Map<GcnCloud, Set<BuildPlugin>> buildPlugins = new HashMap<>();
     private final Map<String, Set<TemplatePostProcessor>> postProcessors = new HashMap<>();
+    private final Map<Pattern, Set<TemplatePostProcessor>> regexPostProcessors = new HashMap<>();
     private final Set<String> presentTemplatePaths = new HashSet<>();
 
     private final CoordinateResolver coordinateResolver;
@@ -462,11 +464,30 @@ public class GcnGeneratorContext extends GeneratorContext {
     }
 
     /**
+     * Add a Regex template post-processor.
+     *
+     * @param templatePattern the template path pattern
+     * @param postPocessor    the processor
+     */
+    public void addPostProcessor(@NonNull Pattern templatePattern,
+                                 @NonNull TemplatePostProcessor postPocessor) {
+        regexPostProcessors.computeIfAbsent(templatePattern, k -> new HashSet<>()).add(postPocessor);
+    }
+
+    /**
      * @return template post-processors grouped by template key
      */
     @NonNull
     public Map<String, Set<TemplatePostProcessor>> getPostProcessors() {
         return Collections.unmodifiableMap(postProcessors);
+    }
+
+    /**
+     * @return regex template post-processors grouped by template key
+     */
+    @NonNull
+    public Map<Pattern, Set<TemplatePostProcessor>> getRegexPostProcessors() {
+        return Collections.unmodifiableMap(regexPostProcessors);
     }
 
     @Override
@@ -674,7 +695,7 @@ public class GcnGeneratorContext extends GeneratorContext {
      * Therefore, all added templates are stored in a set and a template is not added if
      * one exists with the same path already.
      *
-     * @param name the name of the template
+     * @param name     the name of the template
      * @param template template
      */
     private void addTemplateInternal(String name, Template template) {
@@ -927,10 +948,19 @@ public class GcnGeneratorContext extends GeneratorContext {
             if (gav == null) {
                 throw new IllegalStateException("Unexpected Gradle build plugin or version mismatch for '" + key + "'");
             }
+            gav = updateVersion(gav);
             gavs.add(gav);
         }
 
         return gavs;
+    }
+
+    // TODO remove this once we upgrade to a version of Micronaut that uses these plugin versions or higher
+    private String updateVersion(String gav) {
+        if (gav.startsWith("io.micronaut.gradle:") && gav.endsWith(":3.7.2")) {
+            gav = gav.replace("3.7.2", "3.7.7");
+        }
+        return gav;
     }
 
     @Override

@@ -81,6 +81,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
 
         pom = fixParent(pom);
         pom = fixVersion(pom);
+        pom = fixTestResourcesVersion(pom);
 
         if (libModule) {
             pom = fixArtifactId(pom);
@@ -94,7 +95,8 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         return pom;
     }
 
-    private String fixParent(String pom) {
+    @NonNull
+    private String fixParent(@NonNull String pom) {
         int start = pom.indexOf(PARENT_START);
         int end = pom.indexOf(PARENT_END, start) + PARENT_END.length();
 
@@ -109,11 +111,13 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         return top + parent + bottom;
     }
 
-    private String fixVersion(String pom) {
+    @NonNull
+    private String fixVersion(@NonNull String pom) {
         return pom.replaceFirst("<version>0.1</version>", "<version>1.0-SNAPSHOT</version>");
     }
 
-    private String fixArtifactId(String pom) {
+    @NonNull
+    private String fixArtifactId(@NonNull String pom) {
         int start = pom.indexOf(ARTIFACT_ID_START);
         int end = pom.indexOf(ARTIFACT_ID_END, start) + ARTIFACT_ID_END.length();
 
@@ -126,7 +130,8 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         return top + artifactId + bottom;
     }
 
-    private String fixProcessingModule(String pom) {
+    @NonNull
+    private String fixProcessingModule(@NonNull String pom) {
 
         if (!pom.contains(PROCESSING_MODULE_START)) {
             return pom;
@@ -144,7 +149,8 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         return top + LIB_MODULE + bottom;
     }
 
-    private String addDefaultDockerImageName(String pom) {
+    @NonNull
+    private String addDefaultDockerImageName(@NonNull String pom) {
         if (!pom.contains(PLUGINS_START)) {
             return pom;
         }
@@ -159,6 +165,17 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
                 "          </to>\n" +
                 "        </configuration>\n" +
                 "      </plugin>\n");
+        return pom;
+    }
+
+    // TODO remove this once we upgrade to a version of Micronaut that uses this plugin version or higher
+    @NonNull
+    private String fixTestResourcesVersion(@NonNull String pom) {
+        if (!pom.contains("<micronaut.test.resources.version>")) {
+            String enabledElement = "<micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>";
+            pom = pom.replace(enabledElement, enabledElement + "\n    " +
+                    "<micronaut.test.resources.version>1.2.5</micronaut.test.resources.version>");
+        }
         return pom;
     }
 
