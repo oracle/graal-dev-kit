@@ -8,6 +8,7 @@ package @(project.getPackageName());
 import @(rootPackage)domain.Genre;
 import @(rootPackage)repository.GenreRepository;
 import io.micronaut.core.type.Argument;
+import io.micronaut.context.env.Environment;
 import io.micronaut.http.HttpRequest;
 import io.micronaut.http.HttpResponse;
 import io.micronaut.http.client.HttpClient;

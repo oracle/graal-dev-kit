@@ -19,6 +19,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.feature.DefaultFeature;
 import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.options.Options;
@@ -34,16 +35,23 @@ import java.util.Set;
 @Singleton
 public class GcnBom implements DefaultFeature {
 
-    private static final Dependency.Builder DEPENDENCY_BUILDER = Dependency.builder()
+    private static final Dependency BOM = Dependency.builder()
             .groupId("cloud.graal.gcn")
             .artifactId("gcn-bom")
             .version("1.0")
-            .pom();
-    private static final Dependency COMPILE_DEPENDENCY = DEPENDENCY_BUILDER.compile().build();
+            .pom()
+            .compile()
+            .build();
+
+    private static final GradlePlugin BOM_PLUGIN = GradlePlugin.builder().id("cloud.graal.gcn.gcn-bom").build();
 
     @Override
     public void apply(GeneratorContext generatorContext) {
-        generatorContext.addDependency(COMPILE_DEPENDENCY);
+        generatorContext.addDependency(BOM);
+
+        if (generatorContext.getBuildTool().isGradle()) {
+            generatorContext.addBuildPlugin(BOM_PLUGIN);
+        }
     }
 
     @NonNull

@@ -1,0 +1,87 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.spock.annotation.MicronautTest
+import jakarta.inject.Inject
+import spock.lang.Specification
+
+import static io.micronaut.http.HttpStatus.CREATED
+
+@@MicronautTest
+class StoreControllerSpec extends Specification {
+
+    @@Inject
+    @@Client("/store")
+    HttpClient client
+
+    void 'test inventory item'() {
+        given:
+        def request = HttpRequest.GET('/inventory/laptop')
+
+        when:
+        Map inventory = client.toBlocking().retrieve(request, Map)
+
+        then:
+        inventory
+        inventory.item == 'laptop'
+        inventory.store == 4
+        inventory.warehouse
+    }
+
+    void 'test inventory item not found'() {
+        when:
+        Map inventory = client.toBlocking().retrieve("/inventory/chair", Map)
+
+        then:
+        inventory
+        inventory.item == 'chair'
+        inventory.note == 'Not available at store'
+    }
+
+    void 'test inventory all'() {
+        given:
+        def request = HttpRequest.GET('/inventory')
+
+        when:
+        Map inventory = client.toBlocking().retrieve(request, Argument.listOf(Map))
+
+        then:
+        inventory
+        inventory.size() == 3
+
+        when:
+        def names = inventory.collect { it.'item' }
+
+        then:
+        names.containsAll(['desktop', 'monitor', 'laptop'])
+    }
+
+    void 'test order'() {
+        given:
+        def item = [item: 'desktop', count: 8]
+        def request = HttpRequest.POST('/order', item)
+
+        when:
+        def response = client.toBlocking().exchange(request)
+
+        then:
+        response.status == CREATED
+
+        when:
+        Map inventory = client.toBlocking().retrieve('/inventory/desktop', Map)
+
+        then:
+        inventory
+        inventory.item == 'desktop'
+        inventory.store == 10
+        !inventory.warehouse
+    }
+}

@@ -50,6 +50,11 @@ public final class GcnUtils {
      */
     public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_17.majorVersion());
 
+    /**
+     * The version suffix appended to the Micronaut version in the BOM.
+     */
+    public static final String BOM_VERSION_SUFFIX = "-oracle-00001";
+
     private GcnUtils() {
     }
 

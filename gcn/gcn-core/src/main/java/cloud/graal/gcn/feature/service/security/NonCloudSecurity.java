@@ -16,19 +16,12 @@
 package cloud.graal.gcn.feature.service.security;
 
 import cloud.graal.gcn.GcnGeneratorContext;
-import cloud.graal.gcn.feature.GcnFeatureContext;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerGroovy;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerJava;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerKotlin;
-import cloud.graal.gcn.feature.service.security.template.AuthHtml;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.security.SecurityJWT;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
 import io.micronaut.starter.feature.view.Thymeleaf;
-import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
@@ -42,10 +35,6 @@ import static io.micronaut.starter.template.Template.ROOT;
 @Singleton
 public class NonCloudSecurity extends AbstractSecurityFeature {
 
-    private final SecurityOAuth2 securityOAuth2;
-    private final SecurityJWT securityJWT;
-    private final Thymeleaf thymeleaf;
-
     /**
      * @param securityOAuth2 SecurityOAuth2 feature
      * @param securityJWT    SecurityJWT feature
@@ -54,20 +43,7 @@ public class NonCloudSecurity extends AbstractSecurityFeature {
     public NonCloudSecurity(SecurityOAuth2 securityOAuth2,
                             SecurityJWT securityJWT,
                             Thymeleaf thymeleaf) {
-        this.securityOAuth2 = securityOAuth2;
-        this.securityJWT = securityJWT;
-        this.thymeleaf = thymeleaf;
-    }
-
-    @Override
-    public void processSelectedFeatures(GcnFeatureContext featureContext) {
-
-        featureContext.addFeature(securityOAuth2, SecurityOAuth2.class);
-        featureContext.addFeature(securityJWT, SecurityJWT.class);
-
-        if (featureContext.generateExampleCode()) {
-            featureContext.addFeature(thymeleaf, Thymeleaf.class);
-        }
+        super(securityOAuth2, securityJWT, thymeleaf);
     }
 
     @Override
@@ -94,21 +70,21 @@ public class NonCloudSecurity extends AbstractSecurityFeature {
         config.addNested("micronaut.security.oauth2.clients.micronaut.openid.issuer", "${OAUTH_ISSUER:zzz}");
         config.addNested("micronaut.security.endpoints.logout.enabled", true);
         config.addNested("micronaut.security.endpoints.logout.get-allowed", true);
+    }
 
-        if (generatorContext.generateExampleCode()) {
+    @Override
+    protected String getAuthControllerNameAttr() {
+        return "sub";
+    }
 
-            Project project = generatorContext.getProject();
+    @Override
+    protected String getAuthHtmlTitle() {
+        return "OpenID";
+    }
 
-            generatorContext.addTemplate(getModuleName(), "AuthController",
-                    generatorContext.getSourcePath("/{packagePath}/AuthController"),
-                    AuthControllerJava.template(project, "sub"),
-                    AuthControllerKotlin.template(project, "sub"),
-                    AuthControllerGroovy.template(project, "sub"));
-
-            generatorContext.addTemplate("auth.html",
-                    new RockerTemplate(getModuleName(), "src/main/resources/views/auth.html",
-                            AuthHtml.template("OpenID", "micronaut")));
-        }
+    @Override
+    protected String getAuthHtmlLogin() {
+        return "micronaut";
     }
 
     @Override

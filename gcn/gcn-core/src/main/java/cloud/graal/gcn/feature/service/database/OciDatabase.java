@@ -60,4 +60,9 @@ public class OciDatabase extends AbstractDatabaseFeature {
     public String getName() {
         return "gcn-oci-database";
     }
+
+    @Override
+    protected String genreControllerTestEnv() {
+        return "(environments = Environment." + getCloud().getEnvironmentConstantName() + ')';
+    }
 }

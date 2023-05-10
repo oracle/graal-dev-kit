@@ -1184,7 +1184,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 
 == NOTICE file
-=== IMPORTANT : see note in Licensed Technology Notes field about this notice.
 
 This project includes one or more files from OpenJDK, licensed under GPL v2 with
 Classpath Exception.
@@ -3600,4 +3599,3 @@ module.  An independent module is a module which is not derived from or
 based on this library.  If you modify this library, you may extend this
 exception to your version of the library, but you are not obligated to
 do so.  If you do not wish to do so, delete this exception statement
-

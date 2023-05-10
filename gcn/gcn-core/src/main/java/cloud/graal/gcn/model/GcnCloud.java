@@ -120,8 +120,8 @@ public enum GcnCloud {
      * @return the subset of GcnCloud enum values that are currently supported
      */
     public static GcnCloud[] supportedValues() {
-//        return SUPPORTED; // TODO only supporting AWS and OCI for now
-        return new GcnCloud[]{GcnCloud.AWS, GcnCloud.OCI};
+//        return SUPPORTED; // TODO only supporting AWS, OCI, and GCP for now
+        return new GcnCloud[]{GcnCloud.AWS, GcnCloud.OCI, GcnCloud.GCP};
     }
 
     /**

@@ -78,6 +78,23 @@ graalvmNative {
     }
 }
 
-shadowJar {
+startScripts {
+    applicationName = 'gcn'
+}
+
+tasks.named('shadowJar') {
     mergeServiceFiles()
+}
+
+tasks.named('shadowDistZip') {
+    enabled = false
+}
+tasks.named('shadowDistTar') {
+    enabled = false
+}
+
+tasks.register('copyShadowJar', Sync) {
+    from shadowJar.outputs
+    into "${project.rootProject.buildDir}/libs"
+    rename { String fileName -> 'cli.jar' }
 }

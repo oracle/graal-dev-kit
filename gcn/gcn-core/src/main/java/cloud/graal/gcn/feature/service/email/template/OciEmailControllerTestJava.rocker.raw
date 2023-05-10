@@ -65,13 +65,13 @@ class EmailControllerTest {
         assertEquals(1, emails.size());
         Email email = emails.get(0);
 
-        assertEquals("test@@test.com", email.getFrom().getEmail());
+        assertEquals("xyz@@gcn.example", email.getFrom().getEmail());
 
         assertNull(email.getReplyTo());
 
         assertNotNull(email.getTo());
         assertEquals(1, email.getTo().size());
-        assertEquals("basic@@domain.com", email.getTo().iterator().next().getEmail());
+        assertEquals("basic@@gcn.example", email.getTo().iterator().next().getEmail());
         assertNull(email.getTo().iterator().next().getName());
 
         assertNull(email.getCc());
@@ -97,13 +97,13 @@ class EmailControllerTest {
         assertEquals(1, emails.size());
         Email email = emails.get(0);
 
-        assertEquals("test@@test.com", email.getFrom().getEmail());
+        assertEquals("xyz@@gcn.example", email.getFrom().getEmail());
 
         assertNull(email.getReplyTo());
 
         assertNotNull(email.getTo());
         assertEquals(1, email.getTo().size());
-        assertEquals("template@@domain.com", email.getTo().iterator().next().getEmail());
+        assertEquals("template@@gcn.example", email.getTo().iterator().next().getEmail());
         assertNull(email.getTo().iterator().next().getName());
 
         assertNull(email.getCc());
@@ -134,13 +134,13 @@ class EmailControllerTest {
         assertEquals(1, emails.size());
         Email email = emails.get(0);
 
-        assertEquals("test@@test.com", email.getFrom().getEmail());
+        assertEquals("xyz@@gcn.example", email.getFrom().getEmail());
 
         assertNull(email.getReplyTo());
 
         assertNotNull(email.getTo());
         assertEquals(1, email.getTo().size());
-        assertEquals("attachment@@domain.com", email.getTo().iterator().next().getEmail());
+        assertEquals("attachment@@gcn.example", email.getTo().iterator().next().getEmail());
         assertNull(email.getTo().iterator().next().getName());
 
         assertNull(email.getCc());

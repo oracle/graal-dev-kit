@@ -1,5 +1,5 @@
 @import io.micronaut.starter.application.Project
-@args (Project project, String rootPackage)
+@args (Project project, String rootPackage, String cloudEnv)
 
 @if (project.getPackageName() != null) {
 package @(project.getPackageName())
@@ -22,7 +22,7 @@ import static io.micronaut.http.HttpStatus.CREATED
 import static io.micronaut.http.HttpStatus.NOT_FOUND
 import static io.micronaut.http.HttpStatus.NO_CONTENT
 
-@@MicronautTest
+@@MicronautTest@cloudEnv
 class GenreControllerSpec extends Specification {
 
     @@Inject

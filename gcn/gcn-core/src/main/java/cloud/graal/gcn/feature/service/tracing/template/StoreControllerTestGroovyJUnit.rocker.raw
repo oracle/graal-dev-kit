@@ -1,0 +1,79 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.core.type.Argument
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import org.junit.jupiter.api.Test
+
+import static io.micronaut.http.HttpStatus.CREATED
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+import static org.junit.jupiter.api.Assertions.assertNull
+import static org.junit.jupiter.api.Assertions.assertTrue
+
+@@MicronautTest
+class StoreControllerTest {
+
+    @@Inject
+    @@Client("/store")
+    HttpClient client
+
+    @@Test
+    void testInventoryItem() {
+        HttpRequest<String> request = HttpRequest.GET("/inventory/laptop")
+        Map<String, ?> inventory = client.toBlocking().retrieve(request, Map)
+
+        assertNotNull(inventory)
+        assertEquals("laptop", inventory.item)
+        assertEquals(4, inventory.store)
+        assertNotNull(inventory.warehouse)
+    }
+
+    @@Test
+    void testInventoryItemNotFound() {
+
+        Map inventory = client.toBlocking().retrieve("/inventory/chair", Map)
+
+        assertNotNull(inventory)
+        assertEquals("chair", inventory.item)
+        assertEquals("Not available at store", inventory.note)
+    }
+
+    @@Test
+    void testInventoryAll() {
+        HttpRequest request = HttpRequest.GET("/inventory")
+        List<Map> inventory = client.toBlocking().retrieve(request, Argument.listOf(Map))
+
+        assertNotNull(inventory)
+        assertEquals(3, inventory.size())
+
+        List<String> names = inventory*.item
+        assertTrue(names.containsAll(['desktop', 'monitor', 'laptop']))
+    }
+
+    @@Test
+    void testOrder() {
+        Map<String, ?> item = [item: 'desktop', count: 8]
+        HttpRequest request = HttpRequest.POST("/order", item)
+        HttpResponse response = client.toBlocking().exchange(request)
+
+        assertEquals(CREATED, response.status)
+
+        Map<String, ?> inventory = client.toBlocking().retrieve("/inventory/desktop", Map)
+
+        assertNotNull(inventory)
+        assertEquals("desktop", inventory.item)
+        assertEquals(10, inventory.store)
+        assertNull(inventory.warehouse)
+    }
+
+}

@@ -18,6 +18,10 @@ package cloud.graal.gcn.feature.service.security;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.config.ApplicationConfiguration;
+import io.micronaut.starter.feature.security.SecurityJWT;
+import io.micronaut.starter.feature.security.SecurityOAuth2;
+import io.micronaut.starter.feature.view.Thymeleaf;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -30,9 +34,41 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 @Singleton
 public class GcpSecurity extends AbstractSecurityFeature {
 
+    /**
+     * @param securityOAuth2 SecurityOAuth2 feature
+     * @param securityJWT    SecurityJWT feature
+     * @param thymeleaf      Thymeleaf feature
+     */
+    public GcpSecurity(SecurityJWT securityJWT,
+                       SecurityOAuth2 securityOAuth2,
+                       Thymeleaf thymeleaf) {
+        super(securityOAuth2, securityJWT, thymeleaf);
+    }
+
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO
+
+        //micronaut:
+        //  security:
+        //    authentication: idtoken
+        //    oauth2:
+        //      clients:
+        //        gcn:
+        //          client-id: ${OAUTH_CLIENT_ID:xxx}
+        //          client-secret: ${OAUTH_CLIENT_SECRET:yyy}
+        //          openid:
+        //            issuer: 'https://accounts.google.com'
+        //    endpoints:
+        //      logout:
+        //        enabled: true
+        //        get-allowed: true
+        ApplicationConfiguration config = generatorContext.getConfiguration();
+        config.addNested("micronaut.security.authentication", "idtoken");
+        config.addNested("micronaut.security.oauth2.clients.gcn.client-id", "${OAUTH_CLIENT_ID:xxx}");
+        config.addNested("micronaut.security.oauth2.clients.gcn.client-secret", "${OAUTH_CLIENT_SECRET:yyy}");
+        config.addNested("micronaut.security.oauth2.clients.gcn.openid.issuer", "https://accounts.google.com");
+        config.addNested("micronaut.security.endpoints.logout.enabled", true);
+        config.addNested("micronaut.security.endpoints.logout.get-allowed", true);
     }
 
     @NonNull

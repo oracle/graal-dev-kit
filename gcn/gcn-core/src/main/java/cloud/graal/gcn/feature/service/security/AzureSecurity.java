@@ -18,6 +18,9 @@ package cloud.graal.gcn.feature.service.security;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.security.SecurityJWT;
+import io.micronaut.starter.feature.security.SecurityOAuth2;
+import io.micronaut.starter.feature.view.Thymeleaf;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AZURE;
@@ -29,6 +32,17 @@ import static cloud.graal.gcn.model.GcnCloud.AZURE;
  */
 @Singleton
 public class AzureSecurity extends AbstractSecurityFeature {
+
+    /**
+     * @param securityOAuth2 SecurityOAuth2 feature
+     * @param securityJWT    SecurityJWT feature
+     * @param thymeleaf      Thymeleaf feature
+     */
+    public AzureSecurity(SecurityOAuth2 securityOAuth2,
+                         SecurityJWT securityJWT,
+                         Thymeleaf thymeleaf) {
+        super(securityOAuth2, securityJWT, thymeleaf);
+    }
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {

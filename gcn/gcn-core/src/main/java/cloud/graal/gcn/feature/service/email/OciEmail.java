@@ -17,18 +17,18 @@ package cloud.graal.gcn.feature.service.email;
 
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
+import cloud.graal.gcn.feature.service.email.template.EmailHtml;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerGroovy;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerJava;
+import cloud.graal.gcn.feature.service.email.template.OciEmailControllerKotlin;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerSpec;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestGroovyJUnit;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestJava;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestKotest;
 import cloud.graal.gcn.feature.service.email.template.OciEmailControllerTestKotlinJUnit;
-import cloud.graal.gcn.feature.service.email.template.OciEmailControllerGroovy;
-import cloud.graal.gcn.feature.service.email.template.OciEmailControllerJava;
-import cloud.graal.gcn.feature.service.email.template.OciEmailControllerKotlin;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderGroovy;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderJava;
 import cloud.graal.gcn.feature.service.email.template.OciSessionProviderKotlin;
-import cloud.graal.gcn.feature.service.email.template.EmailHtml;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
@@ -114,7 +114,7 @@ public class OciEmail extends AbstractEmailFeature {
 //            micronaut:
 //              email:
 //                from:
-//                  email: test@test.com
+//                  email: xyz@gcn.example
 //                  name: Email Test
 //            smtp:
 //              password: example-password
@@ -125,7 +125,7 @@ public class OciEmail extends AbstractEmailFeature {
 //                  smtp:
 //                   host: smtp.com
             generatorContext.getTestConfiguration().addNested(Map.of(
-                    "micronaut.email.from.email", "test@test.com",
+                    "micronaut.email.from.email", "xyz@gcn.example",
                     "micronaut.email.from.name", "Email Test",
                     "smtp.password", "example-password",
                     "smtp.user", "gcndemo",

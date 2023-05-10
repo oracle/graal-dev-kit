@@ -1,5 +1,13 @@
 @import cloud.graal.gcn.GcnGeneratorContext
-@args (GcnGeneratorContext gc)
+@args (GcnGeneratorContext gc, boolean kotlin)
+plugins {
+@if (kotlin) {
+    `kotlin-dsl`
+} else {
+    id 'groovy-gradle-plugin'
+}
+}
+
 repositories {
     mavenCentral()
     gradlePluginPortal()

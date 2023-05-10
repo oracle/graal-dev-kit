@@ -35,6 +35,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.aws.AwsV2Sdk;
 import io.micronaut.starter.feature.awssecretsmanager.AwsSecretsManager;
+import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
 import jakarta.inject.Singleton;
 
@@ -49,8 +50,7 @@ import static cloud.graal.gcn.model.GcnCloud.AWS;
  * @since 1.0.0
  */
 @Singleton
-public class
-AwsSecretManagement extends AbstractSecretManagementFeature {
+public class AwsSecretManagement extends AbstractSecretManagementFeature {
 
     private final AwsSecretsManager awsSecretsManager;
     private final AwsV2Sdk awsV2Sdk;
@@ -77,8 +77,8 @@ AwsSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
 
+    protected void doApply(GcnGeneratorContext generatorContext) {
         if (generatorContext.generateExampleCode()) {
 
             Project project = generatorContext.getProject();
@@ -111,6 +111,13 @@ AwsSecretManagement extends AbstractSecretManagementFeature {
                     SdkHttpClientTestGroovyJUnit.template(project),
                     SdkHttpClientTestKotlinJUnit.template(project),
                     SdkHttpClientTestKotest.template(project));
+        }
+
+        for (ApplicationConfiguration config: List.of(generatorContext.getDevConfiguration(), generatorContext.getConfiguration())) {
+            config.remove("micronaut.security.oauth2.clients.default.client-id");
+            config.remove("micronaut.security.oauth2.clients.default.client-secret");
+            config.addNested("micronaut.security.oauth2.clients.demo-oauth.client-id", "${OAUTH_CLIENT_ID:XXX}");
+            config.addNested("micronaut.security.oauth2.clients.demo-oauth.client-secret", "${OAUTH_CLIENT_SECRET:YYY}");
         }
     }
 

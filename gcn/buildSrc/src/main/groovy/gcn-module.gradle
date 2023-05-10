@@ -29,7 +29,7 @@ spotless {
     java {
         licenseHeaderFile rootProject.file('config/spotless.license.java')
         target 'src/main/java/**'
-        targetExclude '**/*.rocker.raw'
+        targetExclude '**/*.rocker.raw', '**/GcnBaseCommand.java', '**/GcnStarter.java'
     }
     format 'javaMisc', {
         target 'src/main/**/package-info.java', 'src/main/**/module-info.java'

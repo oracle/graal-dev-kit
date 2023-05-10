@@ -1,0 +1,45 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.http.HttpStatus.CREATED
+import io.micronaut.http.annotation.Controller
+import io.micronaut.http.annotation.Get
+import io.micronaut.http.annotation.Post
+import io.micronaut.http.annotation.Status
+import io.micronaut.scheduling.TaskExecutors
+import io.micronaut.scheduling.annotation.ExecuteOn
+import io.micronaut.tracing.annotation.ContinueSpan
+import io.micronaut.tracing.annotation.NewSpan
+import io.micronaut.tracing.annotation.SpanTag
+
+@@ExecuteOn(TaskExecutors.IO)
+@@Controller("/store")
+class StoreController(private val inventory: InventoryService) {
+
+    @@Post("/order")
+    @@Status(CREATED)
+    @@NewSpan("store.order") // <1>
+    fun order(@@SpanTag("order.item") item: String, @@SpanTag count: Int) { // <2>
+        inventory.order(item, count)
+    }
+
+    @@Get("/inventory") // <3>
+    fun getInventory(): List<Map<String, Any>> {
+        return inventory.productNames.map { product: String -> getInventory(product) }
+    }
+
+    @@Get("/inventory/{item}")
+    @@ContinueSpan // <4>
+    fun getInventory(@@SpanTag("item") item: String): Map<String, Any> { // <5>
+        val counts: MutableMap<String, Any> = HashMap(inventory.getStockCounts(item))
+        if (counts.isEmpty()) {
+            counts["note"] = "Not available at store"
+        }
+        counts["item"] = item
+        return counts
+    }
+}

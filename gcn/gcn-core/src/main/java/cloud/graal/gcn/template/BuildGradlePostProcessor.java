@@ -15,6 +15,7 @@
  */
 package cloud.graal.gcn.template;
 
+import cloud.graal.gcn.GcnUtils;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.gradle.GradleDsl;
 
@@ -28,7 +29,7 @@ import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
  * - adds configuration to set the Docker image name to be related to the project, e.g. "demo-oci"
  * - removes versions from plugin declarations (versions are declared in buildSrc/build.gradle)
  *   as a workaround for <a href="https://github.com/gradle/gradle/issues/17559">this Gradle bug</a>
- * - changes "platform" to "enforcedPlatform" for the GCN BOM, since Micronaut Starter doesn't support enforcedPlatform yet
+ * - changes "implementation platform(...)" to "micronautBoms(platform(...))" for the GCN BOM
  *
  * @since 1.0.0
  */
@@ -49,25 +50,26 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
 
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
 
-    private static final String BOM = "cloud.graal.gcn:gcn-bom:";
-    private static final Pattern BOM_PLATFORM = Pattern.compile("platform\\(\"" + BOM);
-    private static final String BOM_ENFORCED_PLATFORM = "enforcedPlatform(\"" + BOM;
+    private static final Pattern BOM_PLATFORM = Pattern.compile(
+      "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.]+\"\\))");
+    private static final String BOM_ENFORCED_PLATFORM = "micronautBoms($1)";
+
+    private static final Pattern RESOLUTION_STRATEGY_REGEX = Pattern.compile(
+      "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
+
+    private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", GcnUtils.BOM_VERSION_SUFFIX);
 
     private final GradleDsl dsl;
     private final boolean forCloudModule;
-    private final boolean platformIndependent;
 
     /**
      * @param dsl the Gradle DSL, only needed when <code>forCloudModule</code> is <code>true</code>
      * @param forCloudModule true if the build.gradle is for a cloud module, not lib or platform-independent
-     * @param platformIndependent true if the build.gradle is for platform-independent
      */
     public BuildGradlePostProcessor(GradleDsl dsl,
-                                    boolean forCloudModule,
-                                    boolean platformIndependent) {
+                                    boolean forCloudModule) {
         this.dsl = dsl;
         this.forCloudModule = forCloudModule;
-        this.platformIndependent = platformIndependent;
     }
 
     @NonNull
@@ -77,12 +79,9 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         if (forCloudModule) {
             buildGradle = configureDockerImageName(buildGradle);
         }
-        if (!platformIndependent) {
-            buildGradle = removePluginVersions(buildGradle);
-        } else {
-            buildGradle = updatePluginVersions(buildGradle);
-        }
+        buildGradle = removePluginVersions(buildGradle);
         buildGradle = makeBomEnforced(buildGradle);
+        buildGradle = updateResolutionStrategyVersions(buildGradle);
         return buildGradle;
     }
 
@@ -105,16 +104,13 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         return VERSION.matcher(buildGradle).replaceAll("");
     }
 
-    // TODO remove this once we upgrade to a version of Micronaut that uses these plugin versions or higher
     @NonNull
-    private String updatePluginVersions(@NonNull String buildGradle) {
-        buildGradle = buildGradle.replace("id(\"io.micronaut.application\") version \"3.7.2\"", "id(\"io.micronaut.application\") version \"3.7.7\"");
-        buildGradle = buildGradle.replace("id(\"io.micronaut.test-resources\") version \"3.7.2\"", "id(\"io.micronaut.test-resources\") version \"3.7.7\"");
-        return buildGradle;
+    private String makeBomEnforced(@NonNull String buildGradle) {
+        return BOM_PLATFORM.matcher(buildGradle).replaceFirst(BOM_ENFORCED_PLATFORM);
     }
 
     @NonNull
-    private String makeBomEnforced(@NonNull String buildGradle) {
-        return BOM_PLATFORM.matcher(buildGradle).replaceAll(BOM_ENFORCED_PLATFORM);
+    private String updateResolutionStrategyVersions(@NonNull String buildGradle) {
+        return RESOLUTION_STRATEGY_REGEX.matcher(buildGradle).replaceAll(RESOLUTION_STRATEGY_REPLACEMENT);
     }
 }

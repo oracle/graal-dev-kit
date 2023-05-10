@@ -40,7 +40,7 @@ public class PlatformIndependent extends AbstractGcnFeature {
 
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(null, false, true));
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(null, false));
         generatorContext.addPostProcessor("loggingConfig", new LogbackXmlPostProcessor());
     }
 
