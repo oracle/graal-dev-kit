@@ -5,3 +5,4 @@
         Hello, <span th:text="${name}"></span>!
     </p>
 </body>
+</html>

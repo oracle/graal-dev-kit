@@ -96,6 +96,11 @@ public class GcnProjectCreator {
             clouds = List.of(NONE);
         }
 
+        if (features.size() == 1 && features.get(0).length() == 0) {
+            // CLI specified "--features=", which sets the value to an empty string
+            features.remove(0);
+        }
+
         if (clouds.size() == 1 && clouds.get(0) == NONE) {
             features = new ArrayList<>(features);
             features.add(PlatformIndependent.NAME);
@@ -107,11 +112,6 @@ public class GcnProjectCreator {
 
         if (test == null) {
             test = lang.getDefaults().getTest();
-        }
-
-        if (features.size() == 1 && features.get(0).length() == 0) {
-            // CLI specified "--features=", which sets the value to an empty string
-            features.remove(0);
         }
 
         Options options = new Options(lang, test, build, jdkVersion(jdkMajorVersion), additionalOptions);

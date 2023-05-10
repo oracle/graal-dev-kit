@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.regex.Pattern;
@@ -85,7 +86,7 @@ public class GcnYamlTemplate extends DefaultTemplate {
      * @param config the initial config
      * @return the config nested
      */
-    @SuppressWarnings({"unchecked", "rawtypes"})
+    @SuppressWarnings("unchecked")
     private Map<String, Object> transform(Map<String, Object> config) {
         Map<String, Object> transformed = new LinkedHashMap<>();
         for (Map.Entry<String, Object> entry : config.entrySet()) {
@@ -99,7 +100,7 @@ public class GcnYamlTemplate extends DefaultTemplate {
                 if (i == keys.length - 1) {
                     Object currentValue = currentNested.get(subKey);
                     if (value instanceof Map && currentValue instanceof Map) {
-                        ((Map) currentValue).putAll((Map) value);
+                        currentNested.put(subKey, mergeMaps((Map<String, Object>) currentValue, (Map<String, Object>) value));
                     } else {
                         currentNested.put(subKey, value);
                     }
@@ -111,6 +112,27 @@ public class GcnYamlTemplate extends DefaultTemplate {
         return transformed;
     }
 
+    @SuppressWarnings("unchecked")
+    private static Map<String, Object> mergeMaps(Map<String, Object> map1, Map<String, Object> map2) {
+        Map<String, Object> mergedMap = new HashMap<>(map1);
+
+        for (String key : map2.keySet()) {
+            if (mergedMap.containsKey(key)) {
+                if (mergedMap.get(key) instanceof Map && map2.get(key) instanceof Map) {
+                    Map<String, Object> nestedMergedMap = mergeMaps((Map<String, Object>) mergedMap.get(key), (Map<String, Object>) map2.get(key));
+                    mergedMap.put(key, nestedMergedMap);
+                } else {
+                    mergedMap.put(key, map2.get(key));
+                }
+            } else {
+                mergedMap.put(key, map2.get(key));
+            }
+        }
+
+        return mergedMap;
+    }
+
+    @SuppressWarnings("unchecked")
     private void render(Object o, StringBuilder yaml, String indent) {
         if (o == null) {
             yaml.append(" ~\n");

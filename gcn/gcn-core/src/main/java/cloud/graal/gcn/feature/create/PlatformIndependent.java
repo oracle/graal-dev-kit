@@ -21,9 +21,11 @@ import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.template.BuildGradlePostProcessor;
 import cloud.graal.gcn.template.LogbackXmlPostProcessor;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.gradle.GradleDsl;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
+import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 
 /**
  * Added to platform-independent (non-cloud) apps.
@@ -40,7 +42,8 @@ public class PlatformIndependent extends AbstractGcnFeature {
 
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(null, false, true));
+        GradleDsl dsl = generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY);
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false));
         generatorContext.addPostProcessor("loggingConfig", new LogbackXmlPostProcessor());
     }
 

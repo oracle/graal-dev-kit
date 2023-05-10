@@ -61,8 +61,12 @@ public final class GcnTestedFeatures {
             "micrometer-cloudwatch",
             // METRICS OCI
             "micrometer-oracle-cloud",
+            // METRICS GCP
+            "micrometer-stackdriver",
             // OBJECTSTORAGE AWS
             "object-storage-aws",
+            // OBJECTSTORAGE GCP
+            "object-storage-gcp",
             // OBJECTSTORAGE OCI
             "object-storage-oracle-cloud",
             // SDK AWS
@@ -71,6 +75,8 @@ public final class GcnTestedFeatures {
             "oracle-cloud-sdk",
             // SECRETMANAGEMENT AWS
             "aws-secrets-manager",
+            // SECRETMANAGEMENT GCP
+            "gcp-secrets-manager",
             // SECRETMANAGEMENT OCI
             "oracle-cloud-vault",
             // STREAMING
@@ -82,6 +88,9 @@ public final class GcnTestedFeatures {
             // TRACING AWS
             "tracing-opentelemetry-exporter-otlp",
             "tracing-opentelemetry-xray",
+            // TRACING GCP
+            "tracing-opentelemetry-exporter-gcp",
+            "tracing-opentelemetry-gcp",
             // TRACING OCI
             "tracing-opentelemetry-zipkin",
             "tracing-opentelemetry-exporter-zipkin"

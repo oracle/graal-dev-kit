@@ -16,8 +16,10 @@
 package cloud.graal.gcn.feature.service.secretmanagement;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.gcp.secretsmanager.GoogleSecretManager;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -30,9 +32,21 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 @Singleton
 public class GcpSecretManagement extends AbstractSecretManagementFeature {
 
+    private final GoogleSecretManager googleSecretManager;
+
+    public GcpSecretManagement(GoogleSecretManager googleSecretManager) {
+        this.googleSecretManager = googleSecretManager;
+    }
+
+    @Override
+    public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        featureContext.addFeature(googleSecretManager, GoogleSecretManager.class);
+    }
+
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO
+        // TODO move this to base class so it's applied for all clouds - will need to update AWS and OCI guides
+        generatorContext.getTestBootstrapConfiguration().addNested("micronaut.config-client.enabled", false);
     }
 
     @NonNull

@@ -19,8 +19,10 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 
 import java.util.Objects;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
 
 /**
@@ -38,6 +40,9 @@ import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
  * in the "-Amicronaut.processing.module" arg for the maven-compiler-plugin
  * plugin, so for com.example.demo, "-Amicronaut.processing.module=demo" will
  * be changed to "-Amicronaut.processing.module=lib"
+ * <li>
+ * Appends the BOM version suffix to Micronaut version in cloud pom.xml files,
+ * e.g., &lt;micronaut.version&gt;3.8.5&lt;/micronaut.version&gt; -> &lt;micronaut.version&gt;3.8.5-oracle-00001&lt;/micronaut.version&gt;
  * </ul>
  *
  * @since 1.0.0
@@ -46,16 +51,18 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
 
     private static final String ARTIFACT_ID_END = "</artifactId>";
     private static final String ARTIFACT_ID_START = "  <artifactId>";
+    private static final String MICRONAUT_VERSION_END = "</micronaut.version>";
+    private static final String MICRONAUT_VERSION_START = "<micronaut.version>";
     private static final String PARENT_END = "  </parent>";
     private static final String PARENT_START = "  <parent>";
+    private static final String PLUGINS_START = "<plugins>\n";
     private static final String PROCESSING_MODULE_END = "</arg>";
     private static final String PROCESSING_MODULE_END_KOTLIN = "</annotationProcessorArg>";
     private static final String PROCESSING_MODULE_START = "micronaut.processing.module=";
 
     private static final Pattern ARTIFACT_ID_PATTERN = Pattern.compile("<artifactId>.+</artifactId>");
+    private static final Pattern MICRONAUT_VERSION_PATTERN = Pattern.compile(MICRONAUT_VERSION_START + "(.+)" + MICRONAUT_VERSION_END);
     private static final Pattern VERSION_PATTERN = Pattern.compile("<version>.+</version>");
-
-    private static final String  PLUGINS_START = "<plugins>\n";
 
     private final String artifactId;
     private final String groupId;
@@ -82,6 +89,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         pom = fixParent(pom);
         pom = fixVersion(pom);
         pom = fixTestResourcesVersion(pom);
+        pom = fixMicronautVersion(pom);
 
         if (libModule) {
             pom = fixArtifactId(pom);
@@ -161,7 +169,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
                 "        <artifactId>jib-maven-plugin</artifactId>\n" +
                 "        <configuration>\n" +
                 "          <to>\n" +
-                "            <image>${project.parent.name}-${project.artifactId}</image>\n" +
+                "            <image>${project.parent.artifactId}-${project.artifactId}</image>\n" +
                 "          </to>\n" +
                 "        </configuration>\n" +
                 "      </plugin>\n");
@@ -176,6 +184,19 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
             pom = pom.replace(enabledElement, enabledElement + "\n    " +
                     "<micronaut.test.resources.version>1.2.5</micronaut.test.resources.version>");
         }
+        return pom;
+    }
+
+    @NonNull
+    private String fixMicronautVersion(@NonNull String pom) {
+
+        if (!libModule && !pom.contains(BOM_VERSION_SUFFIX)) {
+            Matcher m = MICRONAUT_VERSION_PATTERN.matcher(pom);
+            if (m.find() && m.groupCount() == 1) {
+                pom = m.replaceAll(MICRONAUT_VERSION_START + m.group(1) + BOM_VERSION_SUFFIX + MICRONAUT_VERSION_END);
+            }
+        }
+
         return pom;
     }
 

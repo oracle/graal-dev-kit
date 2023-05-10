@@ -16,19 +16,12 @@
 package cloud.graal.gcn.feature.service.security;
 
 import cloud.graal.gcn.GcnGeneratorContext;
-import cloud.graal.gcn.feature.GcnFeatureContext;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerGroovy;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerJava;
-import cloud.graal.gcn.feature.service.security.template.AuthControllerKotlin;
-import cloud.graal.gcn.feature.service.security.template.AuthHtml;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.security.SecurityJWT;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
 import io.micronaut.starter.feature.view.Thymeleaf;
-import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -41,10 +34,6 @@ import static cloud.graal.gcn.model.GcnCloud.AWS;
 @Singleton
 public class AwsSecurity extends AbstractSecurityFeature {
 
-    private final SecurityOAuth2 securityOAuth2;
-    private final SecurityJWT securityJWT;
-    private final Thymeleaf thymeleaf;
-
     /**
      * @param securityOAuth2 SecurityOAuth2 feature
      * @param securityJWT    SecurityJWT feature
@@ -53,20 +42,7 @@ public class AwsSecurity extends AbstractSecurityFeature {
     public AwsSecurity(SecurityOAuth2 securityOAuth2,
                        SecurityJWT securityJWT,
                        Thymeleaf thymeleaf) {
-        this.securityOAuth2 = securityOAuth2;
-        this.securityJWT = securityJWT;
-        this.thymeleaf = thymeleaf;
-    }
-
-    @Override
-    public void processSelectedFeatures(GcnFeatureContext featureContext) {
-
-        featureContext.addFeature(securityOAuth2, SecurityOAuth2.class);
-        featureContext.addFeature(securityJWT, SecurityJWT.class);
-
-        if (featureContext.generateExampleCode()) {
-            featureContext.addFeature(thymeleaf, Thymeleaf.class);
-        }
+        super(securityOAuth2, securityJWT, thymeleaf);
     }
 
     @Override
@@ -90,21 +66,16 @@ public class AwsSecurity extends AbstractSecurityFeature {
         config.addNested("micronaut.security.oauth2.clients.cognito.client-secret", "${OAUTH_CLIENT_SECRET:yyy}");
         config.addNested("micronaut.security.oauth2.clients.cognito.openid.issuer", "https://cognito-idp.${COGNITO_REGION:zzz}.amazonaws.com/${COGNITO_POOL_ID:www}/");
         config.addNested("micronaut.security.endpoints.logout.get-allowed", true);
+    }
 
-        if (generatorContext.generateExampleCode()) {
+    @Override
+    protected String getAuthHtmlTitle() {
+        return "Cognito example";
+    }
 
-            Project project = generatorContext.getProject();
-
-            generatorContext.addTemplate(getModuleName(), "AuthControllerAWS",
-                    generatorContext.getSourcePath("/{packagePath}/AuthController"),
-                    AuthControllerJava.template(project, "email"),
-                    AuthControllerKotlin.template(project, "email"),
-                    AuthControllerGroovy.template(project, "email"));
-
-            generatorContext.addTemplate("auth.html-AWS",
-                    new RockerTemplate(getModuleName(), "src/main/resources/views/auth.html",
-                            AuthHtml.template("Cognito example", "cognito")));
-        }
+    @Override
+    protected String getAuthHtmlLogin() {
+        return "cognito";
     }
 
     @NonNull

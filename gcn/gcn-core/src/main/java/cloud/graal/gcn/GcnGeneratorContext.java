@@ -112,7 +112,7 @@ public class GcnGeneratorContext extends GeneratorContext {
             "org.jetbrains.kotlin.jvm:1.6.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21",
             "org.jetbrains.kotlin.kapt:1.6.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21",
             "org.jetbrains.kotlin.plugin.allopen:1.6.21", "org.jetbrains.kotlin:kotlin-allopen:1.6.21",
-            "com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools:jib-gradle-plugin:2.8.0"
+            "com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0"
     );
 
     private GcnCloud cloud = NONE;
@@ -360,6 +360,14 @@ public class GcnGeneratorContext extends GeneratorContext {
         return cloudBootstrapEnvConfigurations
                 .computeIfAbsent(cloud, gcnCloud -> new HashMap<>())
                 .computeIfAbsent(env, (key) -> defaultConfig);
+    }
+
+    /**
+     * @return bootstrap-test configuration
+     */
+    @NonNull
+    public BootstrapConfiguration getTestBootstrapConfiguration() {
+        return getBootstrapConfiguration(TEST, BootstrapConfiguration.testConfig());
     }
 
     /**

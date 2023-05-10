@@ -1,5 +1,5 @@
 @import io.micronaut.starter.application.Project
-@args (Project project, String rootPackage)
+@args (Project project, String rootPackage, String cloudEnv)
 
 @if (project.getPackageName() != null) {
 package @(project.getPackageName())
@@ -24,7 +24,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals
 import static org.junit.jupiter.api.Assertions.assertNotNull
 import static org.junit.jupiter.api.Assertions.assertThrows
 
-@@MicronautTest
+@@MicronautTest@cloudEnv
 class GenreControllerTest {
 
     @@Inject

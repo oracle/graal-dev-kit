@@ -16,10 +16,12 @@
 package cloud.graal.gcn.feature.service.metrics;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.micrometer.Core;
 import io.micronaut.starter.feature.other.Management;
+import io.micronaut.starter.feature.micrometer.Stackdriver;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -32,18 +34,31 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 @Singleton
 public class GcpMetrics extends AbstractMetricsFeature {
 
+    private final Stackdriver stackDriver;
+
     /**
      * @param core       the Core feature
      * @param management the Management feature
+     * @param stackDriver the StackDriver feature
      */
     public GcpMetrics(Core core,
-                      Management management) {
+                      Management management,
+                      Stackdriver stackDriver) {
         super(core, management);
+        this.stackDriver = stackDriver;
     }
 
     @Override
+    public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        featureContext.addFeature(stackDriver, Stackdriver.class);
+    }
+
+    @NonNull
+    @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO
+        if (generatorContext.generateExampleCode()) {
+            generatorContext.getTestConfiguration().put("micronaut.metrics.export.stackdriver.enabled", false);
+        }
     }
 
     @NonNull

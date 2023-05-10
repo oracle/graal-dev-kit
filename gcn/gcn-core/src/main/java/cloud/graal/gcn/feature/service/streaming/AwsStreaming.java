@@ -19,6 +19,7 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.aws.AwsV2Sdk;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
@@ -33,6 +34,13 @@ import static cloud.graal.gcn.model.GcnCloud.AWS;
  */
 @Singleton
 public class AwsStreaming extends AbstractStreamingFeature {
+
+    private static final Dependency AWS_IAM_AUTH_LIB = Dependency.builder()
+            .groupId("software.amazon.msk")
+            .artifactId("aws-msk-iam-auth")
+            .version("1.1.5")
+            .runtime()
+            .build();
 
     private final AwsV2Sdk awsV2Sdk;
 
@@ -54,6 +62,8 @@ public class AwsStreaming extends AbstractStreamingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
+
+        generatorContext.addDependency(AWS_IAM_AUTH_LIB);
 
         //kafka:
         //  bootstrap:

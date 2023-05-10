@@ -16,14 +16,16 @@
 package cloud.graal.gcn.feature.service.tracing;
 
 import cloud.graal.gcn.GcnGeneratorContext;
-import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
+import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
-import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
+import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
+import io.micronaut.starter.feature.opentelemetry.OpenTelemetryGoogleCloudTrace;
+import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
-import static cloud.graal.gcn.model.GcnService.TRACING;
 
 /**
  * GCP tracing service feature.
@@ -31,23 +33,38 @@ import static cloud.graal.gcn.model.GcnService.TRACING;
  * @since 1.0.0
  */
 @Singleton
-public class GcpTracing extends AbstractGcnServiceFeature {
+public class GcpTracing extends AbstractTracingFeature {
+
+    private final OpenTelemetryGoogleCloudTrace openTelemetryGoogleCloudTrace;
+
+    /**
+     * @param openTelemetry                 OpenTelemetry feature
+     * @param openTelemetryHttp             OpenTelemetryHttp feature
+     * @param openTelemetryAnnotations      OpenTelemetryAnnotations feature
+     * @param openTelemetryGoogleCloudTrace OpenTelemetryGoogleCloudTrace feature
+     */
+    public GcpTracing(OpenTelemetry openTelemetry,
+                      OpenTelemetryHttp openTelemetryHttp,
+                      OpenTelemetryAnnotations openTelemetryAnnotations,
+                      OpenTelemetryGoogleCloudTrace openTelemetryGoogleCloudTrace) {
+        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
+        this.openTelemetryGoogleCloudTrace = openTelemetryGoogleCloudTrace;
+    }
 
     @Override
-    public void apply(GcnGeneratorContext generatorContext) {
-        // TODO
+    public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        featureContext.addFeature(openTelemetryGoogleCloudTrace, OpenTelemetryGoogleCloudTrace.class);
+    }
+
+    @Override
+    protected void doApply(GcnGeneratorContext generatorContext) {
+        // no-op
     }
 
     @NonNull
     @Override
     public GcnCloud getCloud() {
         return GCP;
-    }
-
-    @NonNull
-    @Override
-    public GcnService getService() {
-        return TRACING;
     }
 
     @NonNull

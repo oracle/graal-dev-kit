@@ -30,7 +30,7 @@ class OciEmailController(private val emailSender: EmailSender<*, *>) {
     fun index(): String {
         emailSender.send(
             Email.builder()
-                .to("basic@@domain.com")
+                .to("basic@@gcn.example")
                 .subject("Micronaut Email Basic Test: " + LocalDateTime.now())
                 .body("Basic email")
         )
@@ -41,7 +41,7 @@ class OciEmailController(private val emailSender: EmailSender<*, *>) {
     fun template(name: String): String {
         emailSender.send(
             Email.builder()
-                .to("template@@domain.com")
+                .to("template@@gcn.example")
                 .subject("Micronaut Email Template Test: " + LocalDateTime.now())
                 .body(TemplateBody(HTML, ModelAndView("email", mapOf("name" to name))))
         )
@@ -53,7 +53,7 @@ class OciEmailController(private val emailSender: EmailSender<*, *>) {
     fun attachment(file: CompletedFileUpload): String {
         emailSender.send(
             Email.builder()
-                .to("attachment@@domain.com")
+                .to("attachment@@gcn.example")
                 .subject("Micronaut Email Attachment Test: " + LocalDateTime.now())
                 .body("Attachment email")
                 .attachment(

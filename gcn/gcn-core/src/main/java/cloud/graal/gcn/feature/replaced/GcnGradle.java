@@ -19,6 +19,9 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.buildtool.GcnGradleBuild;
 import cloud.graal.gcn.feature.create.GcnGradleBuildCreator;
 import cloud.graal.gcn.feature.create.GcnRepository;
+import cloud.graal.gcn.feature.create.template.BuildSrcBuildGradle;
+import cloud.graal.gcn.feature.create.template.EnforceVersionsGroovy;
+import cloud.graal.gcn.feature.create.template.EnforceVersionsKotlin;
 import cloud.graal.gcn.feature.replaced.template.LibBuildGradle;
 import cloud.graal.gcn.feature.replaced.template.LibMicronautGradle;
 import com.fizzed.rocker.RockerModel;
@@ -27,12 +30,14 @@ import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.gradle.GradleBuild;
+import io.micronaut.starter.build.gradle.GradleDsl;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
 import io.micronaut.starter.feature.build.KotlinBuildPlugins;
 import io.micronaut.starter.feature.build.MicronautBuildPlugin;
 import io.micronaut.starter.feature.build.gradle.Gradle;
 import io.micronaut.starter.template.BinaryTemplate;
+import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
 import io.micronaut.starter.template.URLTemplate;
 import jakarta.inject.Singleton;
@@ -44,6 +49,7 @@ import java.util.Optional;
 import static cloud.graal.gcn.GcnGeneratorContext.PLUGIN_SHADOW;
 import static io.micronaut.starter.build.Repository.micronautRepositories;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
+import static io.micronaut.starter.build.gradle.GradleDsl.KOTLIN;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.APPLICATION;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.LIBRARY;
 import static io.micronaut.starter.template.Template.ROOT;
@@ -94,20 +100,22 @@ public class GcnGradle extends Gradle {
     }
 
     @Override
-    protected GradleBuild createBuild(GeneratorContext generatorContext) {
+    protected GradleBuild createBuild(GeneratorContext gc) {
+
+        GcnGeneratorContext generatorContext = (GcnGeneratorContext) gc;
 
         List<Repository> repositories = micronautRepositories();
         repositories.add(0, new GcnRepository());
 
-        if (((GcnGeneratorContext) generatorContext).isPlatformIndependent()) {
-            return dependencyResolver.create(generatorContext, repositories, Gradle.DEFAULT_USER_VERSION_CATALOGUE);
+        addBuildSrc(generatorContext);
+
+        if (generatorContext.isPlatformIndependent()) {
+            return dependencyResolver.create(generatorContext, repositories, DEFAULT_USER_VERSION_CATALOGUE);
         }
 
-        GradleBuild original = dependencyResolver.create(generatorContext, repositories, Gradle.DEFAULT_USER_VERSION_CATALOGUE);
+        GradleBuild original = dependencyResolver.create(generatorContext, repositories, DEFAULT_USER_VERSION_CATALOGUE);
 
-        List<GradleRepository> gradleRepositories = GradleRepository.listOf(
-                generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY),
-                repositories);
+        List<GradleRepository> gradleRepositories = GradleRepository.listOf(original.getDsl(), repositories);
 
         List<GradlePlugin> plugins = new ArrayList<>();
 
@@ -131,6 +139,24 @@ public class GcnGradle extends Gradle {
 
         return new GcnGradleBuild(original.getDsl(),
                 original.getDependencies(), plugins, gradleRepositories);
+    }
+
+    private void addBuildSrc(GcnGeneratorContext generatorContext) {
+
+        GradleDsl dsl = generatorContext
+                .getBuildTool()
+                .getGradleDsl()
+                .orElse(GROOVY);
+        boolean kotlin = dsl == KOTLIN;
+        String ext = kotlin ? ".kts" : "";
+
+        String path = "buildSrc/build.gradle";
+        generatorContext.addTemplate(path + ext, new RockerTemplate(ROOT, path + ext,
+                BuildSrcBuildGradle.template(generatorContext, kotlin)));
+
+        path = "buildSrc/src/main/" + (kotlin ? "kotlin" : "groovy") + "/cloud.graal.gcn.gcn-bom.gradle" + ext;
+        generatorContext.addTemplate("gcn-bom-plugin", new RockerTemplate(ROOT, path,
+                kotlin ? EnforceVersionsKotlin.template() : EnforceVersionsGroovy.template()));
     }
 
     // TODO this override is here to upgrade Gradle to v7.6 to add support for JDK 19;

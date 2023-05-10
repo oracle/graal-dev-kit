@@ -17,17 +17,23 @@ package cloud.graal.gcn.feature.service.tracing;
 
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
-import cloud.graal.gcn.feature.service.tracing.template.TracingClientGroovy;
-import cloud.graal.gcn.feature.service.tracing.template.TracingClientJava;
-import cloud.graal.gcn.feature.service.tracing.template.TracingClientKotlin;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerGroovy;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerJava;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerKotlin;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerSpec;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerTestGroovyJUnit;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerTestJavaJUnit;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerTestKotest;
-import cloud.graal.gcn.feature.service.tracing.template.TracingControllerTestKotlinJUnit;
+import cloud.graal.gcn.feature.service.tracing.template.InventoryServiceGroovy;
+import cloud.graal.gcn.feature.service.tracing.template.InventoryServiceJava;
+import cloud.graal.gcn.feature.service.tracing.template.InventoryServiceKotlin;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerGroovy;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerJava;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerKotlin;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerSpec;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerTestGroovyJUnit;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerTestJava;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerTestKotest;
+import cloud.graal.gcn.feature.service.tracing.template.StoreControllerTestKotlinJUnit;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseClientGroovy;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseClientJava;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseClientKotlin;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseControllerGroovy;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseControllerJava;
+import cloud.graal.gcn.feature.service.tracing.template.WarehouseControllerKotlin;
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
@@ -74,13 +80,13 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
         Project project = generatorContext.getProject();
 
         if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
-            generatorContext.addTestTemplate(getModuleName(), "TracingControllerTest-" + getModuleName(),
-                    generatorContext.getTestSourcePath("/{packagePath}/controller/TracingController"),
-                    TracingControllerSpec.template(project),
-                    TracingControllerTestJavaJUnit.template(project),
-                    TracingControllerTestGroovyJUnit.template(project),
-                    TracingControllerTestKotlinJUnit.template(project),
-                    TracingControllerTestKotest.template(project));
+            generatorContext.addTestTemplate(getModuleName(), "StoreControllerTest-" + getModuleName(),
+                    generatorContext.getTestSourcePath("/{packagePath}/StoreController"),
+                    StoreControllerSpec.template(project),
+                    StoreControllerTestJava.template(project),
+                    StoreControllerTestGroovyJUnit.template(project),
+                    StoreControllerTestKotlinJUnit.template(project),
+                    StoreControllerTestKotest.template(project));
         }
 
         applyForLib(generatorContext, () -> {
@@ -91,17 +97,29 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
 
             if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
 
-                generatorContext.addTemplate(getDefaultModule(), "tracingController",
-                        generatorContext.getSourcePath("/{packagePath}/controller/TracingController"),
-                        TracingControllerJava.template(project),
-                        TracingControllerKotlin.template(project),
-                        TracingControllerGroovy.template(project));
+                generatorContext.addTemplate(getDefaultModule(), "InventoryService",
+                        generatorContext.getSourcePath("/{packagePath}/InventoryService"),
+                        InventoryServiceJava.template(project),
+                        InventoryServiceKotlin.template(project),
+                        InventoryServiceGroovy.template(project));
 
-                generatorContext.addTemplate(getDefaultModule(), "tracingClient",
-                        generatorContext.getSourcePath("/{packagePath}/client/TracingClient"),
-                        TracingClientJava.template(project),
-                        TracingClientKotlin.template(project),
-                        TracingClientGroovy.template(project));
+                generatorContext.addTemplate(getDefaultModule(), "StoreController",
+                        generatorContext.getSourcePath("/{packagePath}/StoreController"),
+                        StoreControllerJava.template(project),
+                        StoreControllerKotlin.template(project),
+                        StoreControllerGroovy.template(project));
+
+                generatorContext.addTemplate(getDefaultModule(), "WarehouseClient",
+                        generatorContext.getSourcePath("/{packagePath}/WarehouseClient"),
+                        WarehouseClientJava.template(project),
+                        WarehouseClientKotlin.template(project),
+                        WarehouseClientGroovy.template(project));
+
+                generatorContext.addTemplate(getDefaultModule(), "WarehouseController",
+                        generatorContext.getSourcePath("/{packagePath}/WarehouseController"),
+                        WarehouseControllerJava.template(project),
+                        WarehouseControllerKotlin.template(project),
+                        WarehouseControllerGroovy.template(project));
             }
         });
     }

@@ -18,6 +18,7 @@ package cloud.graal.gcn.feature.service.streaming;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
 
@@ -40,7 +41,22 @@ public class GcpStreaming extends AbstractStreamingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO
+
+        //kafka:
+        //  bootstrap:
+        //    servers: cell-1.streaming.us-ashburn-1.oci.oraclecloud.com:9092
+        //  retries: 3
+        //  max:
+        //    request:
+        //      size: 1048576
+        //    partition:
+        //      fetch:
+        //        bytes: 1048576
+        ApplicationConfiguration config = generatorContext.getConfiguration();
+        config.addNested("kafka.bootstrap.servers", "${OCI_STREAM_POOL_FQDN}:9092");
+        config.addNested("kafka.max.partition.fetch.bytes", 1048576);
+        config.addNested("kafka.max.request.size", 1048576);
+        config.addNested("kafka.retries", 3);
     }
 
     @NonNull

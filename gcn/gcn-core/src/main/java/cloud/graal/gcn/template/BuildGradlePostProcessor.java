@@ -18,8 +18,10 @@ package cloud.graal.gcn.template;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.gradle.GradleDsl;
 
+import java.util.Objects;
 import java.util.regex.Pattern;
 
+import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 
 /**
@@ -28,7 +30,9 @@ import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
  * - adds configuration to set the Docker image name to be related to the project, e.g. "demo-oci"
  * - removes versions from plugin declarations (versions are declared in buildSrc/build.gradle)
  *   as a workaround for <a href="https://github.com/gradle/gradle/issues/17559">this Gradle bug</a>
- * - changes "platform" to "enforcedPlatform" for the GCN BOM, since Micronaut Starter doesn't support enforcedPlatform yet
+ * - changes "implementation platform(...)" to "micronautBoms(platform(...))" for the GCN BOM
+ * - append "-oracle-00001" to version when resolutionStrategy.dependencySubstitution
+ *   is added (currently for serde feature dependencies, e.g. serialization-jackson)
  *
  * @since 1.0.0
  */
@@ -49,25 +53,44 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
 
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
 
-    private static final String BOM = "cloud.graal.gcn:gcn-bom:";
-    private static final Pattern BOM_PLATFORM = Pattern.compile("platform\\(\"" + BOM);
-    private static final String BOM_ENFORCED_PLATFORM = "enforcedPlatform(\"" + BOM;
+    private static final Pattern BOM_PLATFORM = Pattern.compile(
+      "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.]+\"\\))");
+    private static final String BOM_ENFORCED_PLATFORM_KOTLIN = "micronautBoms($1";
+    private static final String BOM_ENFORCED_PLATFORM_GROOVY = BOM_ENFORCED_PLATFORM_KOTLIN + ')';
+
+    private static final Pattern RESOLUTION_STRATEGY_REGEX = Pattern.compile(
+      "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
+
+    private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", BOM_VERSION_SUFFIX);
+
+    private static final String TEST_RESOURCES_PLUGIN = "id(\"io.micronaut.test-resources\")";
+    private static final String TEST_RESOURCES_WORKAROUND_GROOVY = "\n" +
+            "afterEvaluate {\n" +
+            "    def devOnlyConstraints = configurations.developmentOnly.dependencyConstraints\n" +
+            "    devOnlyConstraints.removeAll(devOnlyConstraints.findAll {\n" +
+            "        it.group == 'io.micronaut'\n" +
+            "    })\n" +
+            "}\n";
+    private static final String TEST_RESOURCES_WORKAROUND_KOTLIN = "\n" +
+            "afterEvaluate {\n" +
+            "    val devOnlyConstraints = configurations.developmentOnly.dependencyConstraints\n" +
+            "    devOnlyConstraints.removeAll(devOnlyConstraints.filter {\n" +
+            "        it.group.equals(\"io.micronaut\")\n" +
+            "    }.toSet())\n" +
+            "}\n";
 
     private final GradleDsl dsl;
     private final boolean forCloudModule;
-    private final boolean platformIndependent;
 
     /**
-     * @param dsl the Gradle DSL, only needed when <code>forCloudModule</code> is <code>true</code>
+     * @param dsl the Gradle DSL
      * @param forCloudModule true if the build.gradle is for a cloud module, not lib or platform-independent
-     * @param platformIndependent true if the build.gradle is for platform-independent
      */
-    public BuildGradlePostProcessor(GradleDsl dsl,
-                                    boolean forCloudModule,
-                                    boolean platformIndependent) {
+    public BuildGradlePostProcessor(@NonNull GradleDsl dsl,
+                                    boolean forCloudModule) {
+        Objects.requireNonNull(dsl, "Gradle DSL is required");
         this.dsl = dsl;
         this.forCloudModule = forCloudModule;
-        this.platformIndependent = platformIndependent;
     }
 
     @NonNull
@@ -77,12 +100,10 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         if (forCloudModule) {
             buildGradle = configureDockerImageName(buildGradle);
         }
-        if (!platformIndependent) {
-            buildGradle = removePluginVersions(buildGradle);
-        } else {
-            buildGradle = updatePluginVersions(buildGradle);
-        }
+        buildGradle = removePluginVersions(buildGradle);
         buildGradle = makeBomEnforced(buildGradle);
+        buildGradle = updateResolutionStrategyVersions(buildGradle);
+        buildGradle = applyTestResourcesWorkaround(buildGradle);
         return buildGradle;
     }
 
@@ -105,16 +126,22 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         return VERSION.matcher(buildGradle).replaceAll("");
     }
 
-    // TODO remove this once we upgrade to a version of Micronaut that uses these plugin versions or higher
     @NonNull
-    private String updatePluginVersions(@NonNull String buildGradle) {
-        buildGradle = buildGradle.replace("id(\"io.micronaut.application\") version \"3.7.2\"", "id(\"io.micronaut.application\") version \"3.7.7\"");
-        buildGradle = buildGradle.replace("id(\"io.micronaut.test-resources\") version \"3.7.2\"", "id(\"io.micronaut.test-resources\") version \"3.7.7\"");
-        return buildGradle;
+    private String makeBomEnforced(@NonNull String buildGradle) {
+        return BOM_PLATFORM.matcher(buildGradle).replaceFirst(dsl == GROOVY ? BOM_ENFORCED_PLATFORM_GROOVY : BOM_ENFORCED_PLATFORM_KOTLIN);
     }
 
     @NonNull
-    private String makeBomEnforced(@NonNull String buildGradle) {
-        return BOM_PLATFORM.matcher(buildGradle).replaceAll(BOM_ENFORCED_PLATFORM);
+    private String updateResolutionStrategyVersions(@NonNull String buildGradle) {
+        return RESOLUTION_STRATEGY_REGEX.matcher(buildGradle).replaceAll(RESOLUTION_STRATEGY_REPLACEMENT);
+    }
+
+    @NonNull
+    private String applyTestResourcesWorkaround(@NonNull String buildGradle) {
+        // TODO remove this after updating to Micronaut 4.x - the 4.x plugin doesn't need the workaround
+        if (buildGradle.contains(TEST_RESOURCES_PLUGIN) && !buildGradle.contains("def devOnlyConstraints")) {
+            buildGradle += dsl == GROOVY ? TEST_RESOURCES_WORKAROUND_GROOVY : TEST_RESOURCES_WORKAROUND_KOTLIN;
+        }
+        return buildGradle;
     }
 }

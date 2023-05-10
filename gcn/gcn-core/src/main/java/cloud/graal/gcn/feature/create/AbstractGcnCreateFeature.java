@@ -86,6 +86,8 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
      */
     protected static final String LIBRARY_PLUGIN_ID = MicronautApplicationGradlePlugin.Builder.LIBRARY;
 
+    private static final GradlePlugin GROOVY_PLUGIN = GradlePlugin.builder().id("groovy").build();
+
     // TODO convert these 2 to use constructor injection - currently failing in tests with
     //
     // io.micronaut.context.exceptions.BeanInstantiationException: Error instantiating bean of type  [gcn.GcnProjectCreator]
@@ -173,7 +175,7 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
         dependencies.add(new GradleProjectDependency(LIB_MODULE, generatorContext));
 
         if (generatorContext.getFeatures().language().isGroovy() || generatorContext.getFeatures().testFramework().isSpock()) {
-            generatorContext.addBuildPlugin(GradlePlugin.builder().id("groovy").build());
+            generatorContext.addBuildPlugin(GROOVY_PLUGIN);
         }
 
         List<Repository> repositories = Repository.micronautRepositories();
@@ -209,18 +211,10 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                         generatorContext.getFeatures(getCloud()),
                         build)
         ));
-        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.isPlatformIndependent()));
+        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true));
 
         // for lib/build.gradle
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.isPlatformIndependent()));
-
-        String path = "buildSrc/build.gradle";
-        if (dsl == GradleDsl.KOTLIN) {
-            path += ".kts";
-        }
-        // this is added for each cloud module but the model data is the same, so it's idempotent
-        generatorContext.addTemplate("buildSrc/build.gradle", new RockerTemplate(ROOT, path,
-                buildSrcBuildGradle.template(generatorContext)));
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false));
     }
 
     private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,

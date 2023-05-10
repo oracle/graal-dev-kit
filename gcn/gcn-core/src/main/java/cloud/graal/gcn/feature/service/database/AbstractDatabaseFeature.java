@@ -160,16 +160,15 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
             Project project = generatorContext.getProject();
             String templateRootPackage = project.getPackageName() == null ? "" : project.getPackageName() + '.';
             String dialect = driverFeature.getDataDialect();
-            String cloudEnv = generatorContext.isPlatformIndependent() ? ""
-                    : "(environments = Environment." + getCloud().getEnvironmentConstantName() + ')';
+            String cloudEnv = genreControllerTestEnv();
 
             generatorContext.addTestTemplate(getModuleName(), "GenreControllerTest-" + getModuleName(),
                     generatorContext.getTestSourcePath("/{packagePath}/GenreController"),
-                    GenreControllerSpec.template(project, templateRootPackage),
+                    GenreControllerSpec.template(project, templateRootPackage, cloudEnv),
                     GenreControllerTestJava.template(project, templateRootPackage, cloudEnv),
-                    GenreControllerTestGroovyJUnit.template(project, templateRootPackage),
-                    GenreControllerTestKotlinJUnit.template(project, templateRootPackage),
-                    GenreControllerTestKotest.template(project, templateRootPackage));
+                    GenreControllerTestGroovyJUnit.template(project, templateRootPackage, cloudEnv),
+                    GenreControllerTestKotlinJUnit.template(project, templateRootPackage, cloudEnv),
+                    GenreControllerTestKotest.template(project, templateRootPackage, cloudEnv));
 
             applyForLib(generatorContext, () -> {
 
@@ -235,5 +234,9 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
     @Override
     public final GcnService getService() {
         return DATABASE;
+    }
+
+    protected String genreControllerTestEnv() {
+        return "";
     }
 }
