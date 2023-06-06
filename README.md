@@ -1,6 +1,7 @@
 # Graal Cloud Native (GCN)
 
-Graal Cloud Native (GCN) is a full stack framework for building portable cloud-native applications using the Java ecosystem on top of managed services in the public cloud. GCN is built on top of the GraalVM native image, the Micronaut® framework, public cloud SDKs, popular drivers, and a set of open source libraries tested, certified, and supported by Oracle. Oracle has optimized this stack for native image as well as for cloud portability. With GCN, cloud users can focus less on language portability and more on portability across cloud vendors.
+Graal Cloud Native (GCN) is a curated set of Micronaut™ framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
+With GCN, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
 
 ## Installation
 
@@ -25,10 +26,10 @@ This source repository is the main repository for GCN and includes the following
 
 Directory | Description
 ------------ | -------------
-[`buildSrc/`](buildSrc/) | Gradle build and convention plugins.
-[`config/`](config/) | Configuration files for Gradle code quality plugins.
-[`gcn-cli/`](gcn-cli/) | The GCN CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GCN applications.
-[`gcn-core/`](gcn-core/) | The main GCN library.
+[`gcn/buildSrc/`](gcn/buildSrc/) | Gradle build and convention plugins.
+[`gcn/config/`](gcn/config/) | Configuration files for Gradle code quality plugins.
+[`gcn/gcn-cli/`](gcn/gcn-cli/) | The GCN CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GCN applications.
+[`gcn/gcn-core/`](gcn/gcn-core/) | The main GCN library.
 
 ## Contributing
 
