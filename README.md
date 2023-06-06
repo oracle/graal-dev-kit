@@ -44,9 +44,8 @@ Copyright (c) 2023 Oracle and/or its affiliates.
 
 GCN is open source and distributed under the [Apache License version 2.0](LICENSE.txt).
 
-[docs]: https://www.graal.cloud/
-[guides]: https://www.graal.cloud/guides/
+[docs]: https://www.graal.cloud/gcn/
+[guides]: https://www.graal.cloud/gcn/guides/
 [issues]: https://github.com/oracle/gcn/issues
-[launcher]: https://www.graal.cloud/launcher/
+[launcher]: https://www.graal.cloud/gcn/launcher/
 [reporting-vulnerabilities]: https://www.oracle.com/corporate/security-practices/assurance/vulnerability/reporting.html
-
