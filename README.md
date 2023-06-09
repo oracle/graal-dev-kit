@@ -5,7 +5,27 @@ With GCN, you can build portable cloud-native Java microservices that start inst
 
 ## Installation
 
-The GCN CLI will be available soon. In the meantime, use the [Launcher on the GCN website][launcher] to create GCN applications.
+You can use GCN by generating an application using either the [Launcher on the GCN website][launcher] or install the CLI using the package managers below:
+
+### MacOS
+
+#### Homebrew
+
+Setup the tap for the cask:
+
+```sh
+brew tap oracle/gcn https://github.com/oracle/gcn
+```
+
+Then install the GCN CLI tool:
+
+```sh
+brew install gcn
+```
+
+#### Other Platforms
+
+Get the binary from https://github.com/oracle/gcn/releases  
 
 ## Documentation
 
