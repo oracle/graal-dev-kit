@@ -1,6 +1,6 @@
 # Graal Cloud Native (GCN)
 
-Graal Cloud Native (GCN) is a curated set of Micronaut™ framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
+Graal Cloud Native (GCN) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
 With GCN, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
 
 ## Installation
