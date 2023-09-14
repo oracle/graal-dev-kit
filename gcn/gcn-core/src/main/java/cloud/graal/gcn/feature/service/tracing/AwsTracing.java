@@ -58,6 +58,7 @@ public class AwsTracing extends AbstractTracingFeature {
 
     @Override
     public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
         featureContext.addFeature(openTelemetryXray, OpenTelemetryXray.class);
         featureContext.addFeature(openTelemetryExporterOtlp, OpenTelemetryExporterOtlp.class);
     }

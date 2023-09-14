@@ -16,8 +16,15 @@
 package cloud.graal.gcn.feature.service.logging;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.service.logging.template.LogControllerGroovy;
+import cloud.graal.gcn.feature.service.logging.template.LogControllerJava;
+import cloud.graal.gcn.feature.service.logging.template.LogControllerKotlin;
+import cloud.graal.gcn.feature.service.logging.template.LogbackXml;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.application.Project;
+import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -32,7 +39,30 @@ public class GcpLogging extends AbstractLoggingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO
+
+        generatorContext.addDependency(Dependency.builder()
+                .groupId("com.google.cloud")
+                .artifactId("google-cloud-logging-logback")
+                .version("0.130.11-alpha")
+                .compile());
+
+        generatorContext.addTemplate("loggingConfig-gcp",
+                new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
+                        LogbackXml.template("GOOGLE",
+                                "com.google.cloud.logging.logback.LoggingAppender",
+                                "",
+                                getModuleName())));
+
+        if (generatorContext.generateExampleCode()) {
+
+            Project project = generatorContext.getProject();
+
+            generatorContext.addTemplate(getModuleName(), "GcpLogController",
+                    generatorContext.getSourcePath("/{packagePath}/LogController"),
+                    LogControllerJava.template(project),
+                    LogControllerKotlin.template(project),
+                    LogControllerGroovy.template(project));
+        }
     }
 
     @NonNull

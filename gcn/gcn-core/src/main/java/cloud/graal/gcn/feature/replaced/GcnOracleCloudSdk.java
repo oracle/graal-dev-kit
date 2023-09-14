@@ -21,6 +21,11 @@ import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.feature.oraclecloud.OracleCloudSdk;
 import jakarta.inject.Singleton;
 
+/**
+ * Replaces the default feature to also add Oracle Cloud Netty dependencies.
+ *
+ * @since 1.0.0
+ */
 @Replaces(OracleCloudSdk.class)
 @Singleton
 public class GcnOracleCloudSdk extends OracleCloudSdk implements OracleCloudNettyClientDependencies {

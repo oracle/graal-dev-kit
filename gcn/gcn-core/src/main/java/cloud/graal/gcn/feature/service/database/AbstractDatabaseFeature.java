@@ -52,6 +52,7 @@ import io.micronaut.starter.feature.database.H2;
 import io.micronaut.starter.feature.database.MySQL;
 import io.micronaut.starter.feature.database.jdbc.JdbcFeature;
 import io.micronaut.starter.feature.migration.Flyway;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import io.micronaut.starter.template.RockerTemplate;
 
 import java.util.LinkedHashMap;
@@ -72,6 +73,7 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
     private final JdbcFeature jdbcFeature;
     private final MySQL defaultDriverFeature;
     private DatabaseDriverFeature driverFeature;
+    private final MicronautValidationFeature micronautValidationFeature;
     private boolean applyDriverFeature;
 
     /**
@@ -85,12 +87,14 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
                                       DataJdbc dataJdbc,
                                       Flyway flyway,
                                       JdbcFeature jdbcFeature,
-                                      MySQL defaultDriverFeature) {
+                                      MySQL defaultDriverFeature,
+                                      MicronautValidationFeature micronautValidationFeature) {
         this.data = data;
         this.dataJdbc = dataJdbc;
         this.flyway = flyway;
         this.jdbcFeature = jdbcFeature;
         this.defaultDriverFeature = defaultDriverFeature;
+        this.micronautValidationFeature = micronautValidationFeature;
     }
 
     @Override
@@ -115,6 +119,7 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         }
 
         featureContext.addFeature(flyway, Flyway.class);
+        featureContext.addFeature(micronautValidationFeature, MicronautValidationFeature.class);
 
         // TODO add support for JPA/etc.
         // TODO what if a user selects JPA or other DataFeature
@@ -131,10 +136,9 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         //      enabled: true
         generatorContext.getConfiguration().addNested("flyway.datasources.default.enabled", true);
 
-        // set datasource and flyway properties in application-test.yml
+        // set datasource and flyway properties in application-test.properties
         Map<String, Object> jdbcConfig = new LinkedHashMap<>();
         jdbcConfig.put("flyway.datasources.default.enabled", true);
-        jdbcConfig.put("datasources.default.schema-generate", "NONE");
         jdbcConfig.put("datasources.default.dialect", driverFeature.getDataDialect());
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
         generatorContext.getTestConfiguration().addNested(jdbcConfig);
@@ -143,6 +147,7 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
             data.apply(generatorContext);
             dataJdbc.apply(generatorContext);
             jdbcFeature.apply(generatorContext);
+            micronautValidationFeature.apply(generatorContext);
             if (applyDriverFeature) {
                 driverFeature.apply(generatorContext);
             }
@@ -236,6 +241,9 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         return DATABASE;
     }
 
+    /**
+     * @return optional environment element for @MicronautTest in generated test classes
+     */
     protected String genreControllerTestEnv() {
         return "";
     }

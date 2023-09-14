@@ -83,6 +83,7 @@ public class GcnYamlTemplate extends DefaultTemplate {
 
     /**
      * Convert entries like "com.foo.bar: wahoo" to nested.
+     *
      * @param config the initial config
      * @return the config nested
      */

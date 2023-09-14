@@ -10,7 +10,7 @@ import @(rootPackage)repository.GenreRepository
 import io.micronaut.data.model.Pageable
 import jakarta.inject.Singleton
 import java.util.Optional
-import javax.transaction.Transactional
+import jakarta.transaction.Transactional
 
 @@Singleton
 open class GenreService(private val genreRepository: GenreRepository) {

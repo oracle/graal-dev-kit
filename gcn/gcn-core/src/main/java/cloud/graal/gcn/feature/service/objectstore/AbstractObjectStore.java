@@ -101,7 +101,7 @@ public abstract class AbstractObjectStore extends AbstractGcnServiceFeature {
                     ProfilePicturesControllerTestKotest.template(project));
 
             applyForCloud(generatorContext, () -> {
-                if (generatorContext.getFeatures().testFramework().isJunit()) {
+                if (generatorContext.getFeatures().testFramework().isJunit() || generatorContext.getFeatures().testFramework().isKoTest()) {
                     if (generatorContext.getFeatures().language().isKotlin()) {
                         Dependency.Builder mockk = Dependency.builder()
                                 .groupId("io.mockk")

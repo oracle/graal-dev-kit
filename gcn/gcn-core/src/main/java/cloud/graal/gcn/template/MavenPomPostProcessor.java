@@ -88,7 +88,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
 
         pom = fixParent(pom);
         pom = fixVersion(pom);
-        pom = fixTestResourcesVersion(pom);
         pom = fixMicronautVersion(pom);
 
         if (libModule) {
@@ -99,6 +98,8 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
                 pom = addDefaultDockerImageName(pom);
             }
         }
+        pom = fixName(pom);
+        pom = fixDefaultBaseImage(pom);
 
         return pom;
     }
@@ -113,10 +114,15 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         String parent = pom.substring(start, end);
 
         parent = parent.replace("<groupId>io.micronaut</groupId>", "<groupId>" + groupId + "</groupId>");
+        parent = parent.replace("<groupId>io.micronaut.platform</groupId>", "<groupId>" + groupId + "</groupId>");
         parent = parent.replace("<artifactId>micronaut-parent</artifactId>", "<artifactId>" + artifactId + "-parent</artifactId>");
         parent = VERSION_PATTERN.matcher(parent).replaceAll("<version>1.0-SNAPSHOT</version>");
 
         return top + parent + bottom;
+    }
+
+    private String fixName(@NonNull String pom) {
+        return pom.replace("<packaging>${packaging}</packaging>", "<packaging>${packaging}</packaging>\n  <name>" + artifactId + "-${artifactId}</name>");
     }
 
     @NonNull
@@ -158,6 +164,33 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     }
 
     @NonNull
+    // TODO: remove when base image is updated inside maven plugin
+    private String fixDefaultBaseImage(@NonNull String pom) {
+        int start = pom.indexOf("micronaut-maven-plugin");
+        if (start == -1) {
+            return pom;
+        }
+        int end = pom.indexOf(ARTIFACT_ID_END, start) + ARTIFACT_ID_END.length();
+
+        String top = pom.substring(0, start);
+        String bottom = pom.substring(end);
+        if (bottom.trim().startsWith("<configuration>\n")) {
+            end = bottom.indexOf("<configuration>") + "<configuration>".length();
+            bottom = bottom.substring(end);
+            return top + """
+micronaut-maven-plugin</artifactId>
+          <configuration>
+            <baseImageRun>frolvlad/alpine-glibc:alpine-3.16</baseImageRun>""" + bottom;
+        }
+
+        return top + """
+micronaut-maven-plugin</artifactId>
+        <configuration>
+          <baseImageRun>frolvlad/alpine-glibc:alpine-3.16</baseImageRun>
+        </configuration>""" + bottom;
+    }
+
+    @NonNull
     private String addDefaultDockerImageName(@NonNull String pom) {
         if (!pom.contains(PLUGINS_START)) {
             return pom;
@@ -169,21 +202,10 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
                 "        <artifactId>jib-maven-plugin</artifactId>\n" +
                 "        <configuration>\n" +
                 "          <to>\n" +
-                "            <image>${project.parent.artifactId}-${project.artifactId}</image>\n" +
+                "            <image>${project.name}</image>\n" +
                 "          </to>\n" +
                 "        </configuration>\n" +
                 "      </plugin>\n");
-        return pom;
-    }
-
-    // TODO remove this once we upgrade to a version of Micronaut that uses this plugin version or higher
-    @NonNull
-    private String fixTestResourcesVersion(@NonNull String pom) {
-        if (!pom.contains("<micronaut.test.resources.version>")) {
-            String enabledElement = "<micronaut.test.resources.enabled>true</micronaut.test.resources.enabled>";
-            pom = pom.replace(enabledElement, enabledElement + "\n    " +
-                    "<micronaut.test.resources.version>1.2.5</micronaut.test.resources.version>");
-        }
         return pom;
     }
 

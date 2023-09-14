@@ -17,36 +17,37 @@
 [versions]
 bouncycastle = '1.70'
 docker = '3.2.13'
-groovy = '3.0.13' # TODO keep in sync when changing Micronaut version
+groovy = '4.0.13' # TODO keep in sync when changing Micronaut version
 jansi = '2.4.0'
 jline = '3.23.0'
-micronaut-plugins = '3.6.0' # TODO keep in sync when changing Micronaut version
-nohttp = '0.0.10'
+logback = "1.4.8"
+micronaut-plugins = '4.0.3' # TODO keep in sync when changing Micronaut version
+nohttp = '0.0.11'
 reflections = '0.10.2'
 rocker = '1.3.0'
-shadow = '7.1.2'
+shadow = '8.1.1'
 slf4j = '1.7.36'
-spotless = '6.10.0'
+spotless = '6.10.0' #6.20.0 ???
 test-logger = '3.2.0'
 
 [libraries]
-bouncycastle-bcprov = { module = 'org.bouncycastle:bcprov-jdk15on', version.ref = 'bouncycastle' }
 bouncycastle-bcpkix = { module = 'org.bouncycastle:bcpkix-jdk15on', version.ref = 'bouncycastle' }
+bouncycastle-bcprov = { module = 'org.bouncycastle:bcprov-jdk15on', version.ref = 'bouncycastle' }
 docker = { module = 'com.github.docker-java:docker-java-core', version.ref = 'docker' }
 docker-transport = { module = 'com.github.docker-java:docker-java-transport-zerodep', version.ref = 'docker' }
-groovy-ant = { module = 'org.codehaus.groovy:groovy-ant', version.ref = 'groovy' }
-groovy-xml = { module = 'org.codehaus.groovy:groovy-xml', version.ref = 'groovy' }
+groovy-ant = { module = 'org.apache.groovy:groovy-ant', version.ref = 'groovy' }
+groovy-json = { module = 'org.apache.groovy:groovy-json', version.ref = 'groovy' }
+groovy-xml = { module = 'org.apache.groovy:groovy-xml', version.ref = 'groovy' }
 jansi = { module = 'org.fusesource.jansi:jansi', version.ref = 'jansi' }
 jline = { module = 'org.jline:jline', version.ref = 'jline' }
 jul-slf4j = { module = 'org.slf4j:jul-to-slf4j', version.ref = 'slf4j' }
+logback-classic = { module = 'ch.qos.logback:logback-classic', version.ref = 'logback' }
+micronaut-application = { module = 'io.micronaut.gradle:micronaut-gradle-plugin', version.ref = 'micronaut-plugins' }
+micronaut-library = { module = 'io.micronaut.gradle:micronaut-gradle-plugin', version.ref = 'micronaut-plugins' }
 nohttp = { module = 'io.spring.nohttp:nohttp-gradle', version.ref = 'nohttp' }
 reflections = { module = 'org.reflections:reflections', version.ref = 'reflections' }
 rocker = { module = 'com.fizzed:rocker-compiler', version.ref = 'rocker' }
+shadow = { module = 'com.github.johnrengelman:shadow', version.ref = 'shadow' }
 slf4j-nop = { module = 'org.slf4j:slf4j-nop', version.ref = 'slf4j' }
 spotless = { module = 'com.diffplug.spotless:spotless-plugin-gradle', version.ref = 'spotless' }
-
-[plugins]
-micronaut-application = { id = 'io.micronaut.application', version.ref = 'micronaut-plugins' }
-micronaut-library = { id = 'io.micronaut.library', version.ref = 'micronaut-plugins' }
-shadow = { id = 'com.github.johnrengelman.shadow', version.ref = 'shadow' }
-test-logger = { id = 'com.adarshr.test-logger', version.ref = 'test-logger' }
+test-logger = { module = 'com.adarshr:gradle-test-logger-plugin', version.ref = 'test-logger' }

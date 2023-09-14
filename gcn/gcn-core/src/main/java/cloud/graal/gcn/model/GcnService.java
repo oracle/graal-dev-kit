@@ -27,106 +27,106 @@ public enum GcnService {
      * Database service.
      */
     DATABASE(
-        "Database",
-        "Provides a database access toolkit for repository interfaces",
-        "database"
+            "Database",
+            "Provides a database access toolkit for repository interfaces",
+            "database"
     ),
 
     /**
      * Email service.
      */
     EMAIL(
-        "Email",
-        "Provides integration with multiple email providers",
-        "email"
+            "Email",
+            "Provides integration with multiple email providers",
+            "email"
     ),
 
     /**
      * Kubernetes service.
      */
     K8S(
-        "Kubernetes",
-        "Provides integration with Kubernetes",
-        "kubernetes"
+            "Kubernetes",
+            "Provides integration with Kubernetes",
+            "kubernetes"
     ),
 
     /**
      * Logging service.
      */
     LOGGING(
-        "Logging",
-        "Provides integration with multiple logging frameworks and various other appenders (including email and databases)",
-        "logging"
+            "Logging",
+            "Provides integration with multiple logging frameworks and various other appenders (including email and databases)",
+            "logging"
     ),
 
     /**
      * Metrics service.
      */
     METRICS(
-        "Metrics",
-        "Provides integration with cloud-specific monitoring services",
-        "metrics"
+            "Metrics",
+            "Provides integration with cloud-specific monitoring services",
+            "metrics"
     ),
 
     /**
      * Object Storage service.
      */
     OBJECTSTORE(
-        "Object Storage",
-        "Provides integration with cloud-specific storage solutions for large objects",
-        "object-storage"
+            "Object Storage",
+            "Provides integration with cloud-specific storage solutions for large objects",
+            "object-storage"
     ),
 
     /**
      * SDK service.
      */
     SDK(
-        "SDK",
-        "Provides an API for developer access to cloud services"
+            "SDK",
+            "Provides an API for developer access to cloud services"
     ),
 
     /**
      * Secret management service.
      */
     SECRETMANAGEMENT("" +
-        "Secret Management",
-        "Provides integration with the Secret Manager of the corresponding cloud platform",
-        "secret-management"
+            "Secret Management",
+            "Provides integration with the Secret Manager of the corresponding cloud platform",
+            "secret-management"
     ),
 
     /**
      * Security service.
      */
     SECURITY(
-        "Security",
-        "Provides functionality to authenticate with OAuth 2.0 servers, including support for the OpenID standard",
-        "authentication"
+            "Security",
+            "Provides functionality to authenticate with OAuth 2.0 servers, including support for the OpenID standard",
+            "authentication"
     ),
 
     /**
      * Streaming service.
      */
     STREAMING(
-        "Streaming",
-        "Provides integration with Apache Kafka",
-        "streaming"
+            "Streaming",
+            "Provides integration with Apache Kafka",
+            "streaming"
     ),
 
     /**
      * Tracing service.
      */
     TRACING(
-        "Tracing",
-        "Provides integration with Zipkin and Jaeger (via the Open Tracing API)",
-        "tracing"
+            "Tracing",
+            "Provides integration with Zipkin and Jaeger (via the Open Tracing API)",
+            "tracing"
     ),
 
     /**
      * For testing.
      */
     TESTING(
-        "Testing",
-        "A service used only for testing"
+            "Testing",
+            "A service used only for testing"
     );
 
     private static final GcnService[] SUPPORTED;

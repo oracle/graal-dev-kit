@@ -35,9 +35,17 @@ import static io.micronaut.starter.options.BuildTool.MAVEN;
 @Singleton
 public class GcnKoTest extends KoTest {
 
-    // mirrored from base class for the UI
+    /**
+     * ARTIFACT_ID_KOTEST_RUNNER_JUNIT_5_JVM mirrored from base class for the UI.
+     */
     protected static final String ARTIFACT_ID_KOTEST_RUNNER_JUNIT_5_JVM = KoTest.ARTIFACT_ID_KOTEST_RUNNER_JUNIT_5_JVM;
+    /**
+     * ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM mirrored from base class for the UI.
+     */
     protected static final String ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM = KoTest.ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM;
+    /**
+     * ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM mirrored from base class for the UI.
+     */
     protected static final Dependency DEPENDENCY_MICRONAUT_TEST_KOTEST = KoTest.DEPENDENCY_MICRONAUT_TEST_KOTEST;
 
     @Override
@@ -51,9 +59,9 @@ public class GcnKoTest extends KoTest {
 
             // Note: GcnCloud.NONE here would be if a user selected a feature or a service but no cloud
             context.addUrlTemplate(cloud.getModuleName(),
-                "koTestConfig" + cloud.getEnvironmentNameSuffix() + cloud.getModuleName(),
-                "src/test/kotlin/io/kotest/provided/ProjectConfig.kt",
-                "kotest/ProjectConfig.kt");
+                    "koTestConfig" + cloud.getEnvironmentNameSuffix() + cloud.getModuleName(),
+                    "src/test/kotlin/io/kotest/provided/ProjectConfig.kt",
+                    "kotest/ProjectConfig.kt");
 
             // Gradle Plugin applies the KoTest dependencies
             if (context.getBuildTool() == MAVEN) {
@@ -65,10 +73,12 @@ public class GcnKoTest extends KoTest {
                         .lookupArtifactId(ARTIFACT_ID_KOTEST_ASSERTIONS_CORE_JVM)
                         .test());
             }
-        } else if (context.getBuildTool() == MAVEN) {
+        }
+
+        if (context.getBuildTool() == MAVEN) {
             // Micronaut Starter auto adds the 'Mockk' dependency if Maven, Kotlin and KoTest are selected
             // so remove it from the lib/pom.xml
-            context.getLibDependencies().removeIf(it -> "mockk".equals(it.getArtifactId()));
+            context.getDependencies().removeIf(it -> "mockk".equals(it.getArtifactId()) && it.getVersion() == null);
         }
     }
 }

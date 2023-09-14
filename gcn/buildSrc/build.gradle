@@ -24,9 +24,13 @@ repositories {
 }
 
 dependencies {
+    implementation libs.micronaut.application
+    implementation libs.micronaut.library
     implementation libs.nohttp
     implementation libs.rocker
+    implementation libs.shadow
     implementation libs.spotless
+    implementation libs.test.logger
 }
 
 gradlePlugin {

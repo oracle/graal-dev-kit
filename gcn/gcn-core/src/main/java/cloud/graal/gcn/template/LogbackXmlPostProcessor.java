@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 
 /**
  * Disables jansi in platform-independent logback.xml.
+ * Since Micronaut 4.0.0 the withJansi property has not been provided.
  *
  * @since 1.0.0
  */

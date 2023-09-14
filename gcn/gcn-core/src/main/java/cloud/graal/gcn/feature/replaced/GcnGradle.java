@@ -18,7 +18,6 @@ package cloud.graal.gcn.feature.replaced;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.buildtool.GcnGradleBuild;
 import cloud.graal.gcn.feature.create.GcnGradleBuildCreator;
-import cloud.graal.gcn.feature.create.GcnRepository;
 import cloud.graal.gcn.feature.create.template.BuildSrcBuildGradle;
 import cloud.graal.gcn.feature.create.template.EnforceVersionsGroovy;
 import cloud.graal.gcn.feature.create.template.EnforceVersionsKotlin;
@@ -28,18 +27,15 @@ import com.fizzed.rocker.RockerModel;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.Repository;
+import io.micronaut.starter.build.RepositoryResolver;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.gradle.GradleBuild;
 import io.micronaut.starter.build.gradle.GradleDsl;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
-import io.micronaut.starter.feature.build.KotlinBuildPlugins;
-import io.micronaut.starter.feature.build.MicronautBuildPlugin;
 import io.micronaut.starter.feature.build.gradle.Gradle;
-import io.micronaut.starter.template.BinaryTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
-import io.micronaut.starter.template.URLTemplate;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -47,7 +43,6 @@ import java.util.List;
 import java.util.Optional;
 
 import static cloud.graal.gcn.GcnGeneratorContext.PLUGIN_SHADOW;
-import static io.micronaut.starter.build.Repository.micronautRepositories;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 import static io.micronaut.starter.build.gradle.GradleDsl.KOTLIN;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.APPLICATION;
@@ -63,25 +58,24 @@ import static io.micronaut.starter.template.Template.ROOT;
 @Singleton
 public class GcnGradle extends Gradle {
 
-    private static final String PLUGIN_TEST_RESOURCES = "io.micronaut.test-resources";
     private static final String ARTIFACT_ID = "micronaut-gradle-plugin";
-    private static final String GCN_WRAPPER_JAR = WRAPPER_JAR.replaceFirst("gradle/", "gcn_gradle/");
-    private static final String GCN_WRAPPER_PROPS = WRAPPER_PROPS.replaceFirst("gradle/", "gcn_gradle/");
+    private static final String PLUGIN_TEST_RESOURCES = "io.micronaut.test-resources";
 
     private final CoordinateResolver coordinateResolver;
 
+    private final RepositoryResolver repositoryResolver;
+
     /**
-     * @param gradleBuildCreator   GradleBuildCreator bean
-     * @param micronautBuildPlugin MicronautBuildPlugin feature
-     * @param kotlinBuildPlugins   KotlinBuildPlugins feature
-     * @param coordinateResolver   CoordinateResolver bean
+     * @param gradleBuildCreator GradleBuildCreator bean
+     * @param coordinateResolver CoordinateResolver bean
+     * @param repositoryResolver RepositoryResolver bean
      */
     public GcnGradle(GcnGradleBuildCreator gradleBuildCreator,
-                     MicronautBuildPlugin micronautBuildPlugin,
-                     KotlinBuildPlugins kotlinBuildPlugins,
-                     CoordinateResolver coordinateResolver) {
-        super(gradleBuildCreator, micronautBuildPlugin, kotlinBuildPlugins);
+                     CoordinateResolver coordinateResolver,
+                     RepositoryResolver repositoryResolver) {
+        super(gradleBuildCreator, repositoryResolver);
         this.coordinateResolver = coordinateResolver;
+        this.repositoryResolver = repositoryResolver;
     }
 
     @Override
@@ -104,8 +98,7 @@ public class GcnGradle extends Gradle {
 
         GcnGeneratorContext generatorContext = (GcnGeneratorContext) gc;
 
-        List<Repository> repositories = micronautRepositories();
-        repositories.add(0, new GcnRepository());
+        List<Repository> repositories = repositoryResolver.resolveRepositories(gc);
 
         addBuildSrc(generatorContext);
 
@@ -141,6 +134,12 @@ public class GcnGradle extends Gradle {
                 original.getDependencies(), plugins, gradleRepositories);
     }
 
+    // don't delete - this is needed for web image generation
+    @Override
+    protected void addGradleInitFiles(GeneratorContext generatorContext) {
+        super.addGradleInitFiles(generatorContext);
+    }
+
     private void addBuildSrc(GcnGeneratorContext generatorContext) {
 
         GradleDsl dsl = generatorContext
@@ -157,18 +156,6 @@ public class GcnGradle extends Gradle {
         path = "buildSrc/src/main/" + (kotlin ? "kotlin" : "groovy") + "/cloud.graal.gcn.gcn-bom.gradle" + ext;
         generatorContext.addTemplate("gcn-bom-plugin", new RockerTemplate(ROOT, path,
                 kotlin ? EnforceVersionsKotlin.template() : EnforceVersionsGroovy.template()));
-    }
-
-    // TODO this override is here to upgrade Gradle to v7.6 to add support for JDK 19;
-    //      remove this and the resource files when we've upgrade to a version of Micronaut
-    //      that uses Gradle 7.6+
-    @Override
-    protected void addGradleInitFiles(GeneratorContext generatorContext) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        generatorContext.addTemplate("gradleWrapperJar", new BinaryTemplate(ROOT, WRAPPER_JAR, classLoader.getResource(GCN_WRAPPER_JAR)));
-        generatorContext.addTemplate("gradleWrapperProperties", new URLTemplate(ROOT, WRAPPER_PROPS, classLoader.getResource(GCN_WRAPPER_PROPS)));
-        generatorContext.addTemplate("gradleWrapper", new URLTemplate(ROOT, "gradlew", classLoader.getResource("gcn_gradle/gradlew"), true));
-        generatorContext.addTemplate("gradleWrapperBat", new URLTemplate(ROOT, "gradlew.bat", classLoader.getResource("gcn_gradle/gradlew.bat"), false));
     }
 
     private Optional<String> resolveTestRuntime(GeneratorContext generatorContext) {

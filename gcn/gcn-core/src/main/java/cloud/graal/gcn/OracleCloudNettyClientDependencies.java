@@ -18,19 +18,20 @@ package cloud.graal.gcn;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.dependencies.Dependency;
 
+/**
+ * Implemented by OCI features that need Netty client dependencies.
+ */
 public interface OracleCloudNettyClientDependencies {
 
+    /**
+     * Adds the dependencies.
+     *
+     * @param generatorContext the context
+     */
     default void addNettyDependencies(GeneratorContext generatorContext) {
         generatorContext.addDependency(Dependency.builder()
                 .groupId("io.micronaut.oraclecloud")
                 .artifactId("micronaut-oraclecloud-httpclient-netty")
                 .compile());
-
-        if (!generatorContext.getBuildTool().isGradle() && generatorContext.getFeatures().hasGraalvm()) {
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("com.oracle.oci.sdk")
-                    .artifactId("oci-java-sdk-addons-graalvm")
-                    .compile());
-        }
     }
 }

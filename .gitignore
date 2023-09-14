@@ -14,4 +14,7 @@ build/
 dev.properties
 out/
 target/
+gen/
+mdguides/
+mdinfo/
 Thumbs.db

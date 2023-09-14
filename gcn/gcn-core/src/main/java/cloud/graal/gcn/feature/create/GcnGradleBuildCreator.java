@@ -24,8 +24,8 @@ import io.micronaut.starter.build.gradle.GradleBuild;
 import io.micronaut.starter.build.gradle.GradleBuildCreator;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
+import jakarta.inject.Singleton;
 
-import javax.inject.Singleton;
 import java.util.List;
 import java.util.stream.Collectors;
 

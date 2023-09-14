@@ -23,10 +23,19 @@ import io.micronaut.starter.feature.micrometer.OracleCloud;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
+/**
+ * Replaces the default feature to also add Oracle Cloud Netty dependencies.
+ *
+ * @since 1.0.0
+ */
 @Replaces(OracleCloud.class)
 @Singleton
 public class GcnOracleCloudMicrometer extends OracleCloud implements OracleCloudNettyClientDependencies {
 
+    /**
+     * @param core       Core feature
+     * @param management Management feature
+     */
     public GcnOracleCloudMicrometer(Core core, Management management) {
         super(core, management);
     }

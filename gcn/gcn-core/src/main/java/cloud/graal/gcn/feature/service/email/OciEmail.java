@@ -35,6 +35,7 @@ import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
 import io.micronaut.starter.feature.email.TemplateEmailFeature;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import io.micronaut.starter.feature.view.Thymeleaf;
 import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
@@ -62,7 +63,9 @@ public class OciEmail extends AbstractEmailFeature {
      */
     public OciEmail(JavamailFeature javamailFeature,
                     TemplateEmailFeature templateEmailFeature,
-                    Thymeleaf thymeleaf) {
+                    Thymeleaf thymeleaf,
+                    MicronautValidationFeature micronautValidationFeature) {
+        super(micronautValidationFeature);
         this.javamailFeature = javamailFeature;
         this.templateEmailFeature = templateEmailFeature;
         this.thymeleaf = thymeleaf;

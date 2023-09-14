@@ -38,7 +38,7 @@ public class AwsStreaming extends AbstractStreamingFeature {
     private static final Dependency AWS_IAM_AUTH_LIB = Dependency.builder()
             .groupId("software.amazon.msk")
             .artifactId("aws-msk-iam-auth")
-            .version("1.1.5")
+            .version("1.1.9")
             .runtime()
             .build();
 

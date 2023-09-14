@@ -15,26 +15,26 @@
  */
 package cloud.graal.gcn.feature.replaced;
 
-import cloud.graal.gcn.template.GcnYamlTemplate;
+import cloud.graal.gcn.template.GcnPropertiesTemplate;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.feature.config.Configuration;
-import io.micronaut.starter.feature.config.Yaml;
+import io.micronaut.starter.feature.config.Properties;
 import io.micronaut.starter.template.Template;
 import jakarta.inject.Singleton;
 
 import java.util.function.Function;
 
 /**
- * Replaces the default feature to customize yaml file writing.
+ * Replaces the default feature to customize properties file writing.
  *
  * @since 1.0.0
  */
-@Replaces(Yaml.class)
+@Replaces(Properties.class)
 @Singleton
-public class GcnYaml extends Yaml {
+public class GcnProperties extends Properties {
 
     @Override
     public Function<Configuration, Template> createTemplate() {
-        return (config) -> new GcnYamlTemplate(config.getFullPath("yml"), config);
+        return (config) -> new GcnPropertiesTemplate(config.getFullPath("properties"), config);
     }
 }

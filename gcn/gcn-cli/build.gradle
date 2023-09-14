@@ -16,8 +16,8 @@
 
 plugins {
     id 'gcn-module'
-    alias libs.plugins.micronaut.application
-    alias libs.plugins.shadow
+    id 'io.micronaut.application'
+    id 'com.github.johnrengelman.shadow'
 }
 
 dependencies {
@@ -26,7 +26,7 @@ dependencies {
     compileOnly mnLibs.graal
 
     // not in libs.versions.toml to keep Micronaut version in 1 place (micronautVersion.txt)
-    implementation("io.micronaut.starter:micronaut-micronaut-cli:$micronautVersion") {
+    implementation("io.micronaut.starter:micronaut-cli:$micronautVersion") {
         exclude group: 'io.micronaut', module: 'micronaut-buffer-netty'
         exclude group: 'io.micronaut', module: 'micronaut-http-client'
         exclude group: 'io.micronaut', module: 'micronaut-http-client-core'
@@ -57,6 +57,10 @@ dependencies {
     implementation mnLibs.micronaut.validation
     implementation mnLibs.picocli
     implementation projects.gcnCore
+}
+
+configurations.all {
+    exclude module: 'logback-classic'
 }
 
 application {

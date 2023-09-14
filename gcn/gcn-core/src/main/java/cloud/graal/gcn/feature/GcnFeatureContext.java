@@ -25,6 +25,7 @@ import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.FeaturePredicate;
 import io.micronaut.starter.feature.build.BuildFeature;
 import io.micronaut.starter.feature.database.DatabaseDriverFeature;
+import io.micronaut.starter.feature.lang.LanguageFeature;
 import io.micronaut.starter.io.ConsoleOutput;
 import io.micronaut.starter.options.Options;
 
@@ -105,7 +106,7 @@ public class GcnFeatureContext extends FeatureContext {
         features.addAll(selectedAndDefaultFeatures.stream()
                 .filter(f -> {
 
-                    if (f instanceof BuildFeature || f instanceof DatabaseDriverFeature) {
+                    if (f instanceof BuildFeature || f instanceof DatabaseDriverFeature || f instanceof LanguageFeature) {
                         return true;
                     }
 

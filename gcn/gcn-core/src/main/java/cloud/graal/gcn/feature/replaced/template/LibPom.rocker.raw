@@ -55,13 +55,13 @@
   <dependencies>
 @if (features.language().isGroovy()) {
 @dependency.template("io.micronaut", "micronaut-inject-groovy", "provided", null, false, null)
-@dependency.template("org.codehaus.groovy", "groovy", "compile", "${groovyVersion}", false, null)
+@dependency.template("org.apache.groovy", "groovy", "compile", "${groovyVersion}", false, null)
 @for (processor : mavenBuild.getAnnotationProcessors()) {
 @dependency.template(processor.getGroupId(), processor.getArtifactId(), "provided", null, false, null)
 }
 }
 @dependency.template("io.micronaut", "micronaut-inject", "compile", null, false, null)
-@dependency.template("io.micronaut", "micronaut-validation", "compile", null, false, null)
+@dependency.template("io.micronaut.validation", "micronaut-validation", "compile", null, false, null)
 @if (features.language().isKotlin()) {
 @dependency.template("com.fasterxml.jackson.module", "jackson-module-kotlin", "runtime", null, false, null)
 }
@@ -238,27 +238,6 @@
             <phase>test-compile</phase>
             <goals>
               <goal>testCompile</goal>
-            </goals>
-          </execution>
-        </executions>
-      </plugin>
-}
-@if (features.language().isGroovy() || features.testFramework().isSpock()) {
-      <plugin>
-        <groupId>org.codehaus.gmavenplus</groupId>
-        <artifactId>gmavenplus-plugin</artifactId>
-        <version>1.13.0</version>
-        <executions>
-          <execution>
-            <goals>
-              <goal>addSources</goal>
-              <goal>generateStubs</goal>
-              <goal>compile</goal>
-              <goal>removeStubs</goal>
-              <goal>addTestSources</goal>
-              <goal>generateTestStubs</goal>
-              <goal>compileTests</goal>
-              <goal>removeTestStubs</goal>
             </goals>
           </execution>
         </executions>

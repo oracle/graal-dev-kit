@@ -11,18 +11,17 @@ import io.micronaut.http.annotation.QueryValue
 import io.micronaut.http.client.annotation.Client
 import io.micronaut.tracing.annotation.ContinueSpan
 import io.micronaut.tracing.annotation.SpanTag
-import io.opentelemetry.extension.annotations.SpanAttribute
-import io.opentelemetry.extension.annotations.WithSpan
+import io.micronaut.tracing.annotation.NewSpan
 
 @@Client("/warehouse") // <1>
 interface WarehouseClient {
 
     @@Post("/order")
-    @@WithSpan
+    @@NewSpan
     fun order(@@SpanTag("warehouse.order") json: Map<String, *>)
 
     @@Get("/count")
     @@ContinueSpan
     fun getItemCount(@@QueryValue store: String,
-                     @@SpanAttribute @@QueryValue upc: Int): Int
+                     @@SpanTag @@QueryValue upc: Int): Int
 }

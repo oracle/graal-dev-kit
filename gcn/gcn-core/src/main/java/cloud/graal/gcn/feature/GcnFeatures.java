@@ -28,8 +28,8 @@ import java.util.Set;
  */
 public class GcnFeatures extends Features {
 
-    /** pre-computed main class name. */
     private final GcnGeneratorContext context;
+    /** pre-computed main class name. */
     private String mainClassName;
     private boolean mainClassNameSet;
 

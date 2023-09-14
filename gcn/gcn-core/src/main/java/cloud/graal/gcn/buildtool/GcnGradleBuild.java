@@ -33,6 +33,12 @@ public class GcnGradleBuild extends GradleBuild {
 
     private final List<GradleRepository> repositories;
 
+    /**
+     * @param gradleDsl    Gradle DSL
+     * @param dependencies dependencies
+     * @param plugins      plugins
+     * @param repositories repos
+     */
     public GcnGradleBuild(@NonNull GradleDsl gradleDsl,
                           @NonNull List<GradleDependency> dependencies,
                           @NonNull List<GradlePlugin> plugins,

@@ -22,6 +22,7 @@ import io.micronaut.starter.feature.database.DataJdbc;
 import io.micronaut.starter.feature.database.MySQL;
 import io.micronaut.starter.feature.database.jdbc.JdbcFeature;
 import io.micronaut.starter.feature.migration.Flyway;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AZURE;
@@ -45,8 +46,9 @@ public class AzureDatabase extends AbstractDatabaseFeature {
                          DataJdbc dataJdbc,
                          Flyway flyway,
                          JdbcFeature jdbcFeature,
-                         MySQL defaultDriverFeature) {
-        super(data, dataJdbc, flyway, jdbcFeature, defaultDriverFeature);
+                         MySQL defaultDriverFeature,
+                         MicronautValidationFeature micronautValidationFeature) {
+        super(data, dataJdbc, flyway, jdbcFeature, defaultDriverFeature, micronautValidationFeature);
     }
 
     @NonNull

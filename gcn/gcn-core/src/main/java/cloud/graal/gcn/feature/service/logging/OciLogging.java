@@ -67,7 +67,7 @@ public class OciLogging extends AbstractLoggingFeature implements OracleCloudNet
                 new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
                         LogbackXml.template("ORACLE",
                                 "io.micronaut.oraclecloud.logging.OracleCloudAppender",
-                                "ch.qos.logback.contrib.jackson.JacksonJsonFormatter",
+                                "io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter",
                                 getModuleName())));
 
         if (generatorContext.generateExampleCode()) {

@@ -40,6 +40,8 @@ public final class GcnUtils {
      */
     public static final String LIB_MODULE = "lib";
 
+    public static final String APP_MODULE = "app";
+
     /**
      * The default JDK version if none is specified.
      */

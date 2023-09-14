@@ -11,7 +11,7 @@ import io.micronaut.data.annotation.Id;
 import io.micronaut.data.jdbc.annotation.JdbcRepository;
 import io.micronaut.data.repository.PageableRepository;
 
-import javax.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotBlank;
 
 import static io.micronaut.data.model.query.builder.sql.Dialect.@(dialect);
 

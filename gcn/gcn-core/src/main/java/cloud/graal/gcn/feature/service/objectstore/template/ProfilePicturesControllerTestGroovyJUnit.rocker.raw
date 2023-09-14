@@ -16,6 +16,7 @@ import io.micronaut.objectstorage.response.UploadResponse
 import io.micronaut.test.extensions.junit5.annotation.MicronautTest
 import jakarta.inject.Inject
 import jakarta.inject.Singleton
+import java.io.InputStream
 import org.junit.jupiter.api.Test
 
 import static io.micronaut.http.HttpHeaders.ETAG
@@ -74,13 +75,15 @@ class ProfilePicturesControllerTest {
 
     @@Test
     void download() {
+        ObjectStorageEntry<?> objectStorageEntry = mock(ObjectStorageEntry.class);
+        when(objectStorageEntry.getInputStream()).then(invocation -> InputStream.nullInputStream());
         when(objectStorageOperations.retrieve("avatar.jpg"))
-                .then(invocation -> Optional.of(mock(ObjectStorageEntry)))
+                .then(invocation -> Optional.of(objectStorageEntry));
 
-        def response = client.toBlocking().exchange("/avatar")
+        var response = client.toBlocking().exchange("/avatar");
 
-        assertEquals(OK, response.status())
-        verify(objectStorageOperations).retrieve("avatar.jpg")
+        assertEquals(OK, response.status());
+        verify(objectStorageOperations).retrieve("avatar.jpg");
     }
 
     @@Test

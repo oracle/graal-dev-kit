@@ -35,7 +35,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         mnLibs {
-            from 'io.micronaut:micronaut-bom:' + micronautVersion
+            from 'io.micronaut.platform:micronaut-platform:' + micronautVersion
         }
     }
 }
