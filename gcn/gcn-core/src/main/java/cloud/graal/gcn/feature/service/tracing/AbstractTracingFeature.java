@@ -90,7 +90,6 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
         }
 
         applyForLib(generatorContext, () -> {
-
             openTelemetry.apply(generatorContext);
             openTelemetryHttp.apply(generatorContext);
             openTelemetryAnnotations.apply(generatorContext);

@@ -34,12 +34,12 @@ repositories {
 dependencies {
     compileOnly mnLibs.jsr305 // for 'warning: unknown enum constant When.MAYBE'
     implementation mnLibs.jakarta.annotation.api
-    runtimeOnly mnLibs.logback
+    runtimeOnly libs.logback.classic
 }
 
 java {
-    sourceCompatibility = JavaVersion.VERSION_11
-    targetCompatibility = JavaVersion.VERSION_11
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
 }
 
 java {

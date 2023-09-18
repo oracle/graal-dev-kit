@@ -16,14 +16,12 @@
 package cloud.graal.gcn.feature.service.tracing;
 
 import cloud.graal.gcn.GcnGeneratorContext;
-import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
-import io.micronaut.starter.feature.opentelemetry.OpenTelemetryExporterZipkin;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
-import io.micronaut.starter.feature.opentelemetry.OpenTelemetryZipkin;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.OCI;
@@ -36,38 +34,33 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
 @Singleton
 public class OciTracing extends AbstractTracingFeature {
 
-    private final OpenTelemetryZipkin openTelemetryZipkin;
-    private final OpenTelemetryExporterZipkin openTelemetryExporterZipkin;
-
     /**
-     * @param openTelemetry               OpenTelemetry feature
-     * @param openTelemetryHttp           OpenTelemetryHttp feature
-     * @param openTelemetryAnnotations    OpenTelemetryAnnotations feature
-     * @param openTelemetryZipkin         OpenTelemetryZipkin feature
-     * @param openTelemetryExporterZipkin OpenTelemetryExporterZipkin feature
+     * @param openTelemetry            OpenTelemetry feature
+     * @param openTelemetryHttp        OpenTelemetryHttp feature
+     * @param openTelemetryAnnotations OpenTelemetryAnnotations feature
      */
     public OciTracing(OpenTelemetry openTelemetry,
                       OpenTelemetryHttp openTelemetryHttp,
-                      OpenTelemetryAnnotations openTelemetryAnnotations,
-                      OpenTelemetryZipkin openTelemetryZipkin,
-                      OpenTelemetryExporterZipkin openTelemetryExporterZipkin) {
+                      OpenTelemetryAnnotations openTelemetryAnnotations) {
         super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
-        this.openTelemetryZipkin = openTelemetryZipkin;
-        this.openTelemetryExporterZipkin = openTelemetryExporterZipkin;
-    }
-
-    @Override
-    public void processSelectedFeatures(GcnFeatureContext featureContext) {
-        featureContext.addFeature(openTelemetryZipkin, OpenTelemetryZipkin.class);
-        featureContext.addFeature(openTelemetryExporterZipkin, OpenTelemetryExporterZipkin.class);
     }
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
+        generatorContext.addDependency(
+                Dependency.builder()
+                        .groupId("io.micronaut.tracing")
+                        .artifactId("micronaut-tracing-opentelemetry-zipkin-exporter")
+                        .compile()
+                        .build()
+        );
         generatorContext.getConfiguration().addNested(
-                "otel.exporter.zipkin.endpoint",
-                "https://[redacted].apm-agt.us-phoenix-1.oci.oraclecloud.com/20200101/observations/public-span" +
-                        "?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]");
+                "otel.exporter.zipkin.url",
+                "https://<DataUploadEndpoint>");
+        generatorContext.getConfiguration().addNested(
+                "otel.exporter.zipkin.path",
+                "/20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]"
+        );
     }
 
     @NonNull

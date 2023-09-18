@@ -24,18 +24,23 @@ import cloud.graal.gcn.feature.create.gatewayfunction.AbstractGcnCloudGatewayFun
 import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.model.GcnProjectType;
 import cloud.graal.gcn.template.BuildGradlePostProcessor;
-import cloud.graal.gcn.template.GcnYamlTemplate;
+import cloud.graal.gcn.template.GcnPropertiesTemplate;
+import cloud.graal.gcn.template.MavenPlatformPostProcessor;
 import cloud.graal.gcn.template.MavenPomPostProcessor;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Repository;
+import io.micronaut.starter.build.RepositoryResolver;
 import io.micronaut.starter.build.gradle.GradleBuild;
 import io.micronaut.starter.build.gradle.GradleDependency;
 import io.micronaut.starter.build.gradle.GradleDsl;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
+import io.micronaut.starter.build.maven.JvmArgumentsFeature;
 import io.micronaut.starter.build.maven.MavenBuild;
+import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.Features;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
 import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
@@ -96,6 +101,7 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
     //    at app//io.micronaut.context.DefaultBeanContext.resolveByBeanFactory(DefaultBeanContext.java:2367)
     private GcnGradleBuildCreator gradleBuildCreator;
     private GcnMavenBuildCreator mavenBuildCreator;
+    private RepositoryResolver repositoryResolver;
 
     /**
      * Temporary dependency injection method for GradleBuildCreator.
@@ -117,19 +123,24 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
         this.mavenBuildCreator = mavenBuildCreator;
     }
 
+    @Inject
+    public void setRepositoryResolver(RepositoryResolver repositoryResolver) {
+        this.repositoryResolver = repositoryResolver;
+    }
+
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
 
         if (generatorContext.getApplicationType() != FUNCTION) {
             createApplicationClass(generatorContext);
         }
-        createApplicationCloudYml(generatorContext);
-        createExtraCloudConfigYml(generatorContext);
+        createApplicationCloudProperties(generatorContext);
+        createExtraCloudConfigProperties(generatorContext);
 
         if (generatorContext.getBuildTool().isGradle()) {
             addGradleBuild(generatorContext);
         } else {
-            addMavenBuild(generatorContext);
+            addMavenBuild(generatorContext, repositoryResolver.resolveRepositories(generatorContext));
         }
     }
 
@@ -154,18 +165,18 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                 koTest.template(project, transactional));
     }
 
-    private void createApplicationCloudYml(GcnGeneratorContext generatorContext) {
+    private void createApplicationCloudProperties(GcnGeneratorContext generatorContext) {
 
-        generatorContext.addTemplate("application-yml-" + getModuleName(),
-                new GcnYamlTemplate(
+        generatorContext.addTemplate("application-properties-" + getModuleName(),
+                new GcnPropertiesTemplate(
                         getModuleName(),
-                        "src/main/resources/application" + getCloud().getEnvironmentNameSuffix() + ".yml",
+                        "src/main/resources/application" + getCloud().getEnvironmentNameSuffix() + ".properties",
                         generatorContext.getConfiguration(getCloud())));
 
-        generatorContext.addTemplate("bootstrap-yml-" + getModuleName(),
-                new GcnYamlTemplate(
+        generatorContext.addTemplate("bootstrap-properties-" + getModuleName(),
+                new GcnPropertiesTemplate(
                         getModuleName(),
-                        "src/main/resources/bootstrap" + getCloud().getEnvironmentNameSuffix() + ".yml",
+                        "src/main/resources/bootstrap" + getCloud().getEnvironmentNameSuffix() + ".properties",
                         generatorContext.getBootstrapConfiguration(getCloud())));
     }
 
@@ -174,15 +185,24 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
         List<GradleDependency> dependencies = GradleDependency.listOf(generatorContext, USE_GRADLE_VERSION_CATALOG);
         dependencies.add(new GradleProjectDependency(LIB_MODULE, generatorContext));
 
+        List<Repository> repositories = repositoryResolver.resolveRepositories(generatorContext);
+
         if (generatorContext.getFeatures().language().isGroovy() || generatorContext.getFeatures().testFramework().isSpock()) {
             generatorContext.addBuildPlugin(GROOVY_PLUGIN);
         }
 
-        List<Repository> repositories = Repository.micronautRepositories();
         GradleBuild original = gradleBuildCreator.create(generatorContext, repositories, USE_GRADLE_VERSION_CATALOG);
 
         List<GradlePlugin> copiedPlugins = new ArrayList<>();
-        for (BuildPlugin p : generatorContext.getBuildPlugins()) {
+
+        List<GradlePlugin> plugins = generatorContext.getBuildPlugins()
+                .stream()
+                .filter(GradlePlugin.class::isInstance)
+                .map(GradlePlugin.class::cast)
+                .sorted(OrderUtil.COMPARATOR)
+                .toList();
+
+        for (BuildPlugin p : plugins) {
             GradlePlugin plugin = (GradlePlugin) p;
             if (plugin.getExtension() == null && plugin.getSettingsExtension() == null) {
                 // ok to reuse since it has no Rocker templates
@@ -211,10 +231,10 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                         generatorContext.getFeatures(getCloud()),
                         build)
         ));
-        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true));
+        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
 
         // for lib/build.gradle
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false));
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
     }
 
     private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,
@@ -240,20 +260,22 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                         extensionModel.incremental(),
                         generatorContext.getProject().getPackageName(),
                         extensionModel.additionalTestResourceModules(),
-                        extensionModel.sharedTestResources())),
+                        extensionModel.sharedTestResources(),
+                        extensionModel.aotKeys(),
+                        extensionModel.lambdaRuntimeMainClass())),
                 null,
-                false,
+                plugin.getPluginsManagementRepositories(),
                 false,
                 plugin.getOrder(),
                 plugin.getBuildImports());
     }
 
-    private void addMavenBuild(GcnGeneratorContext generatorContext) {
+    private void addMavenBuild(GcnGeneratorContext generatorContext, List<Repository> repositories) {
 
-        MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext);
+        MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext, repositories);
 
         mavenBuild.getDependencies().add(new MavenProjectDependency(
-                generatorContext.getProject().getPackageName(), LIB_MODULE));
+                generatorContext.getProject().getPackageName(), LIB_MODULE, generatorContext.getLanguage()));
 
         String templateKey = "mavenPom-" + getModuleName();
         generatorContext.addTemplate(templateKey, new RockerTemplate(getModuleName(), "pom.xml",
@@ -261,7 +283,8 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                         generatorContext.getApplicationType(),
                         generatorContext.getProject(),
                         generatorContext.getFeatures(),
-                        mavenBuild)
+                        mavenBuild,
+                        JvmArgumentsFeature.getJvmArguments(generatorContext.getFeatures().getFeatures()))
         ));
         generatorContext.addPostProcessor(templateKey, new MavenPomPostProcessor(
                 generatorContext.getLibProject().getName(),
@@ -272,10 +295,12 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
 
         // this is called for each cloud, but the templates are stored in a Map, so it's idempotent
         generatorContext.addTemplate("multi-module-pom", new RockerTemplate(ROOT, generatorContext.getBuildTool().getBuildFileName(),
-                multimodule.template(null,
+                multimodule.template(MavenRepository.listOf(repositoryResolver.resolveRepositories(generatorContext)),
                         generatorContext.getLibProject(),
                         generatorContext.getModuleNames())
         ));
+
+        generatorContext.addPostProcessor("multi-module-pom", new MavenPlatformPostProcessor());
 
         // this is called for each cloud, but the post processors are stored in a Set, so it's idempotent
         generatorContext.addPostProcessor("mavenPom", new MavenPomPostProcessor(
@@ -286,12 +311,12 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                 true));
     }
 
-    private void createExtraCloudConfigYml(GcnGeneratorContext generatorContext) {
+    private void createExtraCloudConfigProperties(GcnGeneratorContext generatorContext) {
         for (Map.Entry<GcnCloud, Collection<Configuration>> e : generatorContext.getExtraConfigurations().entrySet()) {
             GcnCloud cloud = e.getKey();
             for (Configuration c : e.getValue()) {
                 generatorContext.addTemplate(c.getTemplateKey() + '-' + cloud.getModuleName(),
-                        new GcnYamlTemplate(cloud.getModuleName(), c.getFullPath("yml"), c));
+                        new GcnPropertiesTemplate(cloud.getModuleName(), c.getFullPath("properties"), c));
             }
         }
     }

@@ -17,6 +17,7 @@ package cloud.graal.gcn.buildtool;
 
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.maven.MavenDependency;
+import io.micronaut.starter.options.Language;
 
 /**
  * Renders a project dependency in a Maven build.
@@ -29,12 +30,13 @@ public class MavenProjectDependency extends MavenDependency {
      * @param groupId     group id
      * @param projectName project name (used as artifact id)
      */
-    public MavenProjectDependency(String groupId, String projectName) {
+    public MavenProjectDependency(String groupId, String projectName, Language language) {
         super(Dependency.builder()
-                .groupId(groupId)
-                .artifactId(projectName)
-                .version("1.0-SNAPSHOT")
-                .compile()
-                .build());
+                        .groupId(groupId)
+                        .artifactId(projectName)
+                        .version("1.0-SNAPSHOT")
+                        .compile()
+                        .build(),
+                language);
     }
 }

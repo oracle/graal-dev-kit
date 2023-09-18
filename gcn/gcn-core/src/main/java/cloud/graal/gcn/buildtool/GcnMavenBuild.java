@@ -17,7 +17,7 @@ package cloud.graal.gcn.buildtool;
 
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.Property;
-import io.micronaut.starter.build.dependencies.Coordinate;
+import io.micronaut.starter.build.dependencies.DependencyCoordinate;
 import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenCombineAttribute;
 import io.micronaut.starter.build.maven.MavenDependency;
@@ -37,18 +37,31 @@ public class GcnMavenBuild extends MavenBuild {
 
     private final List<MavenRepository> repositories;
 
+    /**
+     * @param artifactId                              artifact ID
+     * @param annotationProcessors                    annotation processors
+     * @param testAnnotationProcessors                test annotation processors
+     * @param dependencies                            dependencies
+     * @param properties                              properties
+     * @param plugins                                 plugins
+     * @param repositories                            repos
+     * @param annotationProcessorCombineAttribute     MavenCombineAttribute for annotation processors
+     * @param testAnnotationProcessorCombineAttribute MavenCombineAttribute for test annotation processors
+     * @param profiles                                profiles
+     */
     public GcnMavenBuild(String artifactId,
-                         List<Coordinate> annotationProcessors,
-                         List<Coordinate> testAnnotationProcessors,
+                         List<DependencyCoordinate> annotationProcessors,
+                         List<DependencyCoordinate> testAnnotationProcessors,
                          List<MavenDependency> dependencies,
                          List<Property> properties,
                          List<MavenPlugin> plugins,
                          List<MavenRepository> repositories,
                          MavenCombineAttribute annotationProcessorCombineAttribute,
                          MavenCombineAttribute testAnnotationProcessorCombineAttribute,
-                         Collection<Profile> profiles) {
+                         Collection<Profile> profiles,
+                         List<DependencyCoordinate> aotDependencies) {
         super(artifactId, annotationProcessors, testAnnotationProcessors, dependencies, properties, plugins,
-                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles);
+                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies);
         this.repositories = repositories;
     }
 

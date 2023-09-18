@@ -16,6 +16,7 @@
 package cloud.graal.gcn.template;
 
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.build.gradle.GradleDsl;
 
 import java.util.Objects;
@@ -46,48 +47,48 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
             "    images = [\"${rootProject.name}-${project.name}\"]\n" +
             "}\n";
 
+    private static final String DOCKER_IMAGE_NATIVE_NAME_GROOVY =
+            "\ntasks.named('dockerBuildNative') {\n" +
+                    "    images = [\"${rootProject.name}-${project.name}\"]\n" +
+                    "}\n";
+
     private static final String DOCKER_IMAGE_NAME_KOTLIN =
             "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuild\") {\n" +
             "    images.add(\"${rootProject.name}-${project.name}\")\n" +
             "}\n";
 
+    private static final String DOCKER_IMAGE_NATIVE_NAME_KOTLIN =
+            "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuildNative\") {\n" +
+                    "    images.add(\"${rootProject.name}-${project.name}\")\n" +
+                    "}\n";
+
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
 
-    private static final Pattern BOM_PLATFORM = Pattern.compile(
-      "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.]+\"\\))");
-    private static final String BOM_ENFORCED_PLATFORM_KOTLIN = "micronautBoms($1";
-    private static final String BOM_ENFORCED_PLATFORM_GROOVY = BOM_ENFORCED_PLATFORM_KOTLIN + ')';
+    private static final Pattern BOM_PLATFORM_REGEX = Pattern.compile(
+      "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.]+\"\\))\\)?");
+
+    private static final String BOM_ENFORCED_PLATFORM_REPLACEMENT = "micronautBoms($1)";
 
     private static final Pattern RESOLUTION_STRATEGY_REGEX = Pattern.compile(
       "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
 
     private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", BOM_VERSION_SUFFIX);
 
-    private static final String TEST_RESOURCES_PLUGIN = "id(\"io.micronaut.test-resources\")";
-    private static final String TEST_RESOURCES_WORKAROUND_GROOVY = "\n" +
-            "afterEvaluate {\n" +
-            "    def devOnlyConstraints = configurations.developmentOnly.dependencyConstraints\n" +
-            "    devOnlyConstraints.removeAll(devOnlyConstraints.findAll {\n" +
-            "        it.group == 'io.micronaut'\n" +
-            "    })\n" +
-            "}\n";
-    private static final String TEST_RESOURCES_WORKAROUND_KOTLIN = "\n" +
-            "afterEvaluate {\n" +
-            "    val devOnlyConstraints = configurations.developmentOnly.dependencyConstraints\n" +
-            "    devOnlyConstraints.removeAll(devOnlyConstraints.filter {\n" +
-            "        it.group.equals(\"io.micronaut\")\n" +
-            "    }.toSet())\n" +
-            "}\n";
-
     private final GradleDsl dsl;
     private final boolean forCloudModule;
+    private final boolean isGatewayFunction;
+    private final ApplicationType applicationType;
 
     /**
-     * @param dsl the Gradle DSL
-     * @param forCloudModule true if the build.gradle is for a cloud module, not lib or platform-independent
+     * @param dsl               the Gradle DSL
+     * @param forCloudModule    true if the build.gradle is for a cloud module, not lib or platform-independent
+     * @param isGatewayFunction
+     * @param applicationType
      */
     public BuildGradlePostProcessor(@NonNull GradleDsl dsl,
-                                    boolean forCloudModule) {
+                                    boolean forCloudModule, boolean isGatewayFunction, ApplicationType applicationType) {
+        this.isGatewayFunction = isGatewayFunction;
+        this.applicationType = applicationType;
         Objects.requireNonNull(dsl, "Gradle DSL is required");
         this.dsl = dsl;
         this.forCloudModule = forCloudModule;
@@ -97,13 +98,15 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     @Override
     public String process(@NonNull String buildGradle) {
         buildGradle = updateVersion(buildGradle);
-        if (forCloudModule) {
+        if (forCloudModule && applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
             buildGradle = configureDockerImageName(buildGradle);
+        }
+        if (forCloudModule && applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
+            buildGradle = configureDockerNativeImageName(buildGradle);
         }
         buildGradle = removePluginVersions(buildGradle);
         buildGradle = makeBomEnforced(buildGradle);
         buildGradle = updateResolutionStrategyVersions(buildGradle);
-        buildGradle = applyTestResourcesWorkaround(buildGradle);
         return buildGradle;
     }
 
@@ -122,13 +125,22 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     }
 
     @NonNull
+    private String configureDockerNativeImageName(@NonNull String buildGradle) {
+        if (dsl == GROOVY) {
+            return buildGradle.contains(DOCKER_IMAGE_NATIVE_NAME_GROOVY) ? buildGradle : buildGradle + DOCKER_IMAGE_NATIVE_NAME_GROOVY;
+        } else {
+            return buildGradle.contains(DOCKER_IMAGE_NATIVE_NAME_KOTLIN) ? buildGradle : buildGradle + DOCKER_IMAGE_NATIVE_NAME_KOTLIN;
+        }
+    }
+
+    @NonNull
     private String removePluginVersions(@NonNull String buildGradle) {
         return VERSION.matcher(buildGradle).replaceAll("");
     }
 
     @NonNull
     private String makeBomEnforced(@NonNull String buildGradle) {
-        return BOM_PLATFORM.matcher(buildGradle).replaceFirst(dsl == GROOVY ? BOM_ENFORCED_PLATFORM_GROOVY : BOM_ENFORCED_PLATFORM_KOTLIN);
+        return BOM_PLATFORM_REGEX.matcher(buildGradle).replaceFirst(BOM_ENFORCED_PLATFORM_REPLACEMENT);
     }
 
     @NonNull
@@ -136,12 +148,4 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         return RESOLUTION_STRATEGY_REGEX.matcher(buildGradle).replaceAll(RESOLUTION_STRATEGY_REPLACEMENT);
     }
 
-    @NonNull
-    private String applyTestResourcesWorkaround(@NonNull String buildGradle) {
-        // TODO remove this after updating to Micronaut 4.x - the 4.x plugin doesn't need the workaround
-        if (buildGradle.contains(TEST_RESOURCES_PLUGIN) && !buildGradle.contains("def devOnlyConstraints")) {
-            buildGradle += dsl == GROOVY ? TEST_RESOURCES_WORKAROUND_GROOVY : TEST_RESOURCES_WORKAROUND_KOTLIN;
-        }
-        return buildGradle;
-    }
 }

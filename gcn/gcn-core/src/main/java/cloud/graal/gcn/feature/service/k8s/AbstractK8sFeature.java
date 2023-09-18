@@ -22,6 +22,7 @@ import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.k8s.KubernetesClient;
+import io.micronaut.starter.feature.other.Management;
 
 import static cloud.graal.gcn.model.GcnService.K8S;
 import static io.micronaut.starter.feature.k8s.KubernetesClient.MICRONAUT_KUBERNETES_GROUP_ID;
@@ -34,17 +35,20 @@ import static io.micronaut.starter.feature.k8s.KubernetesClient.MICRONAUT_KUBERN
 public abstract class AbstractK8sFeature extends AbstractGcnServiceFeature {
 
     private final KubernetesClient kubernetesClient;
+    private final Management management;
 
     /**
      * @param kubernetesClient KubernetesClient feature
      */
-    protected AbstractK8sFeature(KubernetesClient kubernetesClient) {
+    protected AbstractK8sFeature(KubernetesClient kubernetesClient, Management management) {
         this.kubernetesClient = kubernetesClient;
+        this.management = management;
     }
 
     @Override
     public final void processSelectedFeatures(GcnFeatureContext featureContext) {
         featureContext.addFeature(kubernetesClient, KubernetesClient.class);
+        featureContext.addFeature(management, Management.class);
     }
 
     @Override

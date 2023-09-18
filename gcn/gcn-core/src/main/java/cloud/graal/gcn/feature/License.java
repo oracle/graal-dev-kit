@@ -31,8 +31,8 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static cloud.graal.gcn.feature.License.PomLicensePostProcessor.PATTERN_GRADLE;
 import static cloud.graal.gcn.feature.License.PomLicensePostProcessor.PATTERN_POM;
+import static cloud.graal.gcn.feature.License.SrcLicensePostProcessor.PATTERN_GRADLE;
 import static cloud.graal.gcn.feature.License.SrcLicensePostProcessor.PATTERN_SRC;
 import static io.micronaut.starter.template.Template.ROOT;
 
@@ -97,10 +97,19 @@ public class License implements DefaultFeature {
         return false;
     }
 
+    /**
+     * Post-processor for pom.xml files.
+     */
     public static class PomLicensePostProcessor implements TemplatePostProcessor {
 
+        /**
+         * The singleton instance.
+         */
         public static final PomLicensePostProcessor INSTANCE = new PomLicensePostProcessor();
-        public static final Pattern PATTERN_GRADLE = Pattern.compile(".+\\.gradle");
+
+        /**
+         * Regex for pom.xml files.
+         */
         public static final Pattern PATTERN_POM = Pattern.compile(".*pom\\.xml");
 
         private static final String PROJECT_START = "<project ";
@@ -113,10 +122,25 @@ public class License implements DefaultFeature {
         }
     }
 
+    /**
+     * Post-processor for source files and Gradle build files.
+     */
     public static class SrcLicensePostProcessor implements TemplatePostProcessor {
 
+        /**
+         * The singleton instance.
+         */
         public static final SrcLicensePostProcessor INSTANCE = new SrcLicensePostProcessor();
+
+        /**
+         * Regex for Java/Groovy/Kotlin source files.
+         */
         public static final Pattern PATTERN_SRC = Pattern.compile(".*src/(main|test)/(java|groovy|kotlin)/.+\\.(java|groovy|kt)");
+
+        /**
+         * Regex for Gradle build files.
+         */
+        public static final Pattern PATTERN_GRADLE = Pattern.compile(".+\\.gradle");
 
         private static final String HEADER = "/*\n" + HEADER_LINES
                 .stream()

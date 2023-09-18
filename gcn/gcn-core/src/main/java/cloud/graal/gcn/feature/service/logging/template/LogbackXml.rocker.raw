@@ -23,11 +23,13 @@
 @if ("oci".equals(cloud)) {
         <logId><!-- TODO set the value of the Oracle Cloud log OCID here --></logId>
 }
+        @if(!"gcp".equals(cloud)) {
         <encoder class='ch.qos.logback.core.encoder.LayoutWrappingEncoder'>
             <layout class='ch.qos.logback.contrib.json.classic.JsonLayout'>
                 <jsonFormatter class='@jsonFormatter'/>
             </layout>
         </encoder>
+        }
     </appender>
 
     <root level='INFO'>

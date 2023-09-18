@@ -34,6 +34,7 @@ import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.aws.AwsV2Sdk;
 import io.micronaut.starter.feature.email.AmazonSesEmailFeature;
 import io.micronaut.starter.feature.reactor.Reactor;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -58,7 +59,9 @@ public class AwsEmail extends AbstractEmailFeature {
      */
     public AwsEmail(AmazonSesEmailFeature amazonSesEmailFeature,
                     AwsV2Sdk awsV2Sdk,
-                    Reactor reactor) {
+                    Reactor reactor,
+                    MicronautValidationFeature micronautValidationFeature) {
+        super(micronautValidationFeature);
         this.awsV2Sdk = awsV2Sdk;
         this.amazonSesEmailFeature = amazonSesEmailFeature;
         this.reactor = reactor;

@@ -54,8 +54,8 @@ import static io.micronaut.starter.template.Template.ROOT;
 @Replaces(ProjectGenerator.class)
 public class GcnProjectGenerator implements ProjectGenerator {
 
-    private final GcnContextFactory contextFactory;
     private final List<Feature> features;
+    private final GcnContextFactory contextFactory;
 
     /**
      * @param contextFactory context factory
@@ -91,7 +91,6 @@ public class GcnProjectGenerator implements ProjectGenerator {
         GcnGeneratorContext generatorContext = (GcnGeneratorContext) gc;
 
         addMicronautCli(generatorContext, applicationType);
-
         generatorContext.applyFeatures();
 
         try (GcnTemplateRenderer templateRenderer = new GcnTemplateRenderer(project, outputHandler,
@@ -103,6 +102,15 @@ public class GcnProjectGenerator implements ProjectGenerator {
                 }
             }
         }
+    }
+
+    /**
+     * Add a feature; only used in test project generation.
+     *
+     * @param feature the feature
+     */
+    public void addFeature(Feature feature) {
+        features.add(feature);
     }
 
     private void addMicronautCli(GcnGeneratorContext generatorContext,

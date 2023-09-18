@@ -88,7 +88,7 @@ public enum GcnCloud {
 
     /**
      * @return the environment name suffix, used for config file suffix,
-     * e.g., "-oraclecloud" for application-oraclecloud.yml
+     * e.g., "-oraclecloud" for application-oraclecloud.properties
      */
     public String getEnvironmentNameSuffix() {
         return environmentNameSuffix;
@@ -120,8 +120,8 @@ public enum GcnCloud {
      * @return the subset of GcnCloud enum values that are currently supported
      */
     public static GcnCloud[] supportedValues() {
-//        return SUPPORTED; // TODO only supporting AWS, OCI, and GCP for now
-        return new GcnCloud[]{GcnCloud.AWS, GcnCloud.OCI, GcnCloud.GCP};
+//        return SUPPORTED; // TODO only supporting AWS, GCP, and OCI for now
+        return new GcnCloud[]{GcnCloud.AWS, GcnCloud.GCP, GcnCloud.OCI};
     }
 
     /**

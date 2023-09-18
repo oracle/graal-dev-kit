@@ -15,8 +15,10 @@
  */
 package cloud.graal.gcn.feature.create.gatewayfunction;
 
+import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.function.gcp.GoogleCloudRawFunction;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -28,6 +30,20 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
  */
 @Singleton
 public class GcnGcpCloudGatewayFunction extends AbstractGcnCloudGatewayFunction {
+
+    private final GoogleCloudRawFunction googleCloudFunction;
+
+    /**
+     * @param googleCloudFunction {@link GoogleCloudRawFunction} feature
+     */
+    public GcnGcpCloudGatewayFunction(GoogleCloudRawFunction googleCloudFunction) {
+        this.googleCloudFunction = googleCloudFunction;
+    }
+
+    @Override
+    public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        featureContext.addFeature(googleCloudFunction, GoogleCloudRawFunction.class);
+    }
 
     @NonNull
     @Override

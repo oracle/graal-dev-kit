@@ -30,6 +30,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
@@ -46,9 +47,10 @@ public class NonCloudEmail extends AbstractEmailFeature {
     private final JavamailFeature javamailFeature;
 
     /**
-     * @param javamailFeature      JavamailFeature feature
+     * @param javamailFeature JavamailFeature feature
      */
-    public NonCloudEmail(JavamailFeature javamailFeature) {
+    public NonCloudEmail(JavamailFeature javamailFeature, MicronautValidationFeature micronautValidationFeature) {
+        super(micronautValidationFeature);
         this.javamailFeature = javamailFeature;
     }
 

@@ -34,6 +34,9 @@ public class GcpSecretManagement extends AbstractSecretManagementFeature {
 
     private final GoogleSecretManager googleSecretManager;
 
+    /**
+     * @param googleSecretManager GoogleSecretManager feature
+     */
     public GcpSecretManagement(GoogleSecretManager googleSecretManager) {
         this.googleSecretManager = googleSecretManager;
     }

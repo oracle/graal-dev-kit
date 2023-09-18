@@ -15,26 +15,24 @@
  */
 package cloud.graal.gcn.feature.replaced;
 
-import cloud.graal.gcn.template.GcnYamlTemplate;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.starter.feature.config.Configuration;
-import io.micronaut.starter.feature.config.Yaml;
-import io.micronaut.starter.template.Template;
+import io.micronaut.starter.application.ApplicationType;
+import io.micronaut.starter.feature.build.MicronautAot;
 import jakarta.inject.Singleton;
 
-import java.util.function.Function;
-
 /**
- * Replaces the default feature to customize yaml file writing.
+ * Replaces the default feature to exclude adding the AOT plugin.
  *
- * @since 1.0.0
+ * TODO remove this and re-enable the AOT plugin once issues have been resolved.
+ *
+ * @since 4.0
  */
-@Replaces(Yaml.class)
 @Singleton
-public class GcnYaml extends Yaml {
+@Replaces(MicronautAot.class)
+public class GcnMicronautAot extends MicronautAot {
 
     @Override
-    public Function<Configuration, Template> createTemplate() {
-        return (config) -> new GcnYamlTemplate(config.getFullPath("yml"), config);
+    public boolean supports(ApplicationType applicationType) {
+        return false;
     }
 }

@@ -18,8 +18,14 @@ package cloud.graal.gcn.feature.replaced;
 import cloud.graal.gcn.GcnGeneratorContext;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.feature.architecture.X86;
+import io.micronaut.starter.feature.aws.AwsLambdaEventsSerde;
+import io.micronaut.starter.feature.aws.AwsLambdaSnapstart;
 import io.micronaut.starter.feature.awslambdacustomruntime.AwsLambdaCustomRuntime;
 import io.micronaut.starter.feature.function.awslambda.AwsLambda;
+import io.micronaut.starter.feature.function.awslambda.DefaultAwsLambdaHandlerProvider;
+import io.micronaut.starter.feature.function.awslambda.FunctionAwsLambdaHandlerProvider;
+import io.micronaut.starter.feature.other.HttpClient;
 import io.micronaut.starter.feature.other.ShadePlugin;
 import jakarta.inject.Singleton;
 
@@ -40,8 +46,14 @@ public class GcnAwsLambda extends AwsLambda {
      * @param customRuntime AwsLambdaCustomRuntime feature
      */
     public GcnAwsLambda(ShadePlugin shadePlugin,
-                        AwsLambdaCustomRuntime customRuntime) {
-        super(shadePlugin, customRuntime);
+                        AwsLambdaCustomRuntime customRuntime,
+                        X86 x86,
+                        AwsLambdaSnapstart snapstart,
+                        HttpClient httpClient,
+                        AwsLambdaEventsSerde awsLambdaEventsSerde,
+                        DefaultAwsLambdaHandlerProvider defaultAwsLambdaHandlerProvider,
+                        FunctionAwsLambdaHandlerProvider functionAwsLambdaHandlerProvider) {
+        super(shadePlugin, customRuntime, x86, snapstart, httpClient, awsLambdaEventsSerde, defaultAwsLambdaHandlerProvider, functionAwsLambdaHandlerProvider);
     }
 
     @Override
@@ -50,4 +62,5 @@ public class GcnAwsLambda extends AwsLambda {
             super.apply(generatorContext);
         }
     }
+
 }

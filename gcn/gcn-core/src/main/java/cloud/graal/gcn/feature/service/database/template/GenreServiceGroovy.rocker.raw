@@ -11,7 +11,7 @@ import groovy.transform.CompileStatic
 import io.micronaut.data.model.Pageable
 import jakarta.inject.Singleton
 
-import javax.transaction.Transactional
+import jakarta.transaction.Transactional
 
 @@CompileStatic
 @@Singleton

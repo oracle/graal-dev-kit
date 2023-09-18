@@ -53,7 +53,7 @@ public class GcpStreaming extends AbstractStreamingFeature {
         //      fetch:
         //        bytes: 1048576
         ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("kafka.bootstrap.servers", "${OCI_STREAM_POOL_FQDN}:9092");
+        config.addNested("kafka.bootstrap.servers", "${KAFKA_BOOTSTRAP_SERVERS}");
         config.addNested("kafka.max.partition.fetch.bytes", 1048576);
         config.addNested("kafka.max.request.size", 1048576);
         config.addNested("kafka.retries", 3);

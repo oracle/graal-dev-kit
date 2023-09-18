@@ -20,11 +20,14 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.Repository;
-import io.micronaut.starter.build.dependencies.Coordinate;
+import io.micronaut.starter.build.dependencies.DependencyCoordinate;
+import io.micronaut.starter.build.dependencies.Scope;
 import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.build.maven.MavenRepository;
+import io.micronaut.starter.feature.build.maven.templates.mavenPlugin;
+import io.micronaut.starter.template.RockerWritable;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -32,7 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import static io.micronaut.starter.build.Repository.micronautRepositories;
 
 /**
  * Extends MavenBuildCreator to add the Oracle Maven repo.
@@ -44,13 +46,14 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
 
     @NonNull
     @Override
-    public MavenBuild create(GeneratorContext generatorContext) {
-        MavenBuild build = super.create(generatorContext);
+    public MavenBuild create(GeneratorContext generatorContext, List<Repository> repositories) {
+
+        MavenBuild build = super.create(generatorContext, repositories);
 
         List<MavenPlugin> plugins = generatorContext.getBuildPlugins()
                 .stream()
                 .filter(MavenPlugin.class::isInstance)
-                .map(MavenPlugin.class::cast)
+                .map(plugin -> cloneMicronautPlugin((MavenPlugin) plugin))
                 .sorted(OrderUtil.COMPARATOR)
                 .collect(Collectors.toList());
 
@@ -61,21 +64,23 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
                 build.getDependencies(),
                 build.getProperties(),
                 plugins,
-                getRepositories(),
+                MavenRepository.listOf(repositories),
                 build.getAnnotationProcessorCombineAttribute(),
                 build.getTestAnnotationProcessorCombineAttribute(),
-                build.getProfiles());
+                build.getProfiles(),
+                generatorContext.getDependencies().stream().filter(dep -> dep.getScope() == Scope.AOT_PLUGIN).map(DependencyCoordinate::new).toList());
     }
 
-    @NonNull
-    @Override
-    protected List<MavenRepository> getRepositories() {
-        List<Repository> repositories = micronautRepositories();
-        repositories.add(0, new GcnRepository());
-        return MavenRepository.listOf(repositories);
-    }
-
-    private List<Coordinate> deduplicate(List<Coordinate> annotationProcessors) {
+    private List<DependencyCoordinate> deduplicate(List<DependencyCoordinate> annotationProcessors) {
         return new ArrayList<>(new LinkedHashSet<>(annotationProcessors));
+    }
+
+    private MavenPlugin cloneMicronautPlugin(MavenPlugin plugin) {
+        mavenPlugin extensionModel = (mavenPlugin) ((RockerWritable) plugin.getExtension()).getModel();
+        return new MavenPlugin(
+                plugin.getArtifactId(),
+                new RockerWritable(mavenPlugin.template(
+                        extensionModel.groupId(),
+                        extensionModel.artifactId())), 0);
     }
 }

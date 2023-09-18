@@ -64,7 +64,7 @@ public class AwsSecurity extends AbstractSecurityFeature {
         config.addNested("micronaut.security.authentication", "idtoken");
         config.addNested("micronaut.security.oauth2.clients.cognito.client-id", "${OAUTH_CLIENT_ID:xxx}");
         config.addNested("micronaut.security.oauth2.clients.cognito.client-secret", "${OAUTH_CLIENT_SECRET:yyy}");
-        config.addNested("micronaut.security.oauth2.clients.cognito.openid.issuer", "https://cognito-idp.${COGNITO_REGION:zzz}.amazonaws.com/${COGNITO_POOL_ID:www}/");
+        config.addNested("micronaut.security.oauth2.clients.cognito.openid.issuer", "https://cognito-idp.${COGNITO_REGION:zzz}.amazonaws.com/${COGNITO_POOL_ID:www}");
         config.addNested("micronaut.security.endpoints.logout.get-allowed", true);
     }
 

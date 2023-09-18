@@ -25,10 +25,12 @@ import java.util.Set;
  */
 public final class GcnTestedFeatures {
 
+    /**
+     * Names of tested features.
+     */
     public static final Set<String> TESTED_FEATURE_NAMES = Set.of(
             // COMMON
             "graalvm",
-            "http-client",
             "reactor",
             "test-resources",
             // SECURITY
@@ -90,10 +92,7 @@ public final class GcnTestedFeatures {
             "tracing-opentelemetry-xray",
             // TRACING GCP
             "tracing-opentelemetry-exporter-gcp",
-            "tracing-opentelemetry-gcp",
-            // TRACING OCI
-            "tracing-opentelemetry-zipkin",
-            "tracing-opentelemetry-exporter-zipkin"
+            "tracing-opentelemetry-gcp"
     );
 
     private GcnTestedFeatures() {

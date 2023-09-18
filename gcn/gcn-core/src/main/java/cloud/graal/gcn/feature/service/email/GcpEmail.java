@@ -18,6 +18,7 @@ package cloud.graal.gcn.feature.service.email;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -29,6 +30,10 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
  */
 @Singleton
 public class GcpEmail extends AbstractEmailFeature {
+
+    public GcpEmail(MicronautValidationFeature micronautValidationFeature) {
+        super(micronautValidationFeature);
+    }
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {

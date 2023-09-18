@@ -18,6 +18,7 @@ package cloud.graal.gcn.feature.service.streaming;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
 
@@ -41,6 +42,9 @@ public class NonCloudStreaming extends AbstractStreamingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
+        ApplicationConfiguration config = generatorContext.getConfiguration();
+        config.addNested("kafka.bootstrap.servers", "localhost:9092");
+        config.addNested("kafka.enabled", "true");
     }
 
     @Override

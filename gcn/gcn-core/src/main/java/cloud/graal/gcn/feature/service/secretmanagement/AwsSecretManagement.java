@@ -113,7 +113,7 @@ public class AwsSecretManagement extends AbstractSecretManagementFeature {
                     SdkHttpClientTestKotest.template(project));
         }
 
-        for (ApplicationConfiguration config: List.of(generatorContext.getDevConfiguration(), generatorContext.getConfiguration())) {
+        for (ApplicationConfiguration config : List.of(generatorContext.getDevConfiguration(), generatorContext.getConfiguration())) {
             config.remove("micronaut.security.oauth2.clients.default.client-id");
             config.remove("micronaut.security.oauth2.clients.default.client-secret");
             config.addNested("micronaut.security.oauth2.clients.demo-oauth.client-id", "${OAUTH_CLIENT_ID:XXX}");

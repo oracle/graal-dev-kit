@@ -19,7 +19,7 @@ import cloud.graal.gcn.feature.GcnFeature;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.feature.GcnFeatures;
 import cloud.graal.gcn.model.GcnCloud;
-import cloud.graal.gcn.template.GcnYamlTemplate;
+import cloud.graal.gcn.template.GcnPropertiesTemplate;
 import cloud.graal.gcn.template.TemplatePostProcessor;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.core.annotation.NonNull;
@@ -39,6 +39,7 @@ import io.micronaut.starter.feature.ApplicationFeature;
 import io.micronaut.starter.feature.DefaultFeature;
 import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.feature.RequireEagerSingletonInitializationFeature;
+import io.micronaut.starter.feature.aws.AwsCloudFeature;
 import io.micronaut.starter.feature.build.BuildFeature;
 import io.micronaut.starter.feature.build.BuildPluginFeature;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
@@ -54,6 +55,7 @@ import io.micronaut.starter.feature.testresources.TestResources;
 import io.micronaut.starter.options.DefaultTestRockerModelProvider;
 import io.micronaut.starter.options.Language;
 import io.micronaut.starter.options.TestRockerModelProvider;
+import io.micronaut.starter.template.PropertiesTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.Template;
 import io.micronaut.starter.template.URLTemplate;
@@ -74,7 +76,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static cloud.graal.gcn.GcnUtils.APP_MODULE;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
+import static cloud.graal.gcn.model.GcnCloud.AWS;
 import static cloud.graal.gcn.model.GcnCloud.NONE;
 import static io.micronaut.context.env.Environment.DEVELOPMENT;
 import static io.micronaut.context.env.Environment.FUNCTION;
@@ -105,15 +109,18 @@ public class GcnGeneratorContext extends GeneratorContext {
     private static final String PLUGIN_GRADLE_AZUREFUNCTIONS = "com.microsoft.azure.azurefunctions";
     private static final String PLUGIN_MAVEN_AZUREFUNCTIONS = "azure-functions-maven-plugin";
     private static final Map<String, String> PLUGIN_GAVS = Map.of(
-            "com.github.johnrengelman.shadow:7.1.2", "gradle.plugin.com.github.johnrengelman:shadow:7.1.2",
-            "io.micronaut.application:3.7.2", "io.micronaut.gradle:micronaut-gradle-plugin:3.7.2",
-            "io.micronaut.library:3.7.2", "io.micronaut.gradle:micronaut-gradle-plugin:3.7.2",
-            "io.micronaut.test-resources:3.7.2", "io.micronaut.gradle:micronaut-test-resources-plugin:3.7.2",
-            "org.jetbrains.kotlin.jvm:1.6.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21",
-            "org.jetbrains.kotlin.kapt:1.6.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21",
-            "org.jetbrains.kotlin.plugin.allopen:1.6.21", "org.jetbrains.kotlin:kotlin-allopen:1.6.21",
-            "com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0"
+            "com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1",
+            "io.micronaut.application:4.0.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.2",
+            "io.micronaut.library:4.0.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.2",
+            "io.micronaut.test-resources:4.0.2", "io.micronaut.gradle:micronaut-test-resources-plugin:4.0.2",
+            "org.jetbrains.kotlin.jvm:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
+            "org.jetbrains.kotlin.kapt:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
+            "org.jetbrains.kotlin.plugin.allopen:1.8.22", "org.jetbrains.kotlin:kotlin-allopen:1.8.22",
+            "com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0",
+            "io.micronaut.aot:4.0.2", "io.micronaut.gradle:micronaut-aot-plugin:4.0.2",
+            "com.google.devtools.ksp:1.8.22-1.0.11", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.8.22-1.0.11"
     );
+    private static final String ORACLE_REPOSITORY_VERSION = "-oracle-00001";
 
     private GcnCloud cloud = NONE;
     private boolean hideLibFeatures;
@@ -156,7 +163,7 @@ public class GcnGeneratorContext extends GeneratorContext {
         clouds = new HashSet<>(cloudFeatures.keySet());
         clouds.add(NONE); // for lib module
         buildProperties = new GcnBuildProperties(this, clouds);
-        buildProperties.put(key, VersionInfo.getMicronautVersion());
+        buildProperties.put(key, VersionInfo.getMicronautVersion() + ORACLE_REPOSITORY_VERSION);
     }
 
     private static Map<GcnCloud, GcnFeatures> splitFeatures(Set<Feature> allFeatures,
@@ -169,7 +176,21 @@ public class GcnGeneratorContext extends GeneratorContext {
         Set<Feature> defaultFeatures = new HashSet<>();
         Set<Feature> specifiedFeatures = new HashSet<>();
 
+        Collection<GcnCloud> initialClouds = new HashSet<>();
         for (Feature feature : allFeatures) {
+            if (feature instanceof GcnFeature) {
+                initialClouds.add(((GcnFeature) feature).getCloud());
+            }
+        }
+
+        for (Feature feature : allFeatures) {
+
+            if (feature instanceof AwsCloudFeature && !initialClouds.contains(AWS)) {
+                // AwsLambda implements DefaultFeature but causes problems when generating for non-AWS apps,
+                // and brings in other AWS features that implement AwsCloudFeature.
+                continue;
+            }
+
             if (feature instanceof DefaultFeature &&
                     !(feature instanceof AwsLambda) &&
                     !(feature instanceof BuildFeature)) {
@@ -665,10 +686,10 @@ public class GcnGeneratorContext extends GeneratorContext {
         }
 
         if (!template.getModule().equals(ROOT)) {
-            if (template instanceof GcnYamlTemplate) {
-                if (isPlatformIndependent() && template.getModule().equals(LIB_MODULE)) {
+            if (template instanceof GcnPropertiesTemplate) {
+                if (isPlatformIndependent() && (template.getModule().equals(LIB_MODULE) || template.getModule().equals(APP_MODULE))) {
                     // for platform independent, re-route non-root templates to root
-                    template = new GcnYamlTemplate(ROOT, template.getPath(), ((GcnYamlTemplate) template).getOriginalConfig());
+                    template = new GcnPropertiesTemplate(ROOT, template.getPath(), ((GcnPropertiesTemplate) template).getOriginalConfig());
                 }
             } else if (template instanceof RockerTemplate) {
 
@@ -734,11 +755,11 @@ public class GcnGeneratorContext extends GeneratorContext {
             return false;
         }
 
-        if (template instanceof GcnYamlTemplate &&
+        if (template instanceof PropertiesTemplate &&
                 template.getModule().equals("lib") &&
                 "application-config".equals(name)) {
 
-            return true; // application.yml
+            return true; // application.properties
         }
 
         if (!(template instanceof RockerTemplate)) {
@@ -936,6 +957,8 @@ public class GcnGeneratorContext extends GeneratorContext {
      * Workaround for <a href="https://github.com/gradle/gradle/issues/17559">this Gradle bug</a>.
      * This is called from the buildSrc/build.gradle template to lookup the Maven G/A/V
      * coordinates for all plugins in all modules.
+     *
+     * @return the GAV strings, e.g. "io.micronaut.gradle:micronaut-test-resources-plugin:3.7.7"
      */
     public Set<String> getBuildPluginsGAV() {
 

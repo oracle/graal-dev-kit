@@ -15,9 +15,12 @@
  */
 package cloud.graal.gcn.feature;
 
+import cloud.graal.gcn.feature.create.GcnRepository;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.Repository;
+import io.micronaut.starter.build.RequiresRepository;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.feature.DefaultFeature;
@@ -25,6 +28,7 @@ import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.options.Options;
 import jakarta.inject.Singleton;
 
+import java.util.List;
 import java.util.Set;
 
 /**
@@ -33,12 +37,13 @@ import java.util.Set;
  * @since 1.0.0
  */
 @Singleton
-public class GcnBom implements DefaultFeature {
+public class GcnBom implements DefaultFeature, RequiresRepository {
 
     private static final Dependency BOM = Dependency.builder()
             .groupId("cloud.graal.gcn")
             .artifactId("gcn-bom")
-            .version("1.0")
+            .version("2.0")
+            //.version("2.0")
             .pom()
             .compile()
             .build();
@@ -73,5 +78,10 @@ public class GcnBom implements DefaultFeature {
     @Override
     public boolean isVisible() {
         return false;
+    }
+
+    @Override
+    public @NonNull List<Repository> getRepositories() {
+        return List.of(new GcnRepository());
     }
 }

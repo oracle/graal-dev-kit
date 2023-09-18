@@ -18,6 +18,7 @@ package cloud.graal.gcn.feature.service.k8s;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.k8s.KubernetesClient;
+import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -33,8 +34,8 @@ public class GcpK8s extends AbstractK8sFeature {
     /**
      * @param kubernetesClient KubernetesClient feature
      */
-    public GcpK8s(KubernetesClient kubernetesClient) {
-        super(kubernetesClient);
+    public GcpK8s(KubernetesClient kubernetesClient, Management management) {
+        super(kubernetesClient, management);
     }
 
     @NonNull

@@ -53,6 +53,7 @@ public class GcpTracing extends AbstractTracingFeature {
 
     @Override
     public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
         featureContext.addFeature(openTelemetryGoogleCloudTrace, OpenTelemetryGoogleCloudTrace.class);
     }
 

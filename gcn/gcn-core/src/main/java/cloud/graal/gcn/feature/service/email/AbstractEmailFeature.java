@@ -19,6 +19,9 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.application.ApplicationType;
+import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 
 import static cloud.graal.gcn.model.GcnService.EMAIL;
 
@@ -29,10 +32,27 @@ import static cloud.graal.gcn.model.GcnService.EMAIL;
  */
 public abstract class AbstractEmailFeature extends AbstractGcnServiceFeature {
 
+    private final MicronautValidationFeature micronautValidationFeature;
+
+    protected AbstractEmailFeature(MicronautValidationFeature micronautValidationFeature) {
+        this.micronautValidationFeature = micronautValidationFeature;
+    }
+
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
+
+        applyForLib(generatorContext, () -> {
+            micronautValidationFeature.apply(generatorContext);
+        });
+
         addLibPlaceholders(generatorContext);
         doApply(generatorContext);
+        if (generatorContext.getApplicationType() == ApplicationType.FUNCTION) {
+            generatorContext.addDependency(Dependency.builder()
+                    .groupId("io.micronaut")
+                    .artifactId("micronaut-http-server-netty")
+                    .testRuntime());
+        }
     }
 
     /**

@@ -5,10 +5,10 @@
 package @(project.getPackageName());
 
 }
+import io.micronaut.tracing.annotation.NewSpan;
+import io.micronaut.tracing.annotation.SpanTag;
 import io.opentelemetry.api.trace.Span;
 import io.opentelemetry.api.trace.Tracer;
-import io.opentelemetry.extension.annotations.SpanAttribute;
-import io.opentelemetry.extension.annotations.WithSpan;
 import jakarta.inject.Singleton;
 
 import java.util.Collection;
@@ -38,8 +38,8 @@ public class InventoryService {
         return inventory.keySet();
     }
 
-    @@WithSpan("stock-counts") // <2>
-    public Map<String, Integer> getStockCounts(@@SpanAttribute("inventory.item") String item) { // <3>
+    @@NewSpan("stock-counts") // <2>
+    public Map<String, Integer> getStockCounts(@@SpanTag("inventory.item") String item) { // <3>
         Map<String, Integer> counts = new HashMap<>();
         if (inventory.containsKey(item)) {
             int count = inventory.get(item);
