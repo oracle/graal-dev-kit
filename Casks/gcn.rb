@@ -1,9 +1,9 @@
 cask 'gcn' do
     arch arm: 'aarch64', intel: 'amd64'
    
-    version '3.8.5'
-    sha256 arm:   '0f9c278ee7ee1f2e8a3502eb1915b30920acd77c5abcd3d548049210e25cc7bb',
-           intel: '01f64f750450f2fc89228b448bd050311cb56c79b9638e4826c9b2637d7543a7'
+    version '4.0.3'
+    sha256 arm:   'f770237c9e9e9335821d43f272dc0cf60cbc9fa083854f4c3360e007db52c3b0',
+           intel: 'a5b11ce6d879c89bbee12ec9262860fa8fbb6d8e2b9a84ac32a9f42770a36db1'
   
     url "https://github.com/oracle/gcn/releases/download/#{version}/gcn-cli-#{version}-macos-#{arch}.tar.gz"
     appcast 'https://github.com/oracle/gcn/releases.atom'
