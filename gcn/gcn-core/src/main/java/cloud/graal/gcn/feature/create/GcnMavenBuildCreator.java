@@ -35,7 +35,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
-
 /**
  * Extends MavenBuildCreator to add the Oracle Maven repo.
  *

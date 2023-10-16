@@ -10,7 +10,7 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>cloud.graal.gcn</groupId>
   <artifactId>gcn-bom</artifactId>
-  <version>2.0</version>
+  <version>2.1</version>
   <packaging>pom</packaging>
   <name>GCN</name>
   <description>Graal Cloud Native</description>
@@ -35,29 +35,29 @@
   </developers>
   <properties>
     <oci.sdk.version>3.25.1</oci.sdk.version>
-    <micronaut.aws.cloudwatch.logging>4.0.4</micronaut.aws.cloudwatch.logging>
+    <micronaut.platform.version>4.0.7-oracle-00001</micronaut.platform.version>
     <micronaut.micrometer.version>5.0.1-oracle-00001</micronaut.micrometer.version>
     <micronaut.tracing.version>5.0.2-oracle-00001</micronaut.tracing.version>
     <micronaut.serialization.version>2.0.2-oracle-00001</micronaut.serialization.version>
-    <micronaut.kafka.version>5.0.2-oracle-00001</micronaut.kafka.version>
-    <micronaut.flyway.version>6.0.1-oracle-00001</micronaut.flyway.version>
+    <micronaut.kafka.version>5.0.3-oracle-00001</micronaut.kafka.version>
+    <micronaut.flyway.version>6.0.2-oracle-00001</micronaut.flyway.version>
     <micronaut.discovery.version>4.0.1-oracle-00001</micronaut.discovery.version>
     <micronaut.oraclecloud.version>3.0.4-oracle-00001</micronaut.oraclecloud.version>
     <micronaut.openapi.version>5.0.1-oracle-00001</micronaut.openapi.version>
-    <micronaut.cache.version>4.0.1-oracle-00001</micronaut.cache.version>
+    <micronaut.cache.version>4.0.2-oracle-00001</micronaut.cache.version>
     <micronaut.mongo.version>5.0.1-oracle-00001</micronaut.mongo.version>
-    <micronaut.security.version>4.0.3-oracle-00001</micronaut.security.version>
+    <micronaut.security.version>4.0.4-oracle-00001</micronaut.security.version>
     <micronaut.data.version>4.0.4-oracle-00001</micronaut.data.version>
-    <micronaut.liquibase.version>6.0.1-oracle-00001</micronaut.liquibase.version>
+    <micronaut.liquibase.version>6.0.2-oracle-00001</micronaut.liquibase.version>
     <micronaut.object.storage.version>2.0.3-oracle-00001</micronaut.object.storage.version>
     <micronaut.email.version>2.0.2-oracle-00001</micronaut.email.version>
     <micronaut.sql.version>5.0.1-oracle-00001</micronaut.sql.version>
-    <micronaut.core.version>4.0.3-oracle-00001</micronaut.core.version>
-    <micronaut.reactor.version>3.0.1-oracle-00001</micronaut.reactor.version>
-    <micronaut.jaxrs.version>4.0.1-oracle-00001</micronaut.jaxrs.version>
+    <micronaut.core.version>4.0.6-oracle-00001</micronaut.core.version>
+    <micronaut.reactor.version>3.0.2-oracle-00001</micronaut.reactor.version>
+    <micronaut.jaxrs.version>4.0.2-oracle-00001</micronaut.jaxrs.version>
     <micronaut.picocli.version>5.0.1-oracle-00001</micronaut.picocli.version>
     <micronaut.kubernetes.version>5.0.1-oracle-00001</micronaut.kubernetes.version>
-    <micronaut.validation.version>4.0.1-oracle-00001</micronaut.validation.version>
+    <micronaut.validation.version>4.0.3-oracle-00001</micronaut.validation.version>
   </properties>
   <dependencyManagement>
     <dependencies>
@@ -214,7 +214,7 @@
       <dependency>
         <groupId>io.micronaut.platform</groupId>
         <artifactId>micronaut-parent</artifactId>
-        <version>${micronaut.core.version}</version>
+        <version>${micronaut.platform.version}</version>
         <type>pom</type>
       </dependency>
       <dependency>
@@ -429,12 +429,6 @@
         <type>pom</type>
         <scope>import</scope>
       </dependency>
-      <dependency>
-        <groupId>io.micronaut.aws</groupId>
-        <artifactId>micronaut-aws-cloudwatch-logging</artifactId>
-        <version>${micronaut.aws.cloudwatch.logging}</version>
-      </dependency>
-
       <dependency>
         <groupId>com.fnproject.fn</groupId>
         <artifactId>api</artifactId>
