@@ -60,7 +60,6 @@ import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.Template;
 import io.micronaut.starter.template.URLTemplate;
 import io.micronaut.starter.util.NameUtils;
-import io.micronaut.starter.util.VersionInfo;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -77,6 +76,7 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.GcnUtils.APP_MODULE;
+import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
 import static cloud.graal.gcn.model.GcnCloud.AWS;
 import static cloud.graal.gcn.model.GcnCloud.NONE;
@@ -110,9 +110,9 @@ public class GcnGeneratorContext extends GeneratorContext {
     private static final String PLUGIN_MAVEN_AZUREFUNCTIONS = "azure-functions-maven-plugin";
     private static final Map<String, String> PLUGIN_GAVS = Map.of(
             "com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1",
-            "io.micronaut.application:4.0.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.2",
-            "io.micronaut.library:4.0.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.2",
-            "io.micronaut.test-resources:4.0.2", "io.micronaut.gradle:micronaut-test-resources-plugin:4.0.2",
+            "io.micronaut.application:4.0.3", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.3",
+            "io.micronaut.library:4.0.3", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.3",
+            "io.micronaut.test-resources:4.0.3", "io.micronaut.gradle:micronaut-test-resources-plugin:4.0.3",
             "org.jetbrains.kotlin.jvm:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
             "org.jetbrains.kotlin.kapt:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
             "org.jetbrains.kotlin.plugin.allopen:1.8.22", "org.jetbrains.kotlin:kotlin-allopen:1.8.22",
@@ -120,7 +120,6 @@ public class GcnGeneratorContext extends GeneratorContext {
             "io.micronaut.aot:4.0.2", "io.micronaut.gradle:micronaut-aot-plugin:4.0.2",
             "com.google.devtools.ksp:1.8.22-1.0.11", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.8.22-1.0.11"
     );
-    private static final String ORACLE_REPOSITORY_VERSION = "-oracle-00001";
 
     private GcnCloud cloud = NONE;
     private boolean hideLibFeatures;
@@ -163,7 +162,7 @@ public class GcnGeneratorContext extends GeneratorContext {
         clouds = new HashSet<>(cloudFeatures.keySet());
         clouds.add(NONE); // for lib module
         buildProperties = new GcnBuildProperties(this, clouds);
-        buildProperties.put(key, VersionInfo.getMicronautVersion() + ORACLE_REPOSITORY_VERSION);
+        buildProperties.put(key, GcnVersionInfo.getMicronautVersion() + BOM_VERSION_SUFFIX);
     }
 
     private static Map<GcnCloud, GcnFeatures> splitFeatures(Set<Feature> allFeatures,

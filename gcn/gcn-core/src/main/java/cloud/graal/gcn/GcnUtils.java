@@ -16,7 +16,6 @@
 package cloud.graal.gcn;
 
 import io.micronaut.starter.options.JdkVersion;
-import io.micronaut.starter.util.VersionInfo;
 
 import java.util.List;
 
@@ -66,6 +65,6 @@ public final class GcnUtils {
      * @return the version of Micronaut
      */
     public static String getMicronautVersion() {
-        return VersionInfo.getMicronautVersion();
+        return GcnVersionInfo.getMicronautVersion();
     }
 }

@@ -15,15 +15,15 @@
  */
 package cloud.graal.gcn.template;
 
+import cloud.graal.gcn.GcnVersionInfo;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.util.VersionInfo;
 
 import java.util.regex.Pattern;
 
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 
 /**
- * MavenPlatformIndependentPostProcessor fixes parent element in platform idependent pom.xml and multimodule root pom.xml
+ * Fixes parent element in platform independent pom.xml and multi-module root pom.xml.
  */
 public class MavenPlatformPostProcessor implements TemplatePostProcessor {
 
@@ -31,25 +31,15 @@ public class MavenPlatformPostProcessor implements TemplatePostProcessor {
     private static final String PARENT_START = "  <parent>";
     private static final Pattern VERSION_PATTERN = Pattern.compile("<version>.+</version>");
 
-    public MavenPlatformPostProcessor() {
-    }
-
     @NonNull
     @Override
     public String process(@NonNull String pom) {
-        pom = fixParent(pom);
-        return pom;
-    }
-
-    @NonNull
-    private String fixParent(@NonNull String pom) {
         int start = pom.indexOf(PARENT_START);
         int end = pom.indexOf(PARENT_END, start) + PARENT_END.length();
         String top = pom.substring(0, start);
         String bottom = pom.substring(end);
         String parent = pom.substring(start, end);
-        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", VersionInfo.getMicronautVersion() + BOM_VERSION_SUFFIX));
+        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", GcnVersionInfo.getMicronautVersion() + BOM_VERSION_SUFFIX));
         return top + parent + bottom;
     }
-
 }

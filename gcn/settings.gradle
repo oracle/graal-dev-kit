@@ -24,7 +24,7 @@ file('.').eachDir {
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-String micronautVersion = new File(rootProject.projectDir, 'micronautVersion.txt').text.trim()
+String micronautPlatformVersion = new File(rootProject.projectDir, 'micronautPlatformVersion.txt').text.trim()
 
 dependencyResolutionManagement {
     repositories {
@@ -35,7 +35,7 @@ dependencyResolutionManagement {
     }
     versionCatalogs {
         mnLibs {
-            from 'io.micronaut.platform:micronaut-platform:' + micronautVersion
+            from 'io.micronaut.platform:micronaut-platform:' + micronautPlatformVersion
         }
     }
 }

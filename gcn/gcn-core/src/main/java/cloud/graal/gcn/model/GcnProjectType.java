@@ -36,7 +36,12 @@ public enum GcnProjectType {
     /**
      * A gateway function project.
      */
-    GATEWAY_FUNCTION(ApplicationType.DEFAULT, "Gateway Function", "create-gateway-function");
+    GATEWAY_FUNCTION(ApplicationType.DEFAULT, "Gateway Function", "create-gateway-function"),
+
+    /**
+     * A Spring boot application project.
+     */
+    SPRING_BOOT_APPLICATION(ApplicationType.DEFAULT, "Spring Boot Application", "create-spring-boot-app");
 
     /**
      * The default type.

@@ -164,7 +164,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     }
 
     @NonNull
-    // TODO: remove when base image is updated inside maven plugin
+    // TODO remove when base image is updated inside maven plugin
     private String fixDefaultBaseImage(@NonNull String pom) {
         int start = pom.indexOf("micronaut-maven-plugin");
         if (start == -1) {

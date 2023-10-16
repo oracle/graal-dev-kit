@@ -42,8 +42,7 @@ public class GcnBom implements DefaultFeature, RequiresRepository {
     private static final Dependency BOM = Dependency.builder()
             .groupId("cloud.graal.gcn")
             .artifactId("gcn-bom")
-            .version("2.0")
-            //.version("2.0")
+            .version("2.1")
             .pom()
             .compile()
             .build();
