@@ -9,7 +9,7 @@ You can use GCN by generating an application using either the [Launcher on the G
 
 ### MacOS
 
-#### Homebrew
+##### Homebrew
 
 Setup the tap for the cask:
 
@@ -23,7 +23,33 @@ Then install the GCN CLI tool:
 brew install gcn
 ```
 
-#### Other Platforms
+##### SDKMAN
+
+Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash file)
+```sh
+curl -s "https://get.sdkman.io" | bash
+```
+Install GCN CLI
+
+```sh
+sdk install gcn
+```
+
+### Linux
+
+##### SDKMAN
+
+Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash file)
+```sh
+curl -s "https://get.sdkman.io" | bash
+```
+Install GCN CLI
+
+```sh
+sdk install gcn
+```
+
+### Other Platforms
 
 Get the binary from https://github.com/oracle/gcn/releases  
 
