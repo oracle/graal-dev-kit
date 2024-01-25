@@ -38,7 +38,7 @@ import static cloud.graal.gcn.model.GcnCloud.AWS;
 public class AwsLogging extends AbstractLoggingFeature {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
 
         generatorContext.addDependency(Dependency.builder()
                 .groupId("io.micronaut.aws")

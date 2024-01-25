@@ -17,9 +17,13 @@ package cloud.graal.gcn;
 
 import io.micronaut.starter.options.JdkVersion;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URL;
 import java.util.List;
 
 import static io.micronaut.starter.options.JdkVersion.JDK_17;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Utility methods.
@@ -42,6 +46,16 @@ public final class GcnUtils {
     public static final String APP_MODULE = "app";
 
     /**
+     * The default version of micronaut plugin
+     */
+    public static final String MICRONAUT_MAVEN_PLUGIN_VERSION = "4.3.1";
+
+    /**
+     * The default docker image inside maven builds
+     */
+    public static final String MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE = "frolvlad/alpine-glibc:alpine-3.16";
+
+    /**
      * The default JDK version if none is specified.
      */
     public static final JdkVersion DEFAULT_JDK = JDK_17;
@@ -56,15 +70,28 @@ public final class GcnUtils {
      */
     public static final String BOM_VERSION_SUFFIX = "-oracle-00001";
 
+    private static final String GCN_VERSION;
+
+    static {
+        URL resource = GcnUtils.class.getResource("/micronautPlatformVersion.txt");
+        if (resource == null) {
+            throw new IllegalStateException("Resource /micronautPlatformVersion.txt not found");
+        }
+
+        try (InputStream inputStream = resource.openStream()) {
+            GCN_VERSION = new String(inputStream.readAllBytes(), UTF_8).trim();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     private GcnUtils() {
     }
 
     /**
-     * Used by the REST API.
-     *
-     * @return the version of Micronaut
+     * @return the version of Micronaut Platform
      */
     public static String getMicronautVersion() {
-        return GcnVersionInfo.getMicronautVersion();
+        return GCN_VERSION;
     }
 }

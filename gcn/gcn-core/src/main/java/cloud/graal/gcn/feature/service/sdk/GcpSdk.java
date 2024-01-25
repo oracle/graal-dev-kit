@@ -31,7 +31,7 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 public class GcpSdk extends AbstractSdkFeature {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
         // TODO
     }
 

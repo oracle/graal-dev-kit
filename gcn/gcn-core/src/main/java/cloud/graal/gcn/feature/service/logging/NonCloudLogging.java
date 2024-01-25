@@ -21,7 +21,6 @@ import io.micronaut.core.annotation.NonNull;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud logging service feature.
@@ -32,19 +31,8 @@ import static io.micronaut.starter.template.Template.ROOT;
 public class NonCloudLogging extends AbstractLoggingFeature {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
         // no-op
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

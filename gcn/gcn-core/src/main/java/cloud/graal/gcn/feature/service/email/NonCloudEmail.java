@@ -34,7 +34,6 @@ import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud email service feature.
@@ -119,17 +118,6 @@ public class NonCloudEmail extends AbstractEmailFeature {
             config.addNested("javamail.authentication.username", "${SMTP_USERNAME}");
             config.addNested("javamail.authentication.password", "${SMTP_PASSWORD}");
         }
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

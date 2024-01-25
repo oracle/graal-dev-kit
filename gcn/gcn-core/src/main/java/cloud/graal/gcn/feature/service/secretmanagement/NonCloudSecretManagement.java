@@ -31,8 +31,8 @@ import static cloud.graal.gcn.model.GcnCloud.NONE;
 public class NonCloudSecretManagement extends AbstractSecretManagementFeature {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
-        // TODO code gen
+    public void apply(GcnGeneratorContext generatorContext) {
+        // no-op
     }
 
     @NonNull

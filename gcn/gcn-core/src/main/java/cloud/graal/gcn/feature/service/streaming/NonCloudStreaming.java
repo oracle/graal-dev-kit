@@ -23,7 +23,6 @@ import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud streaming service feature.
@@ -43,19 +42,7 @@ public class NonCloudStreaming extends AbstractStreamingFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("kafka.bootstrap.servers", "localhost:9092");
         config.addNested("kafka.enabled", "true");
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

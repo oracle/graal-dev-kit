@@ -7,7 +7,7 @@
 @import io.micronaut.starter.feature.database.JpaFeature
 @import io.micronaut.starter.feature.Features
 @import io.micronaut.starter.util.VersionInfo
-@import cloud.graal.gcn.GcnVersionInfo
+@import cloud.graal.gcn.GcnUtils
 
 @args (Project project, Features features, MavenBuild mavenBuild)
 
@@ -23,7 +23,7 @@
   <parent>
     <groupId>io.micronaut</groupId>
     <artifactId>micronaut-parent</artifactId>
-    <version>@GcnVersionInfo.getMicronautVersion()</version>
+    <version>@GcnUtils.getMicronautVersion()</version>
   </parent>
 
   <properties>

@@ -38,13 +38,14 @@ public final class GcnTestedFeatures {
             // SECURITY OCI
             "security-oauth2",
             "security-jwt",
-            "views-thymeleaf",
+            "views-jte",
             // DATABASE
             "data",
             "data-jdbc",
             "jdbc-hikari",
             "mysql",
             "flyway",
+            "validation",
             // DATABASE OCI
             "oracle-cloud-atp",
             // EMAIL AWS
@@ -58,6 +59,7 @@ public final class GcnTestedFeatures {
             "logback",
             // METRICS
             "micrometer",
+            "micrometer-annotation",
             "management",
             // METRICS AWS
             "micrometer-cloudwatch",

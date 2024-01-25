@@ -15,7 +15,7 @@
  */
 package cloud.graal.gcn.template;
 
-import cloud.graal.gcn.GcnVersionInfo;
+import cloud.graal.gcn.GcnUtils;
 import io.micronaut.core.annotation.NonNull;
 
 import java.util.regex.Pattern;
@@ -39,7 +39,7 @@ public class MavenPlatformPostProcessor implements TemplatePostProcessor {
         String top = pom.substring(0, start);
         String bottom = pom.substring(end);
         String parent = pom.substring(start, end);
-        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", GcnVersionInfo.getMicronautVersion() + BOM_VERSION_SUFFIX));
+        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", GcnUtils.getMicronautVersion() + BOM_VERSION_SUFFIX));
         return top + parent + bottom;
     }
 }

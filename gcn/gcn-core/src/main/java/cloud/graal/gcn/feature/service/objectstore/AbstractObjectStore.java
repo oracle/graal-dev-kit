@@ -120,8 +120,6 @@ public abstract class AbstractObjectStore extends AbstractGcnServiceFeature {
                     }
                 }
             });
-        } else {
-            addLibPlaceholders(generatorContext);
         }
     }
 

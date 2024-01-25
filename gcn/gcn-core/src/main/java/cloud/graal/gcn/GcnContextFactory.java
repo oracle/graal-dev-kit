@@ -31,11 +31,15 @@ import io.micronaut.starter.feature.DefaultFeature;
 import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.validation.FeatureValidator;
+import io.micronaut.starter.feature.validation.ProjectNameValidator;
 import io.micronaut.starter.io.ConsoleOutput;
 import io.micronaut.starter.options.Options;
 import jakarta.inject.Singleton;
 
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,16 +55,19 @@ public class GcnContextFactory extends ContextFactory {
 
     private final FeatureValidator featureValidator;
     private final CoordinateResolver coordinateResolver;
+    private final ProjectNameValidator projectNameValidator;
 
     /**
      * @param featureValidator   FeatureValidator
      * @param coordinateResolver DefaultCoordinateResolver
      */
     public GcnContextFactory(FeatureValidator featureValidator,
-                             DefaultCoordinateResolver coordinateResolver) {
-        super(featureValidator, coordinateResolver);
+                             DefaultCoordinateResolver coordinateResolver,
+                             ProjectNameValidator projectNameValidator) {
+        super(featureValidator, coordinateResolver, projectNameValidator);
         this.coordinateResolver = coordinateResolver;
         this.featureValidator = featureValidator;
+        this.projectNameValidator = projectNameValidator;
     }
 
     @Override
@@ -90,6 +97,9 @@ public class GcnContextFactory extends ContextFactory {
     public GcnGeneratorContext createGeneratorContext(Project project,
                                                       FeatureContext featureContext,
                                                       ConsoleOutput consoleOutput) {
+        if (project != null) {
+            projectNameValidator.validate(project);
+        }
 
         featureContext.processSelectedFeatures();
 
@@ -97,10 +107,13 @@ public class GcnContextFactory extends ContextFactory {
 
         featureValidator.validatePostProcessing(featureContext.getOptions(), featureContext.getApplicationType(), finalFeatures);
 
+        List<Feature> finalFeaturesList = new ArrayList<>(finalFeatures);
+        finalFeaturesList.sort(Comparator.comparingInt(Feature::getOrder));
+
         return new GcnGeneratorContext(
                 project,
                 (GcnFeatureContext) featureContext,
-                finalFeatures,
+                new LinkedHashSet<>(finalFeaturesList),
                 coordinateResolver);
     }
 }

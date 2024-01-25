@@ -21,7 +21,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.security.SecurityJWT;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
-import io.micronaut.starter.feature.view.Thymeleaf;
+import io.micronaut.starter.feature.view.JTE;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -37,12 +37,12 @@ public class AwsSecurity extends AbstractSecurityFeature {
     /**
      * @param securityOAuth2 SecurityOAuth2 feature
      * @param securityJWT    SecurityJWT feature
-     * @param thymeleaf      Thymeleaf feature
+     * @param jte            JTE feature
      */
     public AwsSecurity(SecurityOAuth2 securityOAuth2,
                        SecurityJWT securityJWT,
-                       Thymeleaf thymeleaf) {
-        super(securityOAuth2, securityJWT, thymeleaf);
+                       JTE jte) {
+        super(securityOAuth2, securityJWT, jte);
     }
 
     @Override

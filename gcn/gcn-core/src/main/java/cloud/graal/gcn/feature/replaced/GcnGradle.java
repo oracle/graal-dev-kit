@@ -18,24 +18,37 @@ package cloud.graal.gcn.feature.replaced;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.buildtool.GcnGradleBuild;
 import cloud.graal.gcn.feature.create.GcnGradleBuildCreator;
+import cloud.graal.gcn.feature.create.gatewayfunction.AbstractGcnCloudGatewayFunction;
 import cloud.graal.gcn.feature.create.template.BuildSrcBuildGradle;
 import cloud.graal.gcn.feature.create.template.EnforceVersionsGroovy;
 import cloud.graal.gcn.feature.create.template.EnforceVersionsKotlin;
 import cloud.graal.gcn.feature.replaced.template.LibBuildGradle;
 import cloud.graal.gcn.feature.replaced.template.LibMicronautGradle;
+import cloud.graal.gcn.feature.replaced.template.gcnGradlePluginJTE;
+import cloud.graal.gcn.model.GcnCloud;
+import cloud.graal.gcn.template.BuildGradlePostProcessor;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.RepositoryResolver;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.gradle.GradleBuild;
+import io.micronaut.starter.build.gradle.GradleDependency;
 import io.micronaut.starter.build.gradle.GradleDsl;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
 import io.micronaut.starter.feature.build.gradle.Gradle;
+import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
+import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
+import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
+import io.micronaut.starter.template.BinaryTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
+import io.micronaut.starter.template.URLTemplate;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -43,6 +56,8 @@ import java.util.List;
 import java.util.Optional;
 
 import static cloud.graal.gcn.GcnGeneratorContext.PLUGIN_SHADOW;
+import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
+import static cloud.graal.gcn.GcnUtils.USE_GRADLE_VERSION_CATALOG;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 import static io.micronaut.starter.build.gradle.GradleDsl.KOTLIN;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.APPLICATION;
@@ -60,10 +75,29 @@ public class GcnGradle extends Gradle {
 
     private static final String ARTIFACT_ID = "micronaut-gradle-plugin";
     private static final String PLUGIN_TEST_RESOURCES = "io.micronaut.test-resources";
+    private static final String GCN_WRAPPER_JAR = WRAPPER_JAR.replaceFirst("gradle/", "gcn_gradle/");
+    private static final String GCN_WRAPPER_PROPS = WRAPPER_PROPS.replaceFirst("gradle/", "gcn_gradle/");
+
+    /**
+     * The plugin id for the Micronaut application plugin.
+     */
+    private static final String APPLICATION_PLUGIN_ID = MicronautApplicationGradlePlugin.Builder.APPLICATION;
+    /**
+     * The plugin id for the Micronaut library plugin.
+     */
+    private static final String LIBRARY_PLUGIN_ID = MicronautApplicationGradlePlugin.Builder.LIBRARY;
+    /**
+     * The plugin id for the JTE plugin.
+     */
+    private static final String JTE_PLUGIN_ID = "gg.jte.gradle";
+
+    private static final GradlePlugin GROOVY_PLUGIN = GradlePlugin.builder().id("groovy").build();
 
     private final CoordinateResolver coordinateResolver;
 
     private final RepositoryResolver repositoryResolver;
+
+    private final GcnGradleBuildCreator gradleBuildCreator;
 
     /**
      * @param gradleBuildCreator GradleBuildCreator bean
@@ -76,6 +110,7 @@ public class GcnGradle extends Gradle {
         super(gradleBuildCreator, repositoryResolver);
         this.coordinateResolver = coordinateResolver;
         this.repositoryResolver = repositoryResolver;
+        this.gradleBuildCreator = gradleBuildCreator;
     }
 
     @Override
@@ -134,10 +169,16 @@ public class GcnGradle extends Gradle {
                 original.getDependencies(), plugins, gradleRepositories);
     }
 
-    // don't delete - this is needed for web image generation
+    // TODO this override is here to upgrade Gradle to v8.5 to add support for JDK 21;
+    //      remove this and the resource files when we've upgrade to a version of Micronaut
+    //      that uses Gradle 8.5+
     @Override
     protected void addGradleInitFiles(GeneratorContext generatorContext) {
-        super.addGradleInitFiles(generatorContext);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        generatorContext.addTemplate("gradleWrapperJar", new BinaryTemplate(ROOT, WRAPPER_JAR, classLoader.getResource(GCN_WRAPPER_JAR)));
+        generatorContext.addTemplate("gradleWrapperProperties", new URLTemplate(ROOT, WRAPPER_PROPS, classLoader.getResource(GCN_WRAPPER_PROPS)));
+        generatorContext.addTemplate("gradleWrapper", new URLTemplate(ROOT, "gradlew", classLoader.getResource("gcn_gradle/gradlew"), true));
+        generatorContext.addTemplate("gradleWrapperBat", new URLTemplate(ROOT, "gradlew.bat", classLoader.getResource("gcn_gradle/gradlew.bat"), false));
     }
 
     private void addBuildSrc(GcnGeneratorContext generatorContext) {
@@ -171,4 +212,149 @@ public class GcnGradle extends Gradle {
 
         return Optional.empty();
     }
+
+    @Override
+    public void apply(GeneratorContext generatorContext) {
+        super.apply(generatorContext);
+        addGradleBuild((GcnGeneratorContext) generatorContext);
+    }
+
+    private void addGradleBuild(GcnGeneratorContext generatorContext) {
+
+        GradleDsl dsl = generatorContext.getBuildTool().getGradleDsl().orElse(GradleDsl.GROOVY);
+
+        GcnCloud reset = generatorContext.getCloud();
+
+        generatorContext.getClouds().forEach(x -> addCloudGradleBuild(generatorContext, dsl, x));
+
+        generatorContext.setCloud(reset);
+
+        // for lib/build.gradle
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
+    }
+
+    private void addCloudGradleBuild(GcnGeneratorContext generatorContext, GradleDsl dsl,
+                                     GcnCloud gcnCloud
+
+    ) {
+        if (gcnCloud == GcnCloud.NONE) {
+            return;
+        }
+
+        generatorContext.setCloud(gcnCloud);
+
+        generatorContext.addDependency(Dependency.builder()
+                .artifactId(LIB_MODULE + "-reference")
+                .groupId("")
+                .compile()
+                .build());
+
+        if (generatorContext.getFeatures().language().isGroovy() || generatorContext.getFeatures().testFramework().isSpock()) {
+            generatorContext.addBuildPlugin(GROOVY_PLUGIN);
+        }
+        List<GradlePlugin> copiedPlugins = new ArrayList<>();
+
+        List<GradlePlugin> plugins = generatorContext.getBuildPlugins()
+                .stream()
+                .filter(GradlePlugin.class::isInstance)
+                .map(GradlePlugin.class::cast)
+                .sorted(OrderUtil.COMPARATOR)
+                .toList();
+
+        for (BuildPlugin p : plugins) {
+            GradlePlugin plugin = (GradlePlugin) p;
+            if (plugin.getExtension() == null && plugin.getSettingsExtension() == null) {
+                // ok to reuse since it has no Rocker templates
+                copiedPlugins.add(plugin);
+            } else {
+                String id = plugin.getId();
+                if (APPLICATION_PLUGIN_ID.equals(id) || LIBRARY_PLUGIN_ID.equals(id)) {
+                    copiedPlugins.add(cloneMicronautPlugin(plugin, generatorContext));
+                } else if (JTE_PLUGIN_ID.equals(id)) {
+                    copiedPlugins.add(cloneJtePlugin(plugin, generatorContext));
+                } else {
+                    throw new IllegalStateException("Unknown build plugin '" + id + "'");
+                }
+            }
+        }
+
+        List<Repository> repositories = repositoryResolver.resolveRepositories(generatorContext);
+
+        GradleBuild original = gradleBuildCreator.create(generatorContext, repositories, USE_GRADLE_VERSION_CATALOG);
+
+        List<GradleDependency> dependencies = GradleDependency.listOf(generatorContext, USE_GRADLE_VERSION_CATALOG);
+
+        GradleBuild build = new GcnGradleBuild(
+                original.getDsl(), dependencies, copiedPlugins,
+                GradleRepository.listOf(dsl, repositories));
+
+        String templateKey = "build-" + gcnCloud.getModuleName();
+        generatorContext.addTemplate(templateKey, new RockerTemplate(gcnCloud.getModuleName(), generatorContext.getBuildTool().getBuildFileName(),
+                buildGradle.template(
+                        generatorContext.getApplicationType(),
+                        generatorContext.getProject(),
+                        generatorContext.getFeatures(gcnCloud),
+                        build)
+        ));
+
+        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
+
+    }
+
+    private GradlePlugin cloneJtePlugin(GradlePlugin plugin,
+                                        GcnGeneratorContext generatorContext) {
+
+        gcnGradlePluginJTE extensionModel = (gcnGradlePluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
+
+        return new GradlePlugin(
+                plugin.getGradleFile(),
+                plugin.getId(),
+                plugin.getVersion(),
+                null,
+                new RockerWritable(gcnGradlePluginJTE.template(
+                        true,
+                        extensionModel.dsl(),
+                        extensionModel.path())),
+                null,
+                plugin.getPluginsManagementRepositories(),
+                false,
+                plugin.getOrder(),
+                plugin.getBuildImports());
+    }
+
+    private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,
+                                              GcnGeneratorContext generatorContext) {
+
+        micronautGradle extensionModel = (micronautGradle) ((RockerWritable) plugin.getExtension()).getModel();
+
+        return new GradlePlugin(
+                plugin.getGradleFile(),
+                plugin.getId(),
+                plugin.getVersion(),
+                null,
+                new RockerWritable(micronautGradle.template(
+                        extensionModel.dsl(),
+                        extensionModel.build(),
+                        extensionModel.javaVersion(),
+                        extensionModel.dockerfile(),
+                        extensionModel.dockerfileNative(),
+                        extensionModel.dockerBuilderImages(),
+                        extensionModel.dockerBuilderNativeImages(),
+                        extensionModel.runtime(),
+                        extensionModel.testRuntime(),
+                        extensionModel.aotVersion(),
+                        extensionModel.incremental(),
+                        generatorContext.getProject().getPackageName(),
+                        extensionModel.additionalTestResourceModules(),
+                        extensionModel.sharedTestResources(),
+                        extensionModel.aotKeys(),
+                        extensionModel.lambdaRuntimeMainClass(),
+                        extensionModel.ignoredAutomaticDependencies())),
+                null,
+                plugin.getPluginsManagementRepositories(),
+                false,
+                plugin.getOrder(),
+                plugin.getBuildImports());
+    }
+
 }

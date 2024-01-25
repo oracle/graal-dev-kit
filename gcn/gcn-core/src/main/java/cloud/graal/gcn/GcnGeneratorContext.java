@@ -68,6 +68,7 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -78,6 +79,10 @@ import java.util.stream.Collectors;
 import static cloud.graal.gcn.GcnUtils.APP_MODULE;
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
+import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE;
+import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_PLUGIN_VERSION;
+import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_GROUP_ID;
+import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_NATIVE_RESOURCES;
 import static cloud.graal.gcn.model.GcnCloud.AWS;
 import static cloud.graal.gcn.model.GcnCloud.NONE;
 import static io.micronaut.context.env.Environment.DEVELOPMENT;
@@ -108,17 +113,21 @@ public class GcnGeneratorContext extends GeneratorContext {
 
     private static final String PLUGIN_GRADLE_AZUREFUNCTIONS = "com.microsoft.azure.azurefunctions";
     private static final String PLUGIN_MAVEN_AZUREFUNCTIONS = "azure-functions-maven-plugin";
-    private static final Map<String, String> PLUGIN_GAVS = Map.of(
-            "com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1",
-            "io.micronaut.application:4.0.3", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.3",
-            "io.micronaut.library:4.0.3", "io.micronaut.gradle:micronaut-gradle-plugin:4.0.3",
-            "io.micronaut.test-resources:4.0.3", "io.micronaut.gradle:micronaut-test-resources-plugin:4.0.3",
-            "org.jetbrains.kotlin.jvm:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
-            "org.jetbrains.kotlin.kapt:1.8.22", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.22",
-            "org.jetbrains.kotlin.plugin.allopen:1.8.22", "org.jetbrains.kotlin:kotlin-allopen:1.8.22",
-            "com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0",
-            "io.micronaut.aot:4.0.2", "io.micronaut.gradle:micronaut-aot-plugin:4.0.2",
-            "com.google.devtools.ksp:1.8.22-1.0.11", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.8.22-1.0.11"
+
+    private static final String GG_JTE_GRADLE = "gg.jte.gradle:3.0.3";
+
+    private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
+            Map.entry("com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1"),
+            Map.entry("io.micronaut.application:4.2.1", "io.micronaut.gradle:micronaut-gradle-plugin:4.2.1"),
+            Map.entry("io.micronaut.library:4.2.1", "io.micronaut.gradle:micronaut-gradle-plugin:4.2.1"),
+            Map.entry("io.micronaut.test-resources:4.2.1", "io.micronaut.gradle:micronaut-test-resources-plugin:4.2.1"),
+            Map.entry("org.jetbrains.kotlin.jvm:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
+            Map.entry("org.jetbrains.kotlin.kapt:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
+            Map.entry("org.jetbrains.kotlin.plugin.allopen:1.9.21", "org.jetbrains.kotlin:kotlin-allopen:1.9.21"),
+            Map.entry("com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0"),
+            Map.entry("io.micronaut.aot:4.2.1", "io.micronaut.gradle:micronaut-aot-plugin:4.2.1"),
+            Map.entry("com.google.devtools.ksp:1.9.21-1.0.15", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.21-1.0.15"),
+            Map.entry(GG_JTE_GRADLE, "gg.jte:jte-gradle-plugin:3.0.3")
     );
 
     private GcnCloud cloud = NONE;
@@ -162,7 +171,11 @@ public class GcnGeneratorContext extends GeneratorContext {
         clouds = new HashSet<>(cloudFeatures.keySet());
         clouds.add(NONE); // for lib module
         buildProperties = new GcnBuildProperties(this, clouds);
-        buildProperties.put(key, GcnVersionInfo.getMicronautVersion() + BOM_VERSION_SUFFIX);
+        buildProperties.put(key, GcnUtils.getMicronautVersion() + BOM_VERSION_SUFFIX);
+
+        // TODO check if can be removed in new version of micronaut
+        buildProperties.put("micronaut.native-image.base-image-run", MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE);
+        buildProperties.put("micronaut-maven-plugin.version", MICRONAUT_MAVEN_PLUGIN_VERSION);
     }
 
     private static Map<GcnCloud, GcnFeatures> splitFeatures(Set<Feature> allFeatures,
@@ -232,7 +245,9 @@ public class GcnGeneratorContext extends GeneratorContext {
 
         Map<GcnCloud, GcnFeatures> split = new HashMap<>(featuresByCloud.size());
         for (Map.Entry<GcnCloud, Set<Feature>> entry : featuresByCloud.entrySet()) {
-            split.put(entry.getKey(), new GcnFeatures(self, entry.getValue(), featureContext.getOptions()));
+            List<Feature> finalFeaturesList = new ArrayList<>(entry.getValue());
+            finalFeaturesList.sort(Comparator.comparingInt(Feature::getOrder));
+            split.put(entry.getKey(), new GcnFeatures(self, new LinkedHashSet<>(finalFeaturesList), featureContext.getOptions()));
         }
 
         return split;
@@ -470,7 +485,19 @@ public class GcnGeneratorContext extends GeneratorContext {
      * @return the features for the cloud
      */
     public GcnFeatures getFeatures(GcnCloud cloud) {
-        return cloudFeatures.get(cloud);
+
+        if (cloud != NONE) {
+            return cloudFeatures.get(cloud);
+        }
+
+        if (hideLibFeatures) {
+            // hide GCN features and features added by them so the
+            // 'features.contains("...")' checks in Rocker templates
+            // return false for the lib module build
+            return new GcnFeatures(this, libFeatures(), featureContext.getOptions());
+        }
+
+        return getLibFeatures();
     }
 
     /**
@@ -711,6 +738,11 @@ public class GcnGeneratorContext extends GeneratorContext {
                     RockerModel model = ((RockerTemplate) template).getWritable().getModel();
                     template = new RockerTemplate(newModule, template.getPath(), model, template.isExecutable());
                 }
+            } else if (template instanceof URLTemplate urlTemplate) {
+                if (name.endsWith(".html")) {
+                    // re-route to lib
+                    template = new URLTemplate(LIB_MODULE, urlTemplate.getPath(), urlTemplate.getUrl(), urlTemplate.isExecutable());
+                }
             }
         }
 
@@ -728,7 +760,7 @@ public class GcnGeneratorContext extends GeneratorContext {
      */
     private void addTemplateInternal(String name, Template template) {
         String templatePath = template.getModule() + "/" + template.getPath();
-        if (presentTemplatePaths.contains(templatePath)) {
+        if (presentTemplatePaths.contains(templatePath) && !name.equals("multi-module-pom")) {
             return;
         }
         presentTemplatePaths.add(templatePath);
@@ -920,18 +952,14 @@ public class GcnGeneratorContext extends GeneratorContext {
      * @return the language-specific ApplicationRenderingContext
      */
     public ApplicationRenderingContext getApplicationRenderingContext(Language language) {
-        String defaultEnvironment = getCloud().getEnvironmentName();
+        String defaultEnvironment = featureContext.getSelectedNames().contains("kubernetes") ? null : getCloud().getEnvironmentName();
         boolean eagerInitSingleton = getFeatures().isFeaturePresent(RequireEagerSingletonInitializationFeature.class);
-        switch (language) {
-            case JAVA:
-                return new JavaApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            case GROOVY:
-                return new GroovyApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            case KOTLIN:
-                return new KotlinApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            default:
-                throw new IllegalStateException("Unexpected language: " + language);
-        }
+        return switch (language) {
+            case JAVA -> new JavaApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
+            case GROOVY -> new GroovyApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
+            case KOTLIN -> new KotlinApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
+            default -> throw new IllegalStateException("Unexpected language: " + language);
+        };
     }
 
     private Project createProject(GcnCloud cloud) {
@@ -975,9 +1003,15 @@ public class GcnGeneratorContext extends GeneratorContext {
             }
             String key = plugin.getId() + ':' + plugin.getVersion();
             String gav = PLUGIN_GAVS.get(key);
+
             if (gav == null) {
                 throw new IllegalStateException("Unexpected Gradle build plugin or version mismatch for '" + key + "'");
             }
+
+            if (key.contains(JTE_GROUP_ID)) {
+                gavs.add(JTE_GROUP_ID + ":" + JTE_NATIVE_RESOURCES + ":" + plugin.getVersion());
+            }
+
             gav = updateVersion(gav);
             gavs.add(gav);
         }

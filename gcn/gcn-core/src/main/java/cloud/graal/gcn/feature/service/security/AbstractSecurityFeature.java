@@ -27,7 +27,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.security.SecurityJWT;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
-import io.micronaut.starter.feature.view.Thymeleaf;
+import io.micronaut.starter.feature.view.JTE;
 import io.micronaut.starter.template.RockerTemplate;
 
 import static cloud.graal.gcn.model.GcnService.SECURITY;
@@ -41,19 +41,19 @@ public abstract class AbstractSecurityFeature extends AbstractGcnServiceFeature 
 
     private final SecurityOAuth2 securityOAuth2;
     private final SecurityJWT securityJWT;
-    private final Thymeleaf thymeleaf;
+    private final JTE jte;
 
     /**
      * @param securityOAuth2 SecurityOAuth2 feature
      * @param securityJWT    SecurityJWT feature
-     * @param thymeleaf      Thymeleaf feature
+     * @param jte            JTE feature
      */
     protected AbstractSecurityFeature(SecurityOAuth2 securityOAuth2,
                                       SecurityJWT securityJWT,
-                                      Thymeleaf thymeleaf) {
+                                      JTE jte) {
         this.securityOAuth2 = securityOAuth2;
         this.securityJWT = securityJWT;
-        this.thymeleaf = thymeleaf;
+        this.jte = jte;
     }
 
     @Override
@@ -69,12 +69,11 @@ public abstract class AbstractSecurityFeature extends AbstractGcnServiceFeature 
                     AuthControllerKotlin.template(project, getAuthControllerNameAttr()),
                     AuthControllerGroovy.template(project, getAuthControllerNameAttr()));
 
-            generatorContext.addTemplate("auth.html-" + getCloud().getModuleName(),
-                    new RockerTemplate(getModuleName(), "src/main/resources/views/auth.html",
+            generatorContext.addTemplate("auth.jte-" + getCloud().getModuleName(),
+                    new RockerTemplate(getModuleName(), "src/main/jte/auth.jte",
                             AuthHtml.template(getAuthHtmlTitle(), getAuthHtmlLogin())));
         }
 
-        addLibPlaceholders(generatorContext);
         doApply(generatorContext);
     }
 
@@ -106,7 +105,7 @@ public abstract class AbstractSecurityFeature extends AbstractGcnServiceFeature 
         featureContext.addFeature(securityJWT, SecurityJWT.class);
 
         if (featureContext.generateExampleCode()) {
-            featureContext.addFeature(thymeleaf, Thymeleaf.class);
+            featureContext.addFeature(jte, JTE.class);
         }
     }
 

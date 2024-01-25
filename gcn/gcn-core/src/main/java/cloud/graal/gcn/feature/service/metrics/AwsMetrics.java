@@ -21,6 +21,7 @@ import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.micrometer.CloudWatch;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
@@ -43,13 +44,15 @@ public class AwsMetrics extends AbstractMetricsFeature {
      */
     public AwsMetrics(CloudWatch cloudWatch,
                       Core core,
-                      Management management) {
-        super(core, management);
+                      Management management,
+                      MicrometerAnnotations micrometerAnnotations) {
+        super(core, management, micrometerAnnotations);
         this.cloudWatch = cloudWatch;
     }
 
     @Override
     public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
         featureContext.addFeature(cloudWatch, CloudWatch.class);
     }
 

@@ -20,10 +20,7 @@ import cloud.graal.gcn.feature.AbstractGcnFeature;
 import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
-import io.micronaut.starter.template.StringTemplate;
 
-import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
 import static io.micronaut.starter.feature.FeaturePhase.DEFAULT;
 
 /**
@@ -91,47 +88,5 @@ public abstract class AbstractGcnServiceFeature extends AbstractGcnFeature {
         } finally {
             generatorContext.setCloud(cloud);
         }
-    }
-
-    /**
-     * Create .gitkeep files if not generating any files in the lib module
-     * to retain the directory structure.
-     *
-     * @param generatorContext the generator context
-     * @param srcOnly          if true don't generate a file in src/main/resources
-     */
-    protected void addLibPlaceholders(GcnGeneratorContext generatorContext,
-                                      boolean srcOnly) {
-        if (generatorContext.isPlatformIndependent()) {
-            return;
-        }
-
-        Project project = generatorContext.getProject();
-
-        if (!srcOnly) {
-            generatorContext.addTemplate("gitkeep-resources",
-                    new StringTemplate(getDefaultModule(), "src/main/resources/.gitkeep", ""));
-        }
-
-        String path = generatorContext.getLanguage().getSrcDir() + '/' + project.getPackagePath() + "/.gitkeep";
-        generatorContext.addTemplate("gitkeep-src",
-                new StringTemplate(getDefaultModule(), path, ""));
-    }
-
-    /**
-     * Create .gitkeep files if not generating any files in the lib module
-     * to retain the directory structure.
-     *
-     * @param generatorContext the generator context
-     */
-    protected void addLibPlaceholders(GcnGeneratorContext generatorContext) {
-        addLibPlaceholders(generatorContext, false);
-    }
-
-    /**
-     * @return the default module - "lib" for cloud services and "" for non-cloud
-     */
-    protected String getDefaultModule() {
-        return LIB_MODULE;
     }
 }

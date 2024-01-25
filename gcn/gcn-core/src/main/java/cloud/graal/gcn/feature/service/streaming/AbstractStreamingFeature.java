@@ -47,9 +47,6 @@ public abstract class AbstractStreamingFeature extends AbstractGcnServiceFeature
 
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
-        if (!generatorContext.generateExampleCode()) {
-            addLibPlaceholders(generatorContext);
-        }
 
         applyForLib(generatorContext, () -> {
             kafka.apply(generatorContext);

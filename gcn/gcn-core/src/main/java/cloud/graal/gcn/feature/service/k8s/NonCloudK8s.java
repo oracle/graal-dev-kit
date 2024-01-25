@@ -22,7 +22,6 @@ import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud Kubernetes service feature.
@@ -37,17 +36,6 @@ public class NonCloudK8s extends AbstractK8sFeature {
      */
     public NonCloudK8s(KubernetesClient kubernetesClient, Management management) {
         super(kubernetesClient, management);
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

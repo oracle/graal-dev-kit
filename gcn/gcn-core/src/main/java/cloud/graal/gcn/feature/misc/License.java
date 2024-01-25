@@ -13,9 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package cloud.graal.gcn.feature;
+package cloud.graal.gcn.feature.misc;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.misc.template.ApacheLicense;
+import cloud.graal.gcn.feature.misc.template.ApacheNotice;
 import cloud.graal.gcn.template.TemplatePostProcessor;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
@@ -31,9 +33,9 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-import static cloud.graal.gcn.feature.License.PomLicensePostProcessor.PATTERN_POM;
-import static cloud.graal.gcn.feature.License.SrcLicensePostProcessor.PATTERN_GRADLE;
-import static cloud.graal.gcn.feature.License.SrcLicensePostProcessor.PATTERN_SRC;
+import static cloud.graal.gcn.feature.misc.License.PomLicensePostProcessor.PATTERN_POM;
+import static cloud.graal.gcn.feature.misc.License.SrcLicensePostProcessor.PATTERN_GRADLE;
+import static cloud.graal.gcn.feature.misc.License.SrcLicensePostProcessor.PATTERN_SRC;
 import static io.micronaut.starter.template.Template.ROOT;
 
 /**
@@ -46,7 +48,7 @@ import static io.micronaut.starter.template.Template.ROOT;
 public class License implements DefaultFeature {
 
     private static final List<String> HEADER_LINES = List.of(
-            "Copyright 2023 Oracle and/or its affiliates",
+            "Copyright 2024 Oracle and/or its affiliates",
             "",
             "Licensed under the Apache License, Version 2.0 (the \"License\");",
             "you may not use this file except in compliance with the License.",

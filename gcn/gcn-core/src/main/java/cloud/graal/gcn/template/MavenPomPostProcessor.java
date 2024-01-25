@@ -15,15 +15,21 @@
  */
 package cloud.graal.gcn.template;
 
+import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Objects;
+import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
+import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE;
 
 /**
  * Fixes a few issues in Maven pom.xml files:
@@ -69,38 +75,71 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     private final boolean libModule;
     private final boolean isGatewayFunction;
     private final ApplicationType applicationType;
+    private final GcnCloud cloud;
 
     public MavenPomPostProcessor(String artifactId,
                                  String groupId,
                                  ApplicationType applicationType,
                                  boolean isGatewayFunction,
+                                 GcnCloud cloud,
                                  boolean libModule) {
         this.artifactId = artifactId;
         this.groupId = groupId;
         this.applicationType = applicationType;
         this.isGatewayFunction = isGatewayFunction;
+        this.cloud = cloud;
         this.libModule = libModule;
     }
 
     @NonNull
     @Override
     public String process(@NonNull String pom) {
+        if (libModule || cloud != GcnCloud.NONE) {
+            pom = fixParent(pom);
+            pom = fixVersion(pom);
+        }
 
-        pom = fixParent(pom);
-        pom = fixVersion(pom);
         pom = fixMicronautVersion(pom);
+
+        pom = fixSourceDirectory(pom);
 
         if (libModule) {
             pom = fixArtifactId(pom);
             pom = fixProcessingModule(pom);
+            pom = fixProperties(pom);
         } else {
             if (applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
                 pom = addDefaultDockerImageName(pom);
             }
         }
-        pom = fixName(pom);
-        pom = fixDefaultBaseImage(pom);
+        if (libModule || cloud != GcnCloud.NONE) {
+            pom = fixName(pom);
+        }
 
+        return pom;
+    }
+
+    private String fixProperties(String pom) {
+        Set<String> itemsToRemove = new HashSet<>();
+        itemsToRemove.add("<micronaut.native-image.base-image-run>%s</micronaut.native-image.base-image-run>".formatted(MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE));
+        List<String> newPom = new ArrayList<>();
+        String[] split = pom.split("\n");
+
+        for (String part: split) {
+            if (!itemsToRemove.contains(part.trim())) {
+                newPom.add(part);
+            }
+        }
+
+        return String.join("\n", newPom) + "\n";
+    }
+
+    private String fixSourceDirectory(@NonNull String pom) {
+        if (libModule) {
+            pom = pom.replaceFirst(" <sourceDirectory>src/main/jte</sourceDirectory>", " <sourceDirectory>lib/src/main/jte</sourceDirectory>");
+        } else if (cloud != GcnCloud.NONE) {
+            pom = pom.replaceFirst(" <sourceDirectory>src/main/jte</sourceDirectory>", " <sourceDirectory>%s/src/main/jte</sourceDirectory>".formatted(this.cloud.getModuleName()));
+        }
         return pom;
     }
 
@@ -161,33 +200,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         String bottom = pom.substring(end);
 
         return top + LIB_MODULE + bottom;
-    }
-
-    @NonNull
-    // TODO remove when base image is updated inside maven plugin
-    private String fixDefaultBaseImage(@NonNull String pom) {
-        int start = pom.indexOf("micronaut-maven-plugin");
-        if (start == -1) {
-            return pom;
-        }
-        int end = pom.indexOf(ARTIFACT_ID_END, start) + ARTIFACT_ID_END.length();
-
-        String top = pom.substring(0, start);
-        String bottom = pom.substring(end);
-        if (bottom.trim().startsWith("<configuration>\n")) {
-            end = bottom.indexOf("<configuration>") + "<configuration>".length();
-            bottom = bottom.substring(end);
-            return top + """
-micronaut-maven-plugin</artifactId>
-          <configuration>
-            <baseImageRun>frolvlad/alpine-glibc:alpine-3.16</baseImageRun>""" + bottom;
-        }
-
-        return top + """
-micronaut-maven-plugin</artifactId>
-        <configuration>
-          <baseImageRun>frolvlad/alpine-glibc:alpine-3.16</baseImageRun>
-        </configuration>""" + bottom;
     }
 
     @NonNull

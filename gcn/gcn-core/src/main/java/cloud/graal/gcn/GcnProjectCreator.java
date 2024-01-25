@@ -40,6 +40,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
+import static io.micronaut.starter.options.BuildTool.GRADLE;
+import static io.micronaut.starter.options.BuildTool.GRADLE_KOTLIN;
+import static io.micronaut.starter.options.Language.KOTLIN;
 
 /**
  * Creates GCN projects. Auto-adds "create" and "service" features based on the
@@ -112,6 +115,10 @@ public class GcnProjectCreator {
 
         if (test == null) {
             test = lang.getDefaults().getTest();
+        }
+
+        if (build == null) {
+            build = lang == KOTLIN ? GRADLE_KOTLIN : GRADLE; // Micronaut switched to Kotlin DSL, sticking with Groovy for now
         }
 
         Options options = new Options(lang, test, build, jdkVersion(jdkMajorVersion), additionalOptions);

@@ -19,6 +19,7 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
@@ -37,8 +38,9 @@ public class AzureMetrics extends AbstractMetricsFeature {
      * @param management the Management feature
      */
     public AzureMetrics(Core core,
-                        Management management) {
-        super(core, management);
+                        Management management,
+                        MicrometerAnnotations micrometerAnnotations) {
+        super(core, management, micrometerAnnotations);
     }
 
     @Override

@@ -64,4 +64,9 @@ public class GcnSpringBootCloudApp extends AbstractGcnCreateFeature {
         // gradle or maven files and Application file are copied
     }
 
+    @Override
+    public boolean isVisible() {
+        return false;
+    }
+
 }

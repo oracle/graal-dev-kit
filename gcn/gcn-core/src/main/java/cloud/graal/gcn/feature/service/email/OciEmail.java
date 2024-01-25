@@ -36,7 +36,7 @@ import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
 import io.micronaut.starter.feature.email.TemplateEmailFeature;
 import io.micronaut.starter.feature.validator.MicronautValidationFeature;
-import io.micronaut.starter.feature.view.Thymeleaf;
+import io.micronaut.starter.feature.view.JTE;
 import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
@@ -54,21 +54,21 @@ public class OciEmail extends AbstractEmailFeature {
 
     private final JavamailFeature javamailFeature;
     private final TemplateEmailFeature templateEmailFeature;
-    private final Thymeleaf thymeleaf;
+    private final JTE jte;
 
     /**
      * @param javamailFeature      JavamailFeature feature
      * @param templateEmailFeature TemplateEmailFeature feature
-     * @param thymeleaf            Thymeleaf feature
+     * @param jte                  JTE feature
      */
     public OciEmail(JavamailFeature javamailFeature,
                     TemplateEmailFeature templateEmailFeature,
-                    Thymeleaf thymeleaf,
+                    JTE jte,
                     MicronautValidationFeature micronautValidationFeature) {
         super(micronautValidationFeature);
         this.javamailFeature = javamailFeature;
         this.templateEmailFeature = templateEmailFeature;
-        this.thymeleaf = thymeleaf;
+        this.jte = jte;
     }
 
     @Override
@@ -78,7 +78,7 @@ public class OciEmail extends AbstractEmailFeature {
 
         if (featureContext.generateExampleCode()) {
             featureContext.addFeature(templateEmailFeature, TemplateEmailFeature.class);
-            featureContext.addFeature(thymeleaf, Thymeleaf.class);
+            featureContext.addFeature(jte, JTE.class);
         }
     }
 
@@ -150,7 +150,7 @@ public class OciEmail extends AbstractEmailFeature {
                     OciEmailControllerGroovy.template(project));
 
             generatorContext.addTemplate("email.html-OCI",
-                    new RockerTemplate(getModuleName(), "src/main/resources/views/email.html",
+                    new RockerTemplate(getModuleName(), "src/main/jte/email.jte",
                             EmailHtml.template()));
 
             generatorContext.addTestTemplate(getModuleName(), "OciEmailControllerTest",
