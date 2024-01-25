@@ -1,9 +1,9 @@
 cask 'gcn' do
     arch arm: 'aarch64', intel: 'amd64'
 
-    version '4.0.7'
-    sha256 arm:   '1acfc2b7a7537e6956603f72ae7c39c95e3b9c7a1574684f63b2cc315e9d770d',
-           intel: 'fc1cc35749be9a9ffd2c9e57bfd0665fb6651e9de6ea416f3df00ace4b04109b'
+    version '4.2.1'
+    sha256 arm:   '0ca0b25d760ae1c5faa1bbea4b3174b8ec5d35b4a5012dd584b685b3634b9ff5',
+           intel: 'cac348f3f34318d624c99ebc22224354ca44f384e3cc77bda4249d765ebefbe8'
 
     url "https://github.com/oracle/gcn/releases/download/#{version}/gcn-cli-#{version}-macos-#{arch}.tar.gz"
     name 'Graal Cloud Native'
