@@ -16,6 +16,7 @@
 package cloud.graal.gcn.feature.service.metrics;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
 import cloud.graal.gcn.feature.service.metrics.template.MetricsServiceGroovy;
 import cloud.graal.gcn.feature.service.metrics.template.MetricsServiceJava;
@@ -30,6 +31,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
 
 import static cloud.graal.gcn.model.GcnService.METRICS;
@@ -44,23 +46,30 @@ public abstract class AbstractMetricsFeature extends AbstractGcnServiceFeature {
 
     private final Core core;
     private final Management management;
+    private final MicrometerAnnotations micrometerAnnotations;
 
     /**
-     * @param core       the Core feature
-     * @param management the Management feature
+     * @param core                  the Core feature
+     * @param management            the Management feature
+     * @param micrometerAnnotations the MicrometerAnnotations feature
      */
     protected AbstractMetricsFeature(Core core,
-                                     Management management) {
+                                     Management management,
+                                     MicrometerAnnotations micrometerAnnotations) {
         this.core = core;
         this.management = management;
+        this.micrometerAnnotations = micrometerAnnotations;
+    }
+
+    @Override
+    public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        featureContext.addFeature(core, Core.class);
+        featureContext.addFeature(management, Management.class);
+        featureContext.addFeature(micrometerAnnotations, MicrometerAnnotations.class);
     }
 
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
-
-        if (!generatorContext.generateExampleCode()) {
-            addLibPlaceholders(generatorContext);
-        }
 
         doApply(generatorContext);
 
@@ -70,6 +79,7 @@ public abstract class AbstractMetricsFeature extends AbstractGcnServiceFeature {
 
             core.apply(generatorContext);
             management.apply(generatorContext);
+            micrometerAnnotations.apply(generatorContext);
 
             if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
                 generatorContext.addTemplate(getDefaultModule(), "metricsService",

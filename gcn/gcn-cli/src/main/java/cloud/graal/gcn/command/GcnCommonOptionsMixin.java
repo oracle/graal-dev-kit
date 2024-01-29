@@ -15,7 +15,7 @@
  */
 package cloud.graal.gcn.command;
 
-import cloud.graal.gcn.GcnVersionInfo;
+import cloud.graal.gcn.GcnUtils;
 import io.micronaut.core.annotation.ReflectiveAccess;
 import picocli.CommandLine.Command;
 import picocli.CommandLine.IVersionProvider;
@@ -50,7 +50,7 @@ public class GcnCommonOptionsMixin {
      */
     public static class GcnVersionProvider implements IVersionProvider {
         public String[] getVersion() {
-            return new String[]{"GCN Version: " + GcnVersionInfo.getMicronautVersion()};
+            return new String[]{"GCN Version: " + GcnUtils.getMicronautVersion()};
         }
     }
 }

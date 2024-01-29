@@ -77,8 +77,8 @@ public class AwsSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
+    public void apply(GcnGeneratorContext generatorContext) {
 
-    protected void doApply(GcnGeneratorContext generatorContext) {
         if (generatorContext.generateExampleCode()) {
 
             Project project = generatorContext.getProject();

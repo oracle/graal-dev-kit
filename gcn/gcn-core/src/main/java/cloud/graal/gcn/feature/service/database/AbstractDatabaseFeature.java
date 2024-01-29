@@ -45,6 +45,7 @@ import cloud.graal.gcn.model.GcnService;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.database.Data;
 import io.micronaut.starter.feature.database.DataJdbc;
 import io.micronaut.starter.feature.database.DatabaseDriverFeature;
@@ -52,6 +53,7 @@ import io.micronaut.starter.feature.database.H2;
 import io.micronaut.starter.feature.database.MySQL;
 import io.micronaut.starter.feature.database.jdbc.JdbcFeature;
 import io.micronaut.starter.feature.migration.Flyway;
+import io.micronaut.starter.feature.oraclecloud.OracleCloudAutonomousDatabase;
 import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import io.micronaut.starter.template.RockerTemplate;
 
@@ -141,7 +143,24 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         jdbcConfig.put("flyway.datasources.default.enabled", true);
         jdbcConfig.put("datasources.default.dialect", driverFeature.getDataDialect());
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
-        generatorContext.getTestConfiguration().addNested(jdbcConfig);
+        if (driverFeature instanceof OracleCloudAutonomousDatabase) {
+            Map<String, Object> testConfig = new LinkedHashMap<>();
+            testConfig.put("datasources.default.url", "jdbc:tc:oracle:thin:@/xe");
+            testConfig.put("datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver");
+            testConfig.put("datasources.default.username", "system");
+            testConfig.put("datasources.default.password", "oracle");
+            testConfig.put("datasources.default.connectionTimeout", "60000");
+            testConfig.put("flyway.datasources.default.locations", "classpath:db/migration");
+            testConfig.put("flyway.datasources.default.baseline-version", "0");
+            testConfig.put("flyway.datasources.default.baseline-on-migrate", "true");
+            generatorContext.getTestConfiguration().addNested(testConfig);
+            generatorContext.addDependency(Dependency.builder()
+                    .groupId("org.testcontainers")
+                    .artifactId("oracle-xe")
+                    .testRuntime());
+        } else {
+            generatorContext.getTestConfiguration().addNested(jdbcConfig);
+        }
 
         applyForLib(generatorContext, () -> {
             data.apply(generatorContext);
@@ -165,15 +184,14 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
             Project project = generatorContext.getProject();
             String templateRootPackage = project.getPackageName() == null ? "" : project.getPackageName() + '.';
             String dialect = driverFeature.getDataDialect();
-            String cloudEnv = genreControllerTestEnv();
 
             generatorContext.addTestTemplate(getModuleName(), "GenreControllerTest-" + getModuleName(),
                     generatorContext.getTestSourcePath("/{packagePath}/GenreController"),
-                    GenreControllerSpec.template(project, templateRootPackage, cloudEnv),
-                    GenreControllerTestJava.template(project, templateRootPackage, cloudEnv),
-                    GenreControllerTestGroovyJUnit.template(project, templateRootPackage, cloudEnv),
-                    GenreControllerTestKotlinJUnit.template(project, templateRootPackage, cloudEnv),
-                    GenreControllerTestKotest.template(project, templateRootPackage, cloudEnv));
+                    GenreControllerSpec.template(project, templateRootPackage),
+                    GenreControllerTestJava.template(project, templateRootPackage),
+                    GenreControllerTestGroovyJUnit.template(project, templateRootPackage),
+                    GenreControllerTestKotlinJUnit.template(project, templateRootPackage),
+                    GenreControllerTestKotest.template(project, templateRootPackage));
 
             applyForLib(generatorContext, () -> {
 
@@ -230,8 +248,6 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
                         GenreServiceKotlin.template(project, templateRootPackage),
                         GenreServiceGroovy.template(project, templateRootPackage));
             });
-        } else {
-            addLibPlaceholders(generatorContext);
         }
     }
 
@@ -239,12 +255,5 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
     @Override
     public final GcnService getService() {
         return DATABASE;
-    }
-
-    /**
-     * @return optional environment element for @MicronautTest in generated test classes
-     */
-    protected String genreControllerTestEnv() {
-        return "";
     }
 }

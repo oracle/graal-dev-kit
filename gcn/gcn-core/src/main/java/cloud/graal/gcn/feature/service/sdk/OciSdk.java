@@ -55,7 +55,7 @@ public class OciSdk extends AbstractSdkFeature {
     }
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
 
         if (generatorContext.generateExampleCode()) {
 

@@ -16,6 +16,7 @@
 package cloud.graal.gcn.feature.create;
 
 import cloud.graal.gcn.buildtool.GcnMavenBuild;
+import cloud.graal.gcn.feature.replaced.template.gcnMvnPluginJTE;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
@@ -35,6 +36,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_NATIVE_RESOURCES;
+
 /**
  * Extends MavenBuildCreator to add the Oracle Maven repo.
  *
@@ -52,7 +55,7 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
         List<MavenPlugin> plugins = generatorContext.getBuildPlugins()
                 .stream()
                 .filter(MavenPlugin.class::isInstance)
-                .map(plugin -> cloneMicronautPlugin((MavenPlugin) plugin))
+                .map(plugin -> clonePlugin((MavenPlugin) plugin))
                 .sorted(OrderUtil.COMPARATOR)
                 .collect(Collectors.toList());
 
@@ -74,7 +77,20 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
         return new ArrayList<>(new LinkedHashSet<>(annotationProcessors));
     }
 
-    private MavenPlugin cloneMicronautPlugin(MavenPlugin plugin) {
+    private MavenPlugin clonePlugin(MavenPlugin plugin) {
+
+        if ("jte-maven-plugin".equals(plugin.getArtifactId())) {
+            gcnMvnPluginJTE extensionModel = (gcnMvnPluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
+            return new MavenPlugin(
+                    plugin.getArtifactId(),
+                    new RockerWritable(gcnMvnPluginJTE.template(
+                            extensionModel.groupId(),
+                            extensionModel.artifactId(),
+                            JTE_NATIVE_RESOURCES,
+                            extensionModel.version(),
+                            extensionModel.templateDirectory())), 0);
+        }
+
         mavenPlugin extensionModel = (mavenPlugin) ((RockerWritable) plugin.getExtension()).getModel();
         return new MavenPlugin(
                 plugin.getArtifactId(),

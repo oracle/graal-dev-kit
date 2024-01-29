@@ -26,7 +26,6 @@ import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud database service feature.
@@ -50,17 +49,6 @@ public class NonCloudDatabase extends AbstractDatabaseFeature {
                             MySQL defaultDriverFeature,
                             MicronautValidationFeature micronautValidationFeature) {
         super(data, dataJdbc, flyway, jdbcFeature, defaultDriverFeature, micronautValidationFeature);
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

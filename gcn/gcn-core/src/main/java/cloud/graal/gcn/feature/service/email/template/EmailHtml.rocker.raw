@@ -1,8 +1,10 @@
+@@param String name
+
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <body>
-    <p>
-        Hello, <span th:text="${name}"></span>!
-    </p>
+<p>
+    Hello, <span>${name}</span>!
+</p>
 </body>
 </html>

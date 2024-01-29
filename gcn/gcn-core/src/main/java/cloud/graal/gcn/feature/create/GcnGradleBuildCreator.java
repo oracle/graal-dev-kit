@@ -68,11 +68,12 @@ public class GcnGradleBuildCreator extends GradleBuildCreator {
     protected List<GradleRepository> getRepositories(@NonNull GeneratorContext generatorContext,
                                                      List<Repository> repositories) {
 
-        if (repositories.stream().noneMatch(x -> x.getId().equals(REPO.getId()))) {
+        if (repositories.stream().noneMatch(it -> it.getId().equals(REPO.getId()))) {
             repositories.add(0, REPO);
         }
 
-        return GradleRepository.listOf(generatorContext.getBuildTool().getGradleDsl()
-                .orElse(GROOVY), repositories);
+        return GradleRepository.listOf(
+                generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY),
+                repositories);
     }
 }

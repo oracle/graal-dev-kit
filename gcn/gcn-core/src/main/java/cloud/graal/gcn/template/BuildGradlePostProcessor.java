@@ -34,6 +34,7 @@ import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
  * - changes "implementation platform(...)" to "micronautBoms(platform(...))" for the GCN BOM
  * - append "-oracle-00001" to version when resolutionStrategy.dependencySubstitution
  *   is added (currently for serde feature dependencies, e.g. serialization-jackson)
+ * - fixes the rendered lib project dependency (`implementation(":lib-reference")` -> `implementation(project(":lib"))`)
  *
  * @since 1.0.0
  */
@@ -107,6 +108,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = removePluginVersions(buildGradle);
         buildGradle = makeBomEnforced(buildGradle);
         buildGradle = updateResolutionStrategyVersions(buildGradle);
+        buildGradle = fixLibDependency(buildGradle);
         return buildGradle;
     }
 
@@ -148,4 +150,8 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         return RESOLUTION_STRATEGY_REGEX.matcher(buildGradle).replaceAll(RESOLUTION_STRATEGY_REPLACEMENT);
     }
 
+    @NonNull
+    private String fixLibDependency(@NonNull String buildGradle) {
+        return buildGradle.replace("implementation(\":lib-reference\")", "implementation(project(\":lib\"))");
+    }
 }

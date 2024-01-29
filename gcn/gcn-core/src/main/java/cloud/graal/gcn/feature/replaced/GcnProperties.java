@@ -15,14 +15,21 @@
  */
 package cloud.graal.gcn.feature.replaced;
 
+import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.template.GcnPropertiesTemplate;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.config.Properties;
 import io.micronaut.starter.template.Template;
 import jakarta.inject.Singleton;
 
+import java.util.Collection;
+import java.util.Map;
 import java.util.function.Function;
+
+import static io.micronaut.starter.feature.FeaturePhase.HIGHEST;
 
 /**
  * Replaces the default feature to customize properties file writing.
@@ -36,5 +43,47 @@ public class GcnProperties extends Properties {
     @Override
     public Function<Configuration, Template> createTemplate() {
         return (config) -> new GcnPropertiesTemplate(config.getFullPath("properties"), config);
+    }
+
+    @Override
+    public void apply(GeneratorContext generatorContext) {
+        super.apply(generatorContext);
+        GcnGeneratorContext gcnGeneratorContext = (GcnGeneratorContext) generatorContext;
+
+        createApplicationCloudProperties(gcnGeneratorContext, gcnGeneratorContext.getCloud());
+
+        createExtraCloudConfigProperties(gcnGeneratorContext);
+    }
+
+    private void createApplicationCloudProperties(GcnGeneratorContext generatorContext, GcnCloud gcnCloud) {
+        if (gcnCloud == GcnCloud.NONE) {
+            return;
+        }
+        generatorContext.addTemplate("application-properties-" + gcnCloud.getModuleName(),
+                new GcnPropertiesTemplate(
+                        gcnCloud.getModuleName(),
+                        "src/main/resources/application" + gcnCloud.getEnvironmentNameSuffix() + ".properties",
+                        generatorContext.getConfiguration(gcnCloud)));
+
+        generatorContext.addTemplate("bootstrap-properties-" + gcnCloud.getModuleName(),
+                new GcnPropertiesTemplate(
+                        gcnCloud.getModuleName(),
+                        "src/main/resources/bootstrap" + gcnCloud.getEnvironmentNameSuffix() + ".properties",
+                        generatorContext.getBootstrapConfiguration(gcnCloud)));
+    }
+
+    private void createExtraCloudConfigProperties(GcnGeneratorContext generatorContext) {
+        for (Map.Entry<GcnCloud, Collection<Configuration>> e : generatorContext.getExtraConfigurations().entrySet()) {
+            GcnCloud cloud = e.getKey();
+            for (Configuration c : e.getValue()) {
+                generatorContext.addTemplate(c.getTemplateKey() + '-' + cloud.getModuleName(),
+                        new GcnPropertiesTemplate(cloud.getModuleName(), c.getFullPath("properties"), c));
+            }
+        }
+    }
+
+    @Override
+    public int getOrder() {
+        return HIGHEST.getOrder();
     }
 }

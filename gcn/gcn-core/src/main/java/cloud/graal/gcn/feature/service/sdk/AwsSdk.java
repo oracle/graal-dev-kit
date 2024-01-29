@@ -47,7 +47,7 @@ public class AwsSdk extends AbstractSdkFeature {
     }
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
         // TODO code gen
     }
 

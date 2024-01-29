@@ -1,19 +1,25 @@
 @args (String title, String login)
 
+@@param String username
+@@param java.util.Map<?, ?> security
+
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<html lang="en">
 <head>
     <title>GCN - @title</title>
 </head>
 <body>
 <h1>GCN - @title</h1>
 
-<h2>username: <span th:text="${username}"></span></h2>
+<h2>username: <span>${username}</span></h2>
 
 <nav>
     <ul>
-        <li th:unless="${security}"><a href="/oauth/login/@(login)">Enter</a></li>
-        <li th:if="${security}"><a href="/logout">Logout</a></li>
+    @@if(security == null)
+        <li><a href="/oauth/login/@(login)">Enter</a></li>
+    @@else
+        <li><a href="/logout">Logout</a></li>
+    @@endif
     </ul>
 </nav>
 </body>

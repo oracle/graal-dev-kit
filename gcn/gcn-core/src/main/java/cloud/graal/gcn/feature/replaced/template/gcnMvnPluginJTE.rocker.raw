@@ -1,0 +1,31 @@
+@args(String groupId, String artifactId, String artifactIdNative, String version, String templateDirectory)
+<plugin>
+  <groupId>@groupId</groupId>
+  <artifactId>@artifactId</artifactId>
+  <version>@version</version>
+  <dependencies>
+    <dependency>
+      <groupId>@groupId</groupId>
+      <artifactId>@artifactIdNative</artifactId>
+      <version>@version</version>
+    </dependency>
+  </dependencies>
+    <configuration>
+      <sourceDirectory>@templateDirectory</sourceDirectory>
+      <targetResourceDirectory>${project.build.outputDirectory}</targetResourceDirectory>
+      <contentType>Html</contentType>
+      <extensions>
+        <extension>
+          <className>gg.jte.nativeimage.NativeResourcesExtension</className>
+        </extension>
+      </extensions>
+    </configuration>
+    <executions>
+      <execution>
+        <phase>generate-sources</phase>
+        <goals>
+          <goal>generate</goal>
+        </goals>
+      </execution>
+    </executions>
+</plugin>

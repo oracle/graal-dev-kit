@@ -24,7 +24,6 @@ import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud tracing service feature.
@@ -48,11 +47,6 @@ public class NonCloudTracing extends AbstractTracingFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         // no-op
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
     }
 
     @NonNull

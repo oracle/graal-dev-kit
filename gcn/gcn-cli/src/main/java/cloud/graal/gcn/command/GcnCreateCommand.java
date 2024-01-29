@@ -44,7 +44,6 @@ import picocli.CommandLine.ParameterException;
 import picocli.CommandLine.Parameters;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -158,7 +157,7 @@ public abstract class GcnCreateCommand extends GcnBaseCommand {
      */
     @NonNull
     protected Map<String, Object> getAdditionalOptions() {
-        return Collections.singletonMap(EXAMPLE_CODE, exampleCode);
+        return Map.of(EXAMPLE_CODE, exampleCode);
     }
 
     @Override

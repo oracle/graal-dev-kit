@@ -37,8 +37,7 @@ import static io.micronaut.starter.feature.FeaturePhase.DEFAULT;
 public class GcnLogback extends Logback {
 
     @Override
-    public void apply(GeneratorContext generatorContext) {
-        super.apply(generatorContext);
+    protected void addConfig(GeneratorContext generatorContext, boolean useJul) {
 
         String key = "loggingConfig";
         GcnCloud cloud = ((GcnGeneratorContext) generatorContext).getCloud();
@@ -46,8 +45,8 @@ public class GcnLogback extends Logback {
             key += '-' + cloud.getModuleName();
         }
 
-        generatorContext.addTemplate(key,
-                new RockerTemplate("src/main/resources/logback.xml", logback.template(false)));
+        generatorContext.addTemplate(key, new RockerTemplate("src/main/resources/logback.xml",
+                logback.template(useJansi(generatorContext), DEFAULT_COLORING, useJul)));
     }
 
     @Override

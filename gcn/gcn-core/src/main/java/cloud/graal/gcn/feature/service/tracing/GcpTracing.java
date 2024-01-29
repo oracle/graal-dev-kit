@@ -19,6 +19,7 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryGoogleCloudTrace;
@@ -59,7 +60,11 @@ public class GcpTracing extends AbstractTracingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        // no-op
+        generatorContext.addDependency(Dependency.builder()
+                .groupId("io.opentelemetry")
+                .artifactId("opentelemetry-semconv")
+                .compile()
+                .build());
     }
 
     @NonNull

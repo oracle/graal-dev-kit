@@ -24,7 +24,7 @@ file('.').eachDir {
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-String micronautPlatformVersion = new File(rootProject.projectDir, 'micronautPlatformVersion.txt').text.trim()
+String micronautPlatformVersion = new File(rootProject.projectDir, 'gcn-core/src/main/resources/micronautPlatformVersion.txt').text.trim()
 
 dependencyResolutionManagement {
     repositories {

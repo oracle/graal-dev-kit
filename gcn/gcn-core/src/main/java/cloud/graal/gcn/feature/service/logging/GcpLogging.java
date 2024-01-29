@@ -38,12 +38,12 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 public class GcpLogging extends AbstractLoggingFeature {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
 
         generatorContext.addDependency(Dependency.builder()
                 .groupId("com.google.cloud")
                 .artifactId("google-cloud-logging-logback")
-                .version("0.130.11-alpha")
+                .version("0.130.28-alpha")
                 .compile());
 
         generatorContext.addTemplate("loggingConfig-gcp",

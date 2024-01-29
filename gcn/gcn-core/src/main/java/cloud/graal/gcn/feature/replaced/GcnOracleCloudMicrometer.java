@@ -17,6 +17,7 @@ package cloud.graal.gcn.feature.replaced;
 
 import cloud.graal.gcn.OracleCloudNettyClientDependencies;
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.feature.micrometer.Core;
 import io.micronaut.starter.feature.micrometer.OracleCloud;
@@ -41,8 +42,9 @@ public class GcnOracleCloudMicrometer extends OracleCloud implements OracleCloud
     }
 
     @Override
-    public void doApply(GeneratorContext generatorContext) {
-        super.doApply(generatorContext);
+    public void addDependencies(@NonNull GeneratorContext generatorContext) {
+        generatorContext.addDependency(this.micrometerDependency());
+        generatorContext.addDependency(DEPENDENCY_MICRONAUT_ORACLE_CLOUD_MICROMETER);
         addNettyDependencies(generatorContext);
     }
 }

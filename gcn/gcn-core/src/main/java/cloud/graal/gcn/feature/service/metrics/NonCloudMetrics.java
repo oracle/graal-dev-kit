@@ -19,11 +19,11 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud metrics service feature.
@@ -38,24 +38,14 @@ public class NonCloudMetrics extends AbstractMetricsFeature {
      * @param management Management feature
      */
     public NonCloudMetrics(Core core,
-                           Management management) {
-        super(core, management);
+                           Management management,
+                           MicrometerAnnotations micrometerAnnotations) {
+        super(core, management, micrometerAnnotations);
     }
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         // no-op
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull

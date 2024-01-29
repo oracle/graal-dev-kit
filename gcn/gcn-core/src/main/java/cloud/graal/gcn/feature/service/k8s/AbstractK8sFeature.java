@@ -54,8 +54,6 @@ public abstract class AbstractK8sFeature extends AbstractGcnServiceFeature {
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
 
-        addLibPlaceholders(generatorContext);
-
         Dependency discoveryClient = Dependency.builder()
                 .groupId(MICRONAUT_KUBERNETES_GROUP_ID)
                 .artifactId("micronaut-kubernetes-discovery-client")

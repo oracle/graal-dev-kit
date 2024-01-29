@@ -15,7 +15,6 @@
  */
 package cloud.graal.gcn.feature.service.sdk;
 
-import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
@@ -28,19 +27,6 @@ import static cloud.graal.gcn.model.GcnService.SDK;
  * @since 1.0.0
  */
 public abstract class AbstractSdkFeature extends AbstractGcnServiceFeature {
-
-    @Override
-    public final void apply(GcnGeneratorContext generatorContext) {
-        addLibPlaceholders(generatorContext);
-        doApply(generatorContext);
-    }
-
-    /**
-     * Implemented in subclasses to apply cloud-specific changes.
-     *
-     * @param generatorContext the generator context
-     */
-    protected abstract void doApply(GcnGeneratorContext generatorContext);
 
     @NonNull
     @Override

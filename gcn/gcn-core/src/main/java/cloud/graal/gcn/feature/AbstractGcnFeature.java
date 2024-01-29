@@ -16,11 +16,19 @@
 package cloud.graal.gcn.feature;
 
 import cloud.graal.gcn.GcnGeneratorContext;
+import cloud.graal.gcn.feature.service.email.AbstractEmailFeature;
+import cloud.graal.gcn.feature.service.security.AbstractSecurityFeature;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
+import io.micronaut.starter.application.Project;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.MultiProjectFeature;
+import io.micronaut.starter.template.StringTemplate;
+
+import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
+import static cloud.graal.gcn.model.GcnCloud.NONE;
+import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Abstract base class for GCN "create" and "service" features.
@@ -31,6 +39,7 @@ public abstract class AbstractGcnFeature implements GcnFeature, MultiProjectFeat
 
     @Override
     public final void apply(GeneratorContext generatorContext) {
+        addLibPlaceholders((GcnGeneratorContext) generatorContext);
         apply((GcnGeneratorContext) generatorContext);
     }
 
@@ -68,5 +77,37 @@ public abstract class AbstractGcnFeature implements GcnFeature, MultiProjectFeat
     @NonNull
     protected String getModuleName() {
         return getCloud().getModuleName();
+    }
+
+    protected String getDefaultModule() {
+        return getCloud() == NONE ? ROOT : LIB_MODULE;
+    }
+
+    /**
+     * Create .gitkeep files if not generating any files in the lib module
+     * to retain the directory structure.
+     *
+     * @param generatorContext the generator context
+     */
+    private void addLibPlaceholders(GcnGeneratorContext generatorContext) {
+
+        if (generatorContext.isPlatformIndependent()) {
+            return;
+        }
+
+        Project project = generatorContext.getProject();
+
+        addGitkeep(generatorContext, "gitkeep-resources", "src/main/resources");
+        addGitkeep(generatorContext, "gitkeep-src",
+                generatorContext.getLanguage().getSrcDir() + '/' + project.getPackagePath());
+
+        if (generatorContext.hasFeature(AbstractEmailFeature.class) || generatorContext.hasFeature(AbstractSecurityFeature.class)) {
+            addGitkeep(generatorContext, "gitkeep-jte", "src/main/jte");
+        }
+    }
+
+    private void addGitkeep(GcnGeneratorContext generatorContext, String name, String path) {
+        generatorContext.addTemplate(name,
+                new StringTemplate(getDefaultModule(), path + "/.gitkeep", ""));
     }
 }

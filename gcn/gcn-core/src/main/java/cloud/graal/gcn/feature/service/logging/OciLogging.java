@@ -39,7 +39,7 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
 public class OciLogging extends AbstractLoggingFeature implements OracleCloudNettyClientDependencies {
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
 
         generatorContext.addDependency(Dependency.builder()
                 .groupId("io.micronaut.oraclecloud")

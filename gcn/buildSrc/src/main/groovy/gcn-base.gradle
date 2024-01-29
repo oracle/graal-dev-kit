@@ -22,7 +22,7 @@ plugins {
 version = new File(rootProject.projectDir, 'version.txt').text.trim()
 group = 'gcn'
 
-ext.micronautVersion = new File(rootProject.projectDir, 'micronautVersion.txt').text.trim()
+ext.micronautVersion = new File(rootProject.projectDir, 'gcn-core/src/main/resources/micronautVersion.txt').text.trim()
 
 repositories {
     maven {

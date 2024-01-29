@@ -20,6 +20,7 @@ import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.micrometer.Stackdriver;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
@@ -43,13 +44,15 @@ public class GcpMetrics extends AbstractMetricsFeature {
      */
     public GcpMetrics(Core core,
                       Management management,
-                      Stackdriver stackDriver) {
-        super(core, management);
+                      Stackdriver stackDriver,
+                      MicrometerAnnotations micrometerAnnotations) {
+        super(core, management, micrometerAnnotations);
         this.stackDriver = stackDriver;
     }
 
     @Override
     public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
         featureContext.addFeature(stackDriver, Stackdriver.class);
     }
 

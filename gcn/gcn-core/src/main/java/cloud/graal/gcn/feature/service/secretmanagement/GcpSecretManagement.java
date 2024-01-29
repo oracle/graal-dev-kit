@@ -47,7 +47,7 @@ public class GcpSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
-    protected void doApply(GcnGeneratorContext generatorContext) {
+    public void apply(GcnGeneratorContext generatorContext) {
         // TODO move this to base class so it's applied for all clouds - will need to update AWS and OCI guides
         generatorContext.getTestBootstrapConfiguration().addNested("micronaut.config-client.enabled", false);
     }

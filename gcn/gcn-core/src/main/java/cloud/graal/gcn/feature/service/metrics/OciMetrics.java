@@ -21,6 +21,7 @@ import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.micrometer.Core;
+import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.micrometer.OracleCloud;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
@@ -44,13 +45,15 @@ public class OciMetrics extends AbstractMetricsFeature {
      */
     public OciMetrics(OracleCloud oracleCloud,
                       Core core,
-                      Management management) {
-        super(core, management);
+                      Management management,
+                      MicrometerAnnotations micrometerAnnotations) {
+        super(core, management, micrometerAnnotations);
         this.oracleCloud = oracleCloud;
     }
 
     @Override
     public void processSelectedFeatures(GcnFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
         featureContext.addFeature(oracleCloud, OracleCloud.class);
     }
 

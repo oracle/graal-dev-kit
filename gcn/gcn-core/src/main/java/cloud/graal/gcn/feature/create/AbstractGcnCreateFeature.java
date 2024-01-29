@@ -16,61 +16,23 @@
 package cloud.graal.gcn.feature.create;
 
 import cloud.graal.gcn.GcnGeneratorContext;
-import cloud.graal.gcn.buildtool.GcnGradleBuild;
-import cloud.graal.gcn.buildtool.GradleProjectDependency;
-import cloud.graal.gcn.buildtool.MavenProjectDependency;
 import cloud.graal.gcn.feature.AbstractGcnFeature;
-import cloud.graal.gcn.feature.create.gatewayfunction.AbstractGcnCloudGatewayFunction;
-import cloud.graal.gcn.model.GcnCloud;
 import cloud.graal.gcn.model.GcnProjectType;
-import cloud.graal.gcn.template.BuildGradlePostProcessor;
-import cloud.graal.gcn.template.GcnPropertiesTemplate;
-import cloud.graal.gcn.template.MavenPlatformPostProcessor;
-import cloud.graal.gcn.template.MavenPomPostProcessor;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.Project;
-import io.micronaut.starter.build.BuildPlugin;
-import io.micronaut.starter.build.Repository;
-import io.micronaut.starter.build.RepositoryResolver;
-import io.micronaut.starter.build.gradle.GradleBuild;
-import io.micronaut.starter.build.gradle.GradleDependency;
-import io.micronaut.starter.build.gradle.GradleDsl;
-import io.micronaut.starter.build.gradle.GradlePlugin;
-import io.micronaut.starter.build.gradle.GradleRepository;
-import io.micronaut.starter.build.maven.JvmArgumentsFeature;
-import io.micronaut.starter.build.maven.MavenBuild;
-import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.Features;
-import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
-import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
-import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
-import io.micronaut.starter.feature.build.maven.templates.multimodule;
-import io.micronaut.starter.feature.build.maven.templates.pom;
-import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.database.TransactionalNotSupported;
 import io.micronaut.starter.feature.test.template.groovyJunit;
 import io.micronaut.starter.feature.test.template.javaJunit;
 import io.micronaut.starter.feature.test.template.koTest;
 import io.micronaut.starter.feature.test.template.kotlinJunit;
 import io.micronaut.starter.feature.test.template.spock;
-import io.micronaut.starter.template.RockerTemplate;
-import io.micronaut.starter.template.RockerWritable;
-import jakarta.inject.Inject;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-
-import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
-import static cloud.graal.gcn.GcnUtils.USE_GRADLE_VERSION_CATALOG;
 import static io.micronaut.starter.application.ApplicationType.FUNCTION;
-import static io.micronaut.starter.feature.FeaturePhase.HIGHEST;
+import static io.micronaut.starter.feature.FeaturePhase.LOW;
 import static io.micronaut.starter.options.Language.GROOVY;
 import static io.micronaut.starter.options.Language.JAVA;
 import static io.micronaut.starter.options.Language.KOTLIN;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Abstract base class for "create" features. For each user-selected cloud, the
@@ -82,65 +44,11 @@ import static io.micronaut.starter.template.Template.ROOT;
  */
 public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
 
-    /**
-     * The plugin id for the Micronaut application plugin.
-     */
-    protected static final String APPLICATION_PLUGIN_ID = MicronautApplicationGradlePlugin.Builder.APPLICATION;
-    /**
-     * The plugin id for the Micronaut library plugin.
-     */
-    protected static final String LIBRARY_PLUGIN_ID = MicronautApplicationGradlePlugin.Builder.LIBRARY;
-
-    private static final GradlePlugin GROOVY_PLUGIN = GradlePlugin.builder().id("groovy").build();
-
-    // TODO convert these 2 to use constructor injection - currently failing in tests with
-    //
-    // io.micronaut.context.exceptions.BeanInstantiationException: Error instantiating bean of type  [gcn.GcnProjectCreator]
-    // Message: gcn.feature.create.function.AbstractGcnCloudFunction: method 'void <init>()' not found
-    // Path Taken: FooSpec.setProjectCreator([GcnProjectCreator projectCreator]) --> new GcnProjectCreator(ProjectGenerator projectGenerator,[Collection createFeatures],Collection serviceFeatures)
-    //    at app//io.micronaut.context.DefaultBeanContext.resolveByBeanFactory(DefaultBeanContext.java:2367)
-    private GcnGradleBuildCreator gradleBuildCreator;
-    private GcnMavenBuildCreator mavenBuildCreator;
-    private RepositoryResolver repositoryResolver;
-
-    /**
-     * Temporary dependency injection method for GradleBuildCreator.
-     *
-     * @param gradleBuildCreator GradleBuildCreator
-     */
-    @Inject
-    public void setGradleBuildCreator(GcnGradleBuildCreator gradleBuildCreator) {
-        this.gradleBuildCreator = gradleBuildCreator;
-    }
-
-    /**
-     * Temporary dependency injection method for MavenBuildCreator.
-     *
-     * @param mavenBuildCreator MavenBuildCreator
-     */
-    @Inject
-    public void setMavenBuildCreator(GcnMavenBuildCreator mavenBuildCreator) {
-        this.mavenBuildCreator = mavenBuildCreator;
-    }
-
-    @Inject
-    public void setRepositoryResolver(RepositoryResolver repositoryResolver) {
-        this.repositoryResolver = repositoryResolver;
-    }
-
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
 
         if (generatorContext.getApplicationType() != FUNCTION) {
             createApplicationClass(generatorContext);
-        }
-        createApplicationCloudProperties(generatorContext);
-        createExtraCloudConfigProperties(generatorContext);
-
-        if (generatorContext.getBuildTool().isGradle()) {
-            addGradleBuild(generatorContext);
-        } else {
-            addMavenBuild(generatorContext, repositoryResolver.resolveRepositories(generatorContext));
         }
     }
 
@@ -165,162 +73,6 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
                 koTest.template(project, transactional));
     }
 
-    private void createApplicationCloudProperties(GcnGeneratorContext generatorContext) {
-
-        generatorContext.addTemplate("application-properties-" + getModuleName(),
-                new GcnPropertiesTemplate(
-                        getModuleName(),
-                        "src/main/resources/application" + getCloud().getEnvironmentNameSuffix() + ".properties",
-                        generatorContext.getConfiguration(getCloud())));
-
-        generatorContext.addTemplate("bootstrap-properties-" + getModuleName(),
-                new GcnPropertiesTemplate(
-                        getModuleName(),
-                        "src/main/resources/bootstrap" + getCloud().getEnvironmentNameSuffix() + ".properties",
-                        generatorContext.getBootstrapConfiguration(getCloud())));
-    }
-
-    private void addGradleBuild(GcnGeneratorContext generatorContext) {
-
-        List<GradleDependency> dependencies = GradleDependency.listOf(generatorContext, USE_GRADLE_VERSION_CATALOG);
-        dependencies.add(new GradleProjectDependency(LIB_MODULE, generatorContext));
-
-        List<Repository> repositories = repositoryResolver.resolveRepositories(generatorContext);
-
-        if (generatorContext.getFeatures().language().isGroovy() || generatorContext.getFeatures().testFramework().isSpock()) {
-            generatorContext.addBuildPlugin(GROOVY_PLUGIN);
-        }
-
-        GradleBuild original = gradleBuildCreator.create(generatorContext, repositories, USE_GRADLE_VERSION_CATALOG);
-
-        List<GradlePlugin> copiedPlugins = new ArrayList<>();
-
-        List<GradlePlugin> plugins = generatorContext.getBuildPlugins()
-                .stream()
-                .filter(GradlePlugin.class::isInstance)
-                .map(GradlePlugin.class::cast)
-                .sorted(OrderUtil.COMPARATOR)
-                .toList();
-
-        for (BuildPlugin p : plugins) {
-            GradlePlugin plugin = (GradlePlugin) p;
-            if (plugin.getExtension() == null && plugin.getSettingsExtension() == null) {
-                // ok to reuse since it has no Rocker templates
-                copiedPlugins.add(plugin);
-            } else {
-                String id = plugin.getId();
-                if (APPLICATION_PLUGIN_ID.equals(id) || LIBRARY_PLUGIN_ID.equals(id)) {
-                    copiedPlugins.add(cloneMicronautPlugin(plugin, generatorContext));
-                } else {
-                    throw new IllegalStateException("Unknown build plugin '" + id + "'");
-                }
-            }
-        }
-
-        GradleDsl dsl = generatorContext.getBuildTool().getGradleDsl().orElse(GradleDsl.GROOVY);
-
-        GradleBuild build = new GcnGradleBuild(
-                original.getDsl(), dependencies, copiedPlugins,
-                GradleRepository.listOf(dsl, repositories));
-
-        String templateKey = "build-" + getModuleName();
-        generatorContext.addTemplate(templateKey, new RockerTemplate(getModuleName(), generatorContext.getBuildTool().getBuildFileName(),
-                buildGradle.template(
-                        generatorContext.getApplicationType(),
-                        generatorContext.getProject(),
-                        generatorContext.getFeatures(getCloud()),
-                        build)
-        ));
-        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
-
-        // for lib/build.gradle
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
-    }
-
-    private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,
-                                              GcnGeneratorContext generatorContext) {
-
-        micronautGradle extensionModel = (micronautGradle) ((RockerWritable) plugin.getExtension()).getModel();
-
-        return new GradlePlugin(
-                plugin.getGradleFile(),
-                plugin.getId(),
-                plugin.getVersion(),
-                null,
-                new RockerWritable(micronautGradle.template(
-                        extensionModel.dsl(),
-                        extensionModel.build(),
-                        extensionModel.dockerfile(),
-                        extensionModel.dockerfileNative(),
-                        extensionModel.dockerBuilderImages(),
-                        extensionModel.dockerBuilderNativeImages(),
-                        extensionModel.runtime(),
-                        extensionModel.testRuntime(),
-                        extensionModel.aotVersion(),
-                        extensionModel.incremental(),
-                        generatorContext.getProject().getPackageName(),
-                        extensionModel.additionalTestResourceModules(),
-                        extensionModel.sharedTestResources(),
-                        extensionModel.aotKeys(),
-                        extensionModel.lambdaRuntimeMainClass())),
-                null,
-                plugin.getPluginsManagementRepositories(),
-                false,
-                plugin.getOrder(),
-                plugin.getBuildImports());
-    }
-
-    private void addMavenBuild(GcnGeneratorContext generatorContext, List<Repository> repositories) {
-
-        MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext, repositories);
-
-        mavenBuild.getDependencies().add(new MavenProjectDependency(
-                generatorContext.getProject().getPackageName(), LIB_MODULE, generatorContext.getLanguage()));
-
-        String templateKey = "mavenPom-" + getModuleName();
-        generatorContext.addTemplate(templateKey, new RockerTemplate(getModuleName(), "pom.xml",
-                pom.template(
-                        generatorContext.getApplicationType(),
-                        generatorContext.getProject(),
-                        generatorContext.getFeatures(),
-                        mavenBuild,
-                        JvmArgumentsFeature.getJvmArguments(generatorContext.getFeatures().getFeatures()))
-        ));
-        generatorContext.addPostProcessor(templateKey, new MavenPomPostProcessor(
-                generatorContext.getLibProject().getName(),
-                generatorContext.getLibProject().getPackageName(),
-                generatorContext.getApplicationType(),
-                generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null,
-                false));
-
-        // this is called for each cloud, but the templates are stored in a Map, so it's idempotent
-        generatorContext.addTemplate("multi-module-pom", new RockerTemplate(ROOT, generatorContext.getBuildTool().getBuildFileName(),
-                multimodule.template(MavenRepository.listOf(repositoryResolver.resolveRepositories(generatorContext)),
-                        generatorContext.getLibProject(),
-                        generatorContext.getModuleNames())
-        ));
-
-        generatorContext.addPostProcessor("multi-module-pom", new MavenPlatformPostProcessor());
-
-        // this is called for each cloud, but the post processors are stored in a Set, so it's idempotent
-        generatorContext.addPostProcessor("mavenPom", new MavenPomPostProcessor(
-                generatorContext.getLibProject().getName(),
-                generatorContext.getLibProject().getPackageName(),
-                generatorContext.getApplicationType(),
-                generatorContext.getFeature(AbstractGcnCloudGatewayFunction.class).orElse(null) != null,
-                true));
-    }
-
-    private void createExtraCloudConfigProperties(GcnGeneratorContext generatorContext) {
-        for (Map.Entry<GcnCloud, Collection<Configuration>> e : generatorContext.getExtraConfigurations().entrySet()) {
-            GcnCloud cloud = e.getKey();
-            for (Configuration c : e.getValue()) {
-                generatorContext.addTemplate(c.getTemplateKey() + '-' + cloud.getModuleName(),
-                        new GcnPropertiesTemplate(cloud.getModuleName(), c.getFullPath("properties"), c));
-            }
-        }
-    }
-
     /**
      * @return the project type enum
      */
@@ -329,6 +81,6 @@ public abstract class AbstractGcnCreateFeature extends AbstractGcnFeature {
 
     @Override
     public int getOrder() {
-        return HIGHEST.getOrder();
+        return LOW.getOrder();
     }
 }

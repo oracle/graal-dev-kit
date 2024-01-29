@@ -1,0 +1,20 @@
+@import io.micronaut.starter.build.gradle.GradleDsl
+@args(boolean patchKaptOutputs, GradleDsl dsl, String path)
+
+jte {
+@if(dsl == GradleDsl.KOTLIN) {
+    sourceDirectory.set(file("@path").toPath())
+}
+@if(dsl == GradleDsl.GROOVY) {
+    sourceDirectory = file("@path").toPath()
+}
+    generate()
+    jteExtension("gg.jte.nativeimage.NativeResourcesExtension")
+}
+
+// Gradle requires that generateJte is run before some tasks
+tasks.configureEach {
+    if (@if (patchKaptOutputs) {name == "kaptGenerateStubsKotlin" || }name == "inspectRuntimeClasspath") {
+        mustRunAfter("generateJte")
+    }
+}

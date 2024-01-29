@@ -71,10 +71,6 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
 
-        if (!generatorContext.generateExampleCode()) {
-            addLibPlaceholders(generatorContext);
-        }
-
         doApply(generatorContext);
 
         Project project = generatorContext.getProject();

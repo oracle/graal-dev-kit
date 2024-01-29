@@ -39,10 +39,11 @@ import java.util.Set;
 @Singleton
 public class GcnBom implements DefaultFeature, RequiresRepository {
 
+    private static final String BOM_VERSION = "4.2.1.3";
     private static final Dependency BOM = Dependency.builder()
             .groupId("cloud.graal.gcn")
             .artifactId("gcn-bom")
-            .version("2.1")
+            .version(BOM_VERSION)
             .pom()
             .compile()
             .build();

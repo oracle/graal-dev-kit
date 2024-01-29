@@ -24,7 +24,6 @@ import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
 import static cloud.graal.gcn.model.GcnService.OBJECTSTORE;
-import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Non-cloud objectstore service feature.
@@ -37,17 +36,6 @@ public class NonCloudObjectStore extends AbstractGcnServiceFeature {
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
         // no-op
-    }
-
-    @Override
-    protected String getDefaultModule() {
-        return ROOT;
-    }
-
-    @NonNull
-    @Override
-    protected String getModuleName() {
-        return ROOT;
     }
 
     @NonNull
