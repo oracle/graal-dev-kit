@@ -53,6 +53,11 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
                     "    images = [\"${rootProject.name}-${project.name}\"]\n" +
                     "}\n";
 
+    private static final String SHADOW_JAR_ZIP_64_GROOVY =
+            "\ntasks.named('shadowJar') {\n" +
+                    "    zip64 = true\n" +
+                    "}\n";
+
     private static final String DOCKER_IMAGE_NAME_KOTLIN =
             "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuild\") {\n" +
             "    images.add(\"${rootProject.name}-${project.name}\")\n" +
@@ -61,6 +66,10 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     private static final String DOCKER_IMAGE_NATIVE_NAME_KOTLIN =
             "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuildNative\") {\n" +
                     "    images.add(\"${rootProject.name}-${project.name}\")\n" +
+                    "}\n";
+    private static final String SHADOW_JAR_ZIP_64_KOTLIN =
+            "\ntasks.shadowJar {\n" +
+                    "    setProperty(\"zip64\", true)\n" +
                     "}\n";
 
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
@@ -104,6 +113,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         }
         if (forCloudModule && applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
             buildGradle = configureDockerNativeImageName(buildGradle);
+            buildGradle = configureShadowJarZip64(buildGradle);
         }
         buildGradle = removePluginVersions(buildGradle);
         buildGradle = makeBomEnforced(buildGradle);
@@ -132,6 +142,15 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
             return buildGradle.contains(DOCKER_IMAGE_NATIVE_NAME_GROOVY) ? buildGradle : buildGradle + DOCKER_IMAGE_NATIVE_NAME_GROOVY;
         } else {
             return buildGradle.contains(DOCKER_IMAGE_NATIVE_NAME_KOTLIN) ? buildGradle : buildGradle + DOCKER_IMAGE_NATIVE_NAME_KOTLIN;
+        }
+    }
+
+    @NonNull
+    private String configureShadowJarZip64(@NonNull String buildGradle) {
+        if (dsl == GROOVY) {
+            return buildGradle.contains(SHADOW_JAR_ZIP_64_GROOVY) ? buildGradle : buildGradle + SHADOW_JAR_ZIP_64_GROOVY;
+        } else {
+            return buildGradle.contains(SHADOW_JAR_ZIP_64_KOTLIN) ? buildGradle : buildGradle + SHADOW_JAR_ZIP_64_KOTLIN;
         }
     }
 

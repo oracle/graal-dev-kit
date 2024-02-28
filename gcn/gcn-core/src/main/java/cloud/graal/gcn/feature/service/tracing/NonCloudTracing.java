@@ -21,6 +21,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
+import io.micronaut.starter.feature.other.HttpClient;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
@@ -40,8 +41,9 @@ public class NonCloudTracing extends AbstractTracingFeature {
      */
     public NonCloudTracing(OpenTelemetry openTelemetry,
                            OpenTelemetryHttp openTelemetryHttp,
-                           OpenTelemetryAnnotations openTelemetryAnnotations) {
-        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
+                           OpenTelemetryAnnotations openTelemetryAnnotations,
+                           HttpClient httpClient) {
+        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations, httpClient);
     }
 
     @Override

@@ -40,6 +40,7 @@ import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
+import io.micronaut.starter.feature.other.HttpClient;
 
 import static cloud.graal.gcn.model.GcnService.TRACING;
 import static io.micronaut.starter.application.ApplicationType.DEFAULT;
@@ -54,6 +55,7 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
     private final OpenTelemetryHttp openTelemetryHttp;
     private final OpenTelemetry openTelemetry;
     private final OpenTelemetryAnnotations openTelemetryAnnotations;
+    private final HttpClient httpClient;
 
     /**
      * @param openTelemetry            OpenTelemetry feature
@@ -62,10 +64,12 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
      */
     protected AbstractTracingFeature(OpenTelemetry openTelemetry,
                                      OpenTelemetryHttp openTelemetryHttp,
-                                     OpenTelemetryAnnotations openTelemetryAnnotations) {
+                                     OpenTelemetryAnnotations openTelemetryAnnotations,
+                                     HttpClient httpClient) {
         this.openTelemetry = openTelemetry;
         this.openTelemetryHttp = openTelemetryHttp;
         this.openTelemetryAnnotations = openTelemetryAnnotations;
+        this.httpClient = httpClient;
     }
 
     @Override
@@ -91,6 +95,7 @@ public abstract class AbstractTracingFeature extends AbstractGcnServiceFeature {
             openTelemetryAnnotations.apply(generatorContext);
 
             if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
+                httpClient.apply(generatorContext);
 
                 generatorContext.addTemplate(getDefaultModule(), "InventoryService",
                         generatorContext.getSourcePath("/{packagePath}/InventoryService"),
