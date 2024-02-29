@@ -19,17 +19,12 @@ import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
-import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE;
 
 /**
  * Fixes a few issues in Maven pom.xml files:
@@ -106,7 +101,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         if (libModule) {
             pom = fixArtifactId(pom);
             pom = fixProcessingModule(pom);
-            pom = fixProperties(pom);
         } else {
             if (applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
                 pom = addDefaultDockerImageName(pom);
@@ -117,21 +111,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         }
 
         return pom;
-    }
-
-    private String fixProperties(String pom) {
-        Set<String> itemsToRemove = new HashSet<>();
-        itemsToRemove.add("<micronaut.native-image.base-image-run>%s</micronaut.native-image.base-image-run>".formatted(MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE));
-        List<String> newPom = new ArrayList<>();
-        String[] split = pom.split("\n");
-
-        for (String part: split) {
-            if (!itemsToRemove.contains(part.trim())) {
-                newPom.add(part);
-            }
-        }
-
-        return String.join("\n", newPom) + "\n";
     }
 
     private String fixSourceDirectory(@NonNull String pom) {

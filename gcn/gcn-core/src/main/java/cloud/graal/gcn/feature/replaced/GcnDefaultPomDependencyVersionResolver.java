@@ -33,9 +33,9 @@ import java.util.Optional;
 @Replaces(DefaultPomDependencyVersionResolver.class)
 public class GcnDefaultPomDependencyVersionResolver extends DefaultPomDependencyVersionResolver {
 
-    public static final Coordinate MICRONAUT_GRADLE_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-gradle-plugin").version("4.2.1").pom(false).buildCoordinate();
-    public static final Coordinate MICRONAUT_CRAC_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-crac-plugin").version("4.2.1").pom(false).buildCoordinate();
-    public static final Coordinate MICRONAUT_TEST_RESOURCES_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-test-resources-plugin").version("4.2.1").pom(false).buildCoordinate();
+    public static final Coordinate MICRONAUT_GRADLE_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-gradle-plugin").version("4.3.2").pom(false).buildCoordinate();
+    public static final Coordinate MICRONAUT_CRAC_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-crac-plugin").version("4.3.2").pom(false).buildCoordinate();
+    public static final Coordinate MICRONAUT_TEST_RESOURCES_PLUGIN = Dependency.builder().groupId("io.micronaut.gradle").artifactId("micronaut-test-resources-plugin").version("4.3.2").pom(false).buildCoordinate();
 
     private static final Map<String, Coordinate> COORDINATES;
 

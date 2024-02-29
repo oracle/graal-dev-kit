@@ -22,6 +22,7 @@ import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
+import io.micronaut.starter.feature.other.HttpClient;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.OCI;
@@ -41,8 +42,9 @@ public class OciTracing extends AbstractTracingFeature {
      */
     public OciTracing(OpenTelemetry openTelemetry,
                       OpenTelemetryHttp openTelemetryHttp,
-                      OpenTelemetryAnnotations openTelemetryAnnotations) {
-        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
+                      OpenTelemetryAnnotations openTelemetryAnnotations,
+                      HttpClient httpClient) {
+        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations, httpClient);
     }
 
     @Override

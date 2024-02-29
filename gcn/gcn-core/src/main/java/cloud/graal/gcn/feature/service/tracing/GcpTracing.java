@@ -24,6 +24,7 @@ import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryGoogleCloudTrace;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
+import io.micronaut.starter.feature.other.HttpClient;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
@@ -47,8 +48,9 @@ public class GcpTracing extends AbstractTracingFeature {
     public GcpTracing(OpenTelemetry openTelemetry,
                       OpenTelemetryHttp openTelemetryHttp,
                       OpenTelemetryAnnotations openTelemetryAnnotations,
-                      OpenTelemetryGoogleCloudTrace openTelemetryGoogleCloudTrace) {
-        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
+                      OpenTelemetryGoogleCloudTrace openTelemetryGoogleCloudTrace,
+                      HttpClient httpClient) {
+        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations, httpClient);
         this.openTelemetryGoogleCloudTrace = openTelemetryGoogleCloudTrace;
     }
 

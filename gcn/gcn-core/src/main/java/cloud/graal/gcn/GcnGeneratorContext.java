@@ -79,8 +79,8 @@ import java.util.stream.Collectors;
 import static cloud.graal.gcn.GcnUtils.APP_MODULE;
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
-import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE;
 import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_PLUGIN_VERSION;
+import static cloud.graal.gcn.GcnUtils.TEST_RESOURCES_VERSION;
 import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_GROUP_ID;
 import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_NATIVE_RESOURCES;
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -118,14 +118,14 @@ public class GcnGeneratorContext extends GeneratorContext {
 
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
             Map.entry("com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1"),
-            Map.entry("io.micronaut.application:4.2.1", "io.micronaut.gradle:micronaut-gradle-plugin:4.2.1"),
-            Map.entry("io.micronaut.library:4.2.1", "io.micronaut.gradle:micronaut-gradle-plugin:4.2.1"),
-            Map.entry("io.micronaut.test-resources:4.2.1", "io.micronaut.gradle:micronaut-test-resources-plugin:4.2.1"),
+            Map.entry("io.micronaut.application:4.3.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.3.2"),
+            Map.entry("io.micronaut.library:4.3.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.3.2"),
+            Map.entry("io.micronaut.test-resources:4.3.2", "io.micronaut.gradle:micronaut-test-resources-plugin:4.3.2"),
             Map.entry("org.jetbrains.kotlin.jvm:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
             Map.entry("org.jetbrains.kotlin.kapt:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
             Map.entry("org.jetbrains.kotlin.plugin.allopen:1.9.21", "org.jetbrains.kotlin:kotlin-allopen:1.9.21"),
             Map.entry("com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0"),
-            Map.entry("io.micronaut.aot:4.2.1", "io.micronaut.gradle:micronaut-aot-plugin:4.2.1"),
+            Map.entry("io.micronaut.aot:4.3.2", "io.micronaut.gradle:micronaut-aot-plugin:4.3.2"),
             Map.entry("com.google.devtools.ksp:1.9.21-1.0.15", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.21-1.0.15"),
             Map.entry(GG_JTE_GRADLE, "gg.jte:jte-gradle-plugin:3.0.3")
     );
@@ -174,8 +174,10 @@ public class GcnGeneratorContext extends GeneratorContext {
         buildProperties.put(key, GcnUtils.getMicronautVersion() + BOM_VERSION_SUFFIX);
 
         // TODO check if can be removed in new version of micronaut
-        buildProperties.put("micronaut.native-image.base-image-run", MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE);
-        buildProperties.put("micronaut-maven-plugin.version", MICRONAUT_MAVEN_PLUGIN_VERSION);
+        if (!featureContext.getBuildTool().isGradle()) {
+            buildProperties.put("micronaut-maven-plugin.version", MICRONAUT_MAVEN_PLUGIN_VERSION);
+            buildProperties.put("micronaut.test.resources.version", TEST_RESOURCES_VERSION);
+        }
     }
 
     private static Map<GcnCloud, GcnFeatures> splitFeatures(Set<Feature> allFeatures,

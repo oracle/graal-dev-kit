@@ -50,7 +50,7 @@ public class GcnCommonOptionsMixin {
      */
     public static class GcnVersionProvider implements IVersionProvider {
         public String[] getVersion() {
-            return new String[]{"GCN Version: " + GcnUtils.getMicronautVersion()};
+            return new String[]{"GCN Version: " + GcnUtils.getVersion()};
         }
     }
 }

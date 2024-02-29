@@ -15,8 +15,6 @@
  */
 package cloud.graal.gcn;
 
-import io.micronaut.starter.options.JdkVersion;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -51,14 +49,9 @@ public final class GcnUtils {
     public static final String MICRONAUT_MAVEN_PLUGIN_VERSION = "4.3.1";
 
     /**
-     * The default docker image inside maven builds
+     * The default version of test resources plugin
      */
-    public static final String MICRONAUT_MAVEN_DEFAULT_DOCKER_IMAGE = "frolvlad/alpine-glibc:alpine-3.16";
-
-    /**
-     * The default JDK version if none is specified.
-     */
-    public static final JdkVersion DEFAULT_JDK = JDK_17;
+    public static final String TEST_RESOURCES_VERSION = "2.3.3";
 
     /**
      * All supported JDK versions.
@@ -70,28 +63,36 @@ public final class GcnUtils {
      */
     public static final String BOM_VERSION_SUFFIX = "-oracle-00001";
 
-    private static final String GCN_VERSION;
+    private static final String GCN_VERSION = loadVersion("version.txt");
+    private static final String MICRONAUT_VERSION = loadVersion("micronautPlatformVersion.txt");
 
-    static {
-        URL resource = GcnUtils.class.getResource("/micronautPlatformVersion.txt");
+    private GcnUtils() {
+    }
+
+    private static String loadVersion(String resourcePath) {
+        URL resource = GcnUtils.class.getResource("/" + resourcePath);
         if (resource == null) {
-            throw new IllegalStateException("Resource /micronautPlatformVersion.txt not found");
+            throw new IllegalStateException("Resource /" + resourcePath + " not found");
         }
 
         try (InputStream inputStream = resource.openStream()) {
-            GCN_VERSION = new String(inputStream.readAllBytes(), UTF_8).trim();
+            return new String(inputStream.readAllBytes(), UTF_8).trim();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-    }
-
-    private GcnUtils() {
     }
 
     /**
      * @return the version of Micronaut Platform
      */
     public static String getMicronautVersion() {
+        return MICRONAUT_VERSION;
+    }
+
+    /**
+     * @return the GCN version
+     */
+    public static String getVersion() {
         return GCN_VERSION;
     }
 }

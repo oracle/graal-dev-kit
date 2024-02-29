@@ -24,6 +24,7 @@ import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryExporterOtlp;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryXray;
+import io.micronaut.starter.feature.other.HttpClient;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -50,8 +51,9 @@ public class AwsTracing extends AbstractTracingFeature {
                       OpenTelemetryHttp openTelemetryHttp,
                       OpenTelemetryAnnotations openTelemetryAnnotations,
                       OpenTelemetryXray openTelemetryXray,
-                      OpenTelemetryExporterOtlp openTelemetryExporterOtlp) {
-        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations);
+                      OpenTelemetryExporterOtlp openTelemetryExporterOtlp,
+                      HttpClient httpClient) {
+        super(openTelemetry, openTelemetryHttp, openTelemetryAnnotations, httpClient);
         this.openTelemetryXray = openTelemetryXray;
         this.openTelemetryExporterOtlp = openTelemetryExporterOtlp;
     }
