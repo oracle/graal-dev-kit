@@ -22,19 +22,20 @@ import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.dependencies.DependencyCoordinate;
+import io.micronaut.starter.build.dependencies.MavenCoordinate;
 import io.micronaut.starter.build.dependencies.Scope;
 import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.build.maven.templates.mavenPlugin;
+import io.micronaut.starter.feature.testresources.TestResourcesAdditionalModulesProvider;
 import io.micronaut.starter.template.RockerWritable;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
 import java.util.LinkedHashSet;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_NATIVE_RESOURCES;
 
@@ -57,7 +58,7 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
                 .filter(MavenPlugin.class::isInstance)
                 .map(plugin -> clonePlugin((MavenPlugin) plugin))
                 .sorted(OrderUtil.COMPARATOR)
-                .collect(Collectors.toList());
+                .toList();
 
         return new GcnMavenBuild(
                 build.getArtifactId(),
@@ -70,7 +71,9 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
                 build.getAnnotationProcessorCombineAttribute(),
                 build.getTestAnnotationProcessorCombineAttribute(),
                 build.getProfiles(),
-                generatorContext.getDependencies().stream().filter(dep -> dep.getScope() == Scope.AOT_PLUGIN).map(DependencyCoordinate::new).toList());
+                generatorContext.getDependencies().stream().filter(dep -> dep.getScope() == Scope.AOT_PLUGIN).map(DependencyCoordinate::new).toList(),
+                testResourcesDependencies(generatorContext)
+        );
     }
 
     private List<DependencyCoordinate> deduplicate(List<DependencyCoordinate> annotationProcessors) {
@@ -97,5 +100,16 @@ public class GcnMavenBuildCreator extends MavenBuildCreator {
                 new RockerWritable(mavenPlugin.template(
                         extensionModel.groupId(),
                         extensionModel.artifactId())), 0);
+    }
+
+    @NonNull
+    private static List<MavenCoordinate> testResourcesDependencies(@NonNull GeneratorContext generatorContext) {
+        return generatorContext.getFeatures().getFeatures()
+                .stream()
+                .filter(TestResourcesAdditionalModulesProvider.class::isInstance)
+                .map(f -> ((TestResourcesAdditionalModulesProvider) f).getTestResourcesDependencies(generatorContext))
+                .flatMap(List::stream)
+                .distinct()
+                .toList();
     }
 }

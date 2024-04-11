@@ -19,10 +19,11 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import io.micronaut.starter.feature.oraclecloud.OracleCloudSdk;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.OCI;
 
@@ -57,7 +58,7 @@ public class OciStreaming extends AbstractStreamingFeature {
 
         //kafka:
         //  bootstrap:
-        //    servers: cell-1.streaming.us-ashburn-1.oci.oraclecloud.com:9092
+        //    servers: ${OCI_STREAM_POOL_FQDN}:9092
         //  security:
         //    protocol: SASL_SSL
         //  sasl:
@@ -71,15 +72,18 @@ public class OciStreaming extends AbstractStreamingFeature {
         //    partition:
         //      fetch:
         //        bytes: 1048576
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("kafka.bootstrap.servers", "${OCI_STREAM_POOL_FQDN}:9092");
-        config.addNested("kafka.max.partition.fetch.bytes", 1048576);
-        config.addNested("kafka.max.request.size", 1048576);
-        config.addNested("kafka.retries", 3);
-        config.addNested("kafka.sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${OCI_TENANCY_NAME}/${OCI_USERNAME}/${OCI_STREAM_POOL_OCID}\" password=\"${OCI_AUTH_TOKEN}\";");
-        config.addNested("kafka.sasl.mechanism", "PLAIN");
-        config.addNested("kafka.security.protocol", "SASL_SSL");
-        config.addNested("kafka.enable.idempotence", "false");
+        generatorContext.getConfiguration().addNested(Map.of(
+                "kafka.max.partition.fetch.bytes", 1048576,
+                "kafka.max.request.size", 1048576,
+                "kafka.retries", 3,
+                "kafka.enable.idempotence", "false",
+                "kafka.sasl.mechanism", "PLAIN"
+        ));
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "kafka.bootstrap.servers", "${OCI_STREAM_POOL_FQDN}:9092",
+                "kafka.sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${OCI_TENANCY_NAME}/${OCI_USERNAME}/${OCI_STREAM_POOL_OCID}\" password=\"${OCI_AUTH_TOKEN}\";",
+                "kafka.security.protocol", "SASL_SSL"
+        ));
     }
 
     @NonNull

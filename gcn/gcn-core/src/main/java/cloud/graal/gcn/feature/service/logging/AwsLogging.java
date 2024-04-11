@@ -37,13 +37,16 @@ import static cloud.graal.gcn.model.GcnCloud.AWS;
 @Singleton
 public class AwsLogging extends AbstractLoggingFeature {
 
+    private static final Dependency CLOUDWATCH_LOGGING = Dependency.builder()
+            .groupId("io.micronaut.aws")
+            .artifactId("micronaut-aws-cloudwatch-logging")
+            .compile()
+            .build();
+
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
 
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("io.micronaut.aws")
-                .artifactId("micronaut-aws-cloudwatch-logging")
-                .compile());
+        generatorContext.addDependency(CLOUDWATCH_LOGGING);
 
         generatorContext.addTemplate("loggingConfig-aws",
                 new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",

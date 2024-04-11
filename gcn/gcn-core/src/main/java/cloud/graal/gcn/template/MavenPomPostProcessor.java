@@ -140,7 +140,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     }
 
     private String fixName(@NonNull String pom) {
-        return pom.replace("<packaging>${packaging}</packaging>", "<packaging>${packaging}</packaging>\n  <name>" + artifactId + "-${artifactId}</name>");
+        return pom.replace("<packaging>${packaging}</packaging>", "<packaging>${packaging}</packaging>\n  <name>" + artifactId + "-${project.artifactId}</name>");
     }
 
     @NonNull

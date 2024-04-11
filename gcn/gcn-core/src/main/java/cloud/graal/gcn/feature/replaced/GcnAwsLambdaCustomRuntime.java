@@ -19,6 +19,7 @@ import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.awslambdacustomruntime.AwsLambdaCustomRuntime;
 import io.micronaut.starter.feature.function.awslambda.AwsLambda;
+import io.micronaut.starter.feature.httpclient.HttpClientJdk;
 import io.micronaut.starter.feature.other.HttpClient;
 import jakarta.inject.Provider;
 import jakarta.inject.Singleton;
@@ -35,13 +36,12 @@ public class GcnAwsLambdaCustomRuntime extends AwsLambdaCustomRuntime {
 
     private Provider<AwsLambda> awsLambdaProvider;
     private AwsLambda awsLambda;
-    private final HttpClient httpClient;
+    private final HttpClientJdk httpClient;
 
-    GcnAwsLambdaCustomRuntime(Provider<AwsLambda> awsLambdaProvider,
-                              HttpClient httpClient) {
-        super(null, httpClient);
-        this.awsLambdaProvider = awsLambdaProvider;
-        this.httpClient = httpClient;
+    GcnAwsLambdaCustomRuntime(Provider<AwsLambda> awsLambda, HttpClientJdk httpClientJdk) {
+        super(null, httpClientJdk);
+        this.awsLambdaProvider = awsLambda;
+        this.httpClient = httpClientJdk;
     }
 
     @Override

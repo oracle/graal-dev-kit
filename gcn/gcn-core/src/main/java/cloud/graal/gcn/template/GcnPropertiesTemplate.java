@@ -19,13 +19,10 @@ import io.micronaut.starter.template.DefaultTemplate;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.HashSet;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.stream.Stream;
 
 public class GcnPropertiesTemplate extends DefaultTemplate {
 
@@ -40,12 +37,30 @@ public class GcnPropertiesTemplate extends DefaultTemplate {
     public GcnPropertiesTemplate(String module, String path, Map<String, Object> config) {
         super(module, path);
         originalConfig = config;
-        this.properties = transform(new LinkedProperties(), "", config);
+        this.properties = transform(new Properties(), "", config);
     }
 
     @Override
     public void write(OutputStream outputStream) throws IOException {
-        properties.store(outputStream, null);
+        OutputStream outputStream1 = new OutputStream() {
+            private final StringBuilder string = new StringBuilder();
+
+            @Override
+            public void write(int b) {
+                this.string.append((char) b);
+            }
+
+            public String toString() {
+                return this.string.toString();
+            }
+        };
+
+        properties.store(outputStream1, null);
+        String string = outputStream1.toString();
+        string = string.substring(string.indexOf('\n') + 1);
+        List<String> lines = Stream.of(string.split("\n")).sorted().toList();
+        string = String.join("\n", lines);
+        outputStream.write(string.getBytes());
     }
 
     public Map<String, Object> getOriginalConfig() {
@@ -59,36 +74,16 @@ public class GcnPropertiesTemplate extends DefaultTemplate {
         return finalConfig;
     }
 
+    @SuppressWarnings("unchecked")
     private void transform(Properties finalConfig, String prefix, Object value) {
         if (value instanceof Map) {
             transform(finalConfig, prefix + ".", (Map<String, Object>) value);
-        } else if (value instanceof List) {
-            List list = (List) value;
+        } else if (value instanceof List<?> list) {
             for (int i = 0; i < list.size(); i++) {
                 transform(finalConfig, prefix + "[" + i + "]", list.get(i));
             }
         } else {
             finalConfig.put(prefix, value.toString());
-        }
-    }
-
-    public class LinkedProperties extends Properties {
-        private final HashSet<Object> keys = new LinkedHashSet<>();
-
-        public LinkedProperties() {
-        }
-
-        public Iterable<Object> orderedKeys() {
-            return Collections.list(keys());
-        }
-
-        public Enumeration<Object> keys() {
-            return Collections.enumeration(keys);
-        }
-
-        public Object put(Object key, Object value) {
-            keys.add(key);
-            return super.put(key, value);
         }
     }
 }

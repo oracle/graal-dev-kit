@@ -144,7 +144,7 @@ public class GcnMaven extends Maven {
         String templateKey = "mavenPom-" + gcnCloud.getModuleName();
 
         if (templateKey.equals("mavenPom-")) {
-            templateKey =  "mavenPom";
+            templateKey = "mavenPom";
         }
 
         generatorContext.addTemplate(templateKey, new RockerTemplate(gcnCloud.getModuleName(), "pom.xml",

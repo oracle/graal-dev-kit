@@ -43,6 +43,24 @@ import static cloud.graal.gcn.model.GcnService.OBJECTSTORE;
  */
 public abstract class AbstractObjectStore extends AbstractGcnServiceFeature {
 
+    private static final Dependency OBJECT_STORAGE_CORE = Dependency.builder()
+            .groupId("io.micronaut.objectstorage")
+            .artifactId("micronaut-object-storage-core")
+            .compile()
+            .build();
+
+    private static final Dependency HTTP_SERVER = Dependency.builder()
+            .groupId("io.micronaut")
+            .artifactId("micronaut-http-server")
+            .compileOnly()
+            .build();
+
+    private static final Dependency MOCKITO_CORE = Dependency.builder()
+            .groupId("org.mockito")
+            .artifactId("mockito-core")
+            .test()
+            .build();
+
     @Override
     public final void processSelectedFeatures(GcnFeatureContext featureContext) {
         addFeature(featureContext);
@@ -61,16 +79,8 @@ public abstract class AbstractObjectStore extends AbstractGcnServiceFeature {
         addConfig(generatorContext);
 
         applyForLib(generatorContext, () -> {
-
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("io.micronaut.objectstorage")
-                    .artifactId("micronaut-object-storage-core")
-                    .compile());
-
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("io.micronaut")
-                    .artifactId("micronaut-http-server")
-                    .compileOnly());
+            generatorContext.addDependency(OBJECT_STORAGE_CORE);
+            generatorContext.addDependency(HTTP_SERVER);
         });
 
         if (generatorContext.generateExampleCode()) {
@@ -111,12 +121,8 @@ public abstract class AbstractObjectStore extends AbstractGcnServiceFeature {
                             mockk.version(generatorContext.resolveCoordinate("mockk").getVersion());
                         }
                         generatorContext.addDependency(mockk);
-
                     } else {
-                        generatorContext.addDependency(Dependency.builder()
-                                .groupId("org.mockito")
-                                .artifactId("mockito-core")
-                                .test());
+                        generatorContext.addDependency(MOCKITO_CORE);
                     }
                 }
             });

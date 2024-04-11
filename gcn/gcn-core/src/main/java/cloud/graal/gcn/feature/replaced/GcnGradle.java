@@ -45,10 +45,8 @@ import io.micronaut.starter.feature.build.gradle.Gradle;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
 import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
 import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
-import io.micronaut.starter.template.BinaryTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
-import io.micronaut.starter.template.URLTemplate;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -75,8 +73,6 @@ public class GcnGradle extends Gradle {
 
     private static final String ARTIFACT_ID = "micronaut-gradle-plugin";
     private static final String PLUGIN_TEST_RESOURCES = "io.micronaut.test-resources";
-    private static final String GCN_WRAPPER_JAR = WRAPPER_JAR.replaceFirst("gradle/", "gcn_gradle/");
-    private static final String GCN_WRAPPER_PROPS = WRAPPER_PROPS.replaceFirst("gradle/", "gcn_gradle/");
 
     /**
      * The plugin id for the Micronaut application plugin.
@@ -94,9 +90,7 @@ public class GcnGradle extends Gradle {
     private static final GradlePlugin GROOVY_PLUGIN = GradlePlugin.builder().id("groovy").build();
 
     private final CoordinateResolver coordinateResolver;
-
     private final RepositoryResolver repositoryResolver;
-
     private final GcnGradleBuildCreator gradleBuildCreator;
 
     /**
@@ -169,16 +163,10 @@ public class GcnGradle extends Gradle {
                 original.getDependencies(), plugins, gradleRepositories);
     }
 
-    // TODO this override is here to upgrade Gradle to v8.5 to add support for JDK 21;
-    //      remove this and the resource files when we've upgrade to a version of Micronaut
-    //      that uses Gradle 8.5+
+    // don't delete - this is needed for web image generation
     @Override
     protected void addGradleInitFiles(GeneratorContext generatorContext) {
-        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        generatorContext.addTemplate("gradleWrapperJar", new BinaryTemplate(ROOT, WRAPPER_JAR, classLoader.getResource(GCN_WRAPPER_JAR)));
-        generatorContext.addTemplate("gradleWrapperProperties", new URLTemplate(ROOT, WRAPPER_PROPS, classLoader.getResource(GCN_WRAPPER_PROPS)));
-        generatorContext.addTemplate("gradleWrapper", new URLTemplate(ROOT, "gradlew", classLoader.getResource("gcn_gradle/gradlew"), true));
-        generatorContext.addTemplate("gradleWrapperBat", new URLTemplate(ROOT, "gradlew.bat", classLoader.getResource("gcn_gradle/gradlew.bat"), false));
+        super.addGradleInitFiles(generatorContext);
     }
 
     private void addBuildSrc(GcnGeneratorContext generatorContext) {
@@ -234,9 +222,8 @@ public class GcnGradle extends Gradle {
     }
 
     private void addCloudGradleBuild(GcnGeneratorContext generatorContext, GradleDsl dsl,
-                                     GcnCloud gcnCloud
+                                     GcnCloud gcnCloud) {
 
-    ) {
         if (gcnCloud == GcnCloud.NONE) {
             return;
         }
@@ -271,7 +258,7 @@ public class GcnGradle extends Gradle {
                 if (APPLICATION_PLUGIN_ID.equals(id) || LIBRARY_PLUGIN_ID.equals(id)) {
                     copiedPlugins.add(cloneMicronautPlugin(plugin, generatorContext));
                 } else if (JTE_PLUGIN_ID.equals(id)) {
-                    copiedPlugins.add(cloneJtePlugin(plugin, generatorContext));
+                    copiedPlugins.add(cloneJtePlugin(plugin));
                 } else {
                     throw new IllegalStateException("Unknown build plugin '" + id + "'");
                 }
@@ -301,8 +288,7 @@ public class GcnGradle extends Gradle {
 
     }
 
-    private GradlePlugin cloneJtePlugin(GradlePlugin plugin,
-                                        GcnGeneratorContext generatorContext) {
+    private GradlePlugin cloneJtePlugin(GradlePlugin plugin) {
 
         gcnGradlePluginJTE extensionModel = (gcnGradlePluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
 
@@ -319,14 +305,14 @@ public class GcnGradle extends Gradle {
                 plugin.getPluginsManagementRepositories(),
                 false,
                 plugin.getOrder(),
-                plugin.getBuildImports());
+                plugin.getBuildImports(),
+                plugin.getSettingsImports());
     }
 
     private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,
                                               GcnGeneratorContext generatorContext) {
 
         micronautGradle extensionModel = (micronautGradle) ((RockerWritable) plugin.getExtension()).getModel();
-
         return new GradlePlugin(
                 plugin.getGradleFile(),
                 plugin.getId(),
@@ -354,7 +340,7 @@ public class GcnGradle extends Gradle {
                 plugin.getPluginsManagementRepositories(),
                 false,
                 plugin.getOrder(),
-                plugin.getBuildImports());
+                plugin.getBuildImports(),
+                plugin.getSettingsImports());
     }
-
 }

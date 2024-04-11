@@ -101,6 +101,7 @@ public class GcnStarter extends GcnBaseCommand {
      * @param args args
      */
     public static void main(String[] args) {
+        GcnUtils.configureJdkVersions();
         if (args.length == 0) {
             // The first command line isn't technically in the shell yet so this is called before setting the static flag
             startShell();

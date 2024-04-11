@@ -18,9 +18,10 @@ package cloud.graal.gcn.feature.service.streaming;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.GCP;
 
@@ -43,8 +44,6 @@ public class GcpStreaming extends AbstractStreamingFeature {
     protected void doApply(GcnGeneratorContext generatorContext) {
 
         //kafka:
-        //  bootstrap:
-        //    servers: cell-1.streaming.us-ashburn-1.oci.oraclecloud.com:9092
         //  retries: 3
         //  max:
         //    request:
@@ -52,11 +51,11 @@ public class GcpStreaming extends AbstractStreamingFeature {
         //    partition:
         //      fetch:
         //        bytes: 1048576
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("kafka.bootstrap.servers", "${KAFKA_BOOTSTRAP_SERVERS}");
-        config.addNested("kafka.max.partition.fetch.bytes", 1048576);
-        config.addNested("kafka.max.request.size", 1048576);
-        config.addNested("kafka.retries", 3);
+        generatorContext.getConfiguration().addNested(Map.of(
+                "kafka.max.partition.fetch.bytes", 1048576,
+                "kafka.max.request.size", 1048576,
+                "kafka.retries", 3)
+        );
     }
 
     @NonNull

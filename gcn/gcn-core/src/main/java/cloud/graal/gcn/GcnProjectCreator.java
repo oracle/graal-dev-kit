@@ -37,7 +37,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
 import static io.micronaut.starter.options.BuildTool.GRADLE;
@@ -93,13 +92,12 @@ public class GcnProjectCreator {
                        Map<String, Object> additionalOptions,
                        OutputHandler outputHandler,
                        ConsoleOutput consoleOutput) throws Exception {
-
         if (clouds.isEmpty()) {
             // platform independent, will generate a single-module application
             clouds = List.of(NONE);
         }
 
-        if (features.size() == 1 && features.get(0).length() == 0) {
+        if (features.size() == 1 && features.get(0).isEmpty()) {
             // CLI specified "--features=", which sets the value to an empty string
             features.remove(0);
         }
@@ -141,15 +139,9 @@ public class GcnProjectCreator {
             int dotPos = property.indexOf('.');
             int dashPos = property.indexOf('-');
             majorVersion = Integer.parseInt(property.substring(0, dotPos > -1 ? dotPos : dashPos > -1 ? dashPos : property.length()));
+            return JdkVersion.valueOf(majorVersion);
         }
-
-        for (JdkVersion version : JdkVersion.values()) {
-            if (version.majorVersion() == majorVersion) {
-                return version;
-            }
-        }
-
-        throw new IllegalArgumentException("Unsupported JDK version: " + majorVersion + ". Supported values are " + GcnUtils.SUPPORTED_JDKS);
+        return JdkVersion.valueOf(majorVersion);
     }
 
     private List<String> derivedFeatures(List<GcnCloud> clouds,
@@ -163,13 +155,13 @@ public class GcnProjectCreator {
                 .filter(f -> f.getProjectType() == projectType)
                 .filter(f -> clouds.contains(f.getCloud()))
                 .map(Feature::getName)
-                .collect(Collectors.toList()));
+                .toList());
 
         derived.addAll(serviceFeatures.stream()
                 .filter(f -> clouds.contains(f.getCloud()))
                 .filter(f -> services.contains(f.getService()))
                 .map(Feature::getName)
-                .collect(Collectors.toList()));
+                .toList());
 
         return derived;
     }

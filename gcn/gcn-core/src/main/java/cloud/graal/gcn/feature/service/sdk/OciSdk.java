@@ -40,6 +40,12 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
 @Singleton
 public class OciSdk extends AbstractSdkFeature {
 
+    private static final Dependency SDK_CORE = Dependency.builder()
+            .groupId("com.oracle.oci.sdk")
+            .artifactId("oci-java-sdk-core")
+            .compile()
+            .build();
+
     private final OracleCloudSdk oracleCloudSdk;
 
     /**
@@ -59,10 +65,7 @@ public class OciSdk extends AbstractSdkFeature {
 
         if (generatorContext.generateExampleCode()) {
 
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("com.oracle.oci.sdk")
-                    .artifactId("oci-java-sdk-core")
-                    .compile());
+            generatorContext.addDependency(SDK_CORE);
 
             Project project = generatorContext.getProject();
 

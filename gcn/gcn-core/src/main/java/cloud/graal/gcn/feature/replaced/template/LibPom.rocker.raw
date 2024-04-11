@@ -62,7 +62,6 @@
 }
 }
 @dependency.template("io.micronaut", "micronaut-inject", "compile", null, false, null)
-@dependency.template("io.micronaut.validation", "micronaut-validation", "compile", null, false, null)
 @if (features.language().isKotlin()) {
 @dependency.template("com.fasterxml.jackson.module", "jackson-module-kotlin", "runtime", null, false, null)
 }

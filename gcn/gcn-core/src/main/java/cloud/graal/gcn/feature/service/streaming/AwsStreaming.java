@@ -21,9 +21,10 @@ import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.aws.AwsV2Sdk;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
 
@@ -38,7 +39,6 @@ public class AwsStreaming extends AbstractStreamingFeature {
     private static final Dependency AWS_IAM_AUTH_LIB = Dependency.builder()
             .groupId("software.amazon.msk")
             .artifactId("aws-msk-iam-auth")
-            .version("2.0.3")
             .runtime()
             .build();
 
@@ -66,8 +66,6 @@ public class AwsStreaming extends AbstractStreamingFeature {
         generatorContext.addDependency(AWS_IAM_AUTH_LIB);
 
         //kafka:
-        //  bootstrap:
-        //    servers: '${KAFKA_BOOTSTRAP_SERVERS}'
         //  security:
         //    protocol: SASL_SSL
         //  sasl:
@@ -85,15 +83,17 @@ public class AwsStreaming extends AbstractStreamingFeature {
         //    partition:
         //      fetch:
         //        bytes: 1048576
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("kafka.bootstrap.servers", "${KAFKA_BOOTSTRAP_SERVERS}");
-        config.addNested("kafka.max.partition.fetch.bytes", 1048576);
-        config.addNested("kafka.max.request.size", 1048576);
-        config.addNested("kafka.retries", 3);
-        config.addNested("kafka.sasl.client.callback.handler.class", "software.amazon.msk.auth.iam.IAMClientCallbackHandler");
-        config.addNested("kafka.sasl.jaas.config", "software.amazon.msk.auth.iam.IAMLoginModule required;");
-        config.addNested("kafka.sasl.mechanism", "AWS_MSK_IAM");
-        config.addNested("kafka.security.protocol", "SASL_SSL");
+        generatorContext.getConfiguration().addNested(Map.of(
+                "kafka.max.partition.fetch.bytes", 1048576,
+                "kafka.max.request.size", 1048576,
+                "kafka.retries", 3
+        ));
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "kafka.sasl.client.callback.handler.class", "software.amazon.msk.auth.iam.IAMClientCallbackHandler",
+                "kafka.sasl.jaas.config", "software.amazon.msk.auth.iam.IAMLoginModule required;",
+                "kafka.sasl.mechanism", "AWS_MSK_IAM",
+                "kafka.security.protocol", "SASL_SSL"
+        ));
     }
 
     @NonNull

@@ -22,6 +22,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.objectstorage.ObjectStorageAws;
 import jakarta.inject.Singleton;
 
+import java.util.Map;
+
 import static cloud.graal.gcn.model.GcnCloud.AWS;
 
 /**
@@ -52,10 +54,13 @@ public class AwsObjectStore extends AbstractObjectStore {
         //  object-storage:
         //    aws:
         //      default:
-        //        bucket: ${OBJECT_STORAGE_BUCKET}
-        generatorContext.getConfiguration().addNested(
-                "micronaut.object-storage.aws.default.bucket",
-                "${OBJECT_STORAGE_BUCKET}");
+        //        bucket:
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "micronaut.object-storage.aws.default.bucket", "",
+                "micronaut.object-storage.aws.default.enabled", "true"
+        ));
+        generatorContext.getTestConfiguration().addNested("micronaut.object-storage.aws.default.enabled", "false");
+
     }
 
     @NonNull

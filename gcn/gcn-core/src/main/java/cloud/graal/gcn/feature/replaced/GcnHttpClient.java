@@ -21,6 +21,7 @@ import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.feature.DefaultFeature;
 import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.feature.FeatureContext;
+import io.micronaut.starter.feature.httpclient.HttpClientJdk;
 import io.micronaut.starter.feature.other.HttpClient;
 import io.micronaut.starter.feature.other.HttpClientTest;
 import io.micronaut.starter.options.Options;
@@ -41,7 +42,7 @@ public class GcnHttpClient extends HttpClient implements DefaultFeature {
 
     @Override
     public boolean shouldApply(ApplicationType applicationType, Options options, Set<Feature> selectedFeatures) {
-        return selectedFeatures.stream().anyMatch(GcnFeature.class::isInstance);
+        return selectedFeatures.stream().anyMatch(GcnFeature.class::isInstance) && selectedFeatures.stream().noneMatch(HttpClientJdk.class::isInstance);
     }
 
     @Override

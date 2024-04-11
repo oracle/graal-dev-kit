@@ -15,6 +15,7 @@
  */
 package cloud.graal.gcn;
 
+import cloud.graal.gcn.build.dependencies.GcnDependencies;
 import cloud.graal.gcn.feature.GcnFeature;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.feature.GcnFeatures;
@@ -30,9 +31,11 @@ import io.micronaut.starter.application.generator.DependencyContextImpl;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Property;
+import io.micronaut.starter.build.dependencies.Coordinate;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.dependencies.DependencyContext;
+import io.micronaut.starter.build.dependencies.StarterCoordinates;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.feature.ApplicationFeature;
@@ -79,8 +82,6 @@ import java.util.stream.Collectors;
 import static cloud.graal.gcn.GcnUtils.APP_MODULE;
 import static cloud.graal.gcn.GcnUtils.BOM_VERSION_SUFFIX;
 import static cloud.graal.gcn.GcnUtils.LIB_MODULE;
-import static cloud.graal.gcn.GcnUtils.MICRONAUT_MAVEN_PLUGIN_VERSION;
-import static cloud.graal.gcn.GcnUtils.TEST_RESOURCES_VERSION;
 import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_GROUP_ID;
 import static cloud.graal.gcn.feature.replaced.GcnJTE.JTE_NATIVE_RESOURCES;
 import static cloud.graal.gcn.model.GcnCloud.AWS;
@@ -114,25 +115,27 @@ public class GcnGeneratorContext extends GeneratorContext {
     private static final String PLUGIN_GRADLE_AZUREFUNCTIONS = "com.microsoft.azure.azurefunctions";
     private static final String PLUGIN_MAVEN_AZUREFUNCTIONS = "azure-functions-maven-plugin";
 
-    private static final String GG_JTE_GRADLE = "gg.jte.gradle:3.0.3";
-
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
-            Map.entry("com.github.johnrengelman.shadow:8.1.1", "com.github.johnrengelman:shadow:8.1.1"),
-            Map.entry("io.micronaut.application:4.3.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.3.2"),
-            Map.entry("io.micronaut.library:4.3.2", "io.micronaut.gradle:micronaut-gradle-plugin:4.3.2"),
-            Map.entry("io.micronaut.test-resources:4.3.2", "io.micronaut.gradle:micronaut-test-resources-plugin:4.3.2"),
-            Map.entry("org.jetbrains.kotlin.jvm:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
-            Map.entry("org.jetbrains.kotlin.kapt:1.9.21", "org.jetbrains.kotlin:kotlin-gradle-plugin:1.9.21"),
-            Map.entry("org.jetbrains.kotlin.plugin.allopen:1.9.21", "org.jetbrains.kotlin:kotlin-allopen:1.9.21"),
-            Map.entry("com.google.cloud.tools.jib:2.8.0", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin:2.8.0"),
-            Map.entry("io.micronaut.aot:4.3.2", "io.micronaut.gradle:micronaut-aot-plugin:4.3.2"),
-            Map.entry("com.google.devtools.ksp:1.9.21-1.0.15", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin:1.9.21-1.0.15"),
-            Map.entry(GG_JTE_GRADLE, "gg.jte:jte-gradle-plugin:3.0.3")
+            gavMapEntry("com.github.johnrengelman.shadow", "com.github.johnrengelman:shadow", StarterCoordinates.SHADOW),
+            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", GcnDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", GcnDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", GcnDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", StarterCoordinates.JIB_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", GcnDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
+            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", StarterCoordinates.JTE_GRADLE_PLUGIN)
     );
+
+    private static final ThreadLocal<GcnGeneratorContext> INSTANCE = new ThreadLocal<>();
 
     private GcnCloud cloud = NONE;
     private boolean hideLibFeatures;
+    private final Map<GcnCloud, ApplicationConfiguration> applicationConfigurations = new HashMap<>(GcnCloud.supportedValues().length);
     private final Map<GcnCloud, ApplicationConfiguration> cloudApplicationConfigurations = new HashMap<>(GcnCloud.supportedValues().length);
+    private final Map<GcnCloud, BootstrapConfiguration> bootstrapConfigurations = new HashMap<>(GcnCloud.supportedValues().length);
     private final Map<GcnCloud, BootstrapConfiguration> cloudBootstrapConfigurations = new HashMap<>(GcnCloud.supportedValues().length);
     private final Map<GcnCloud, DependencyContext> cloudDependencyContexts = new HashMap<>(GcnCloud.supportedValues().length);
     private final Map<GcnCloud, Project> cloudProjects = new HashMap<>(GcnCloud.supportedValues().length);
@@ -143,7 +146,6 @@ public class GcnGeneratorContext extends GeneratorContext {
     private final Map<String, Set<TemplatePostProcessor>> postProcessors = new HashMap<>();
     private final Map<Pattern, Set<TemplatePostProcessor>> regexPostProcessors = new HashMap<>();
     private final Set<String> presentTemplatePaths = new HashSet<>();
-
     private final CoordinateResolver coordinateResolver;
     private final GcnFeatureContext featureContext;
     private final boolean generateExampleCode;
@@ -173,11 +175,24 @@ public class GcnGeneratorContext extends GeneratorContext {
         buildProperties = new GcnBuildProperties(this, clouds);
         buildProperties.put(key, GcnUtils.getMicronautVersion() + BOM_VERSION_SUFFIX);
 
-        // TODO check if can be removed in new version of micronaut
         if (!featureContext.getBuildTool().isGradle()) {
-            buildProperties.put("micronaut-maven-plugin.version", MICRONAUT_MAVEN_PLUGIN_VERSION);
-            buildProperties.put("micronaut.test.resources.version", TEST_RESOURCES_VERSION);
+            buildProperties.put("micronaut-maven-plugin.version", GcnDependencies.MICRONAUT_MAVEN_PLUGIN.getVersion());
+            buildProperties.put("micronaut.test.resources.version", GcnDependencies.MICRONAUT_TEST_RESOURCES_CORE.getVersion());
         }
+
+        INSTANCE.set(this);
+    }
+
+    /**
+     * @return the current instance
+     */
+    public static GcnGeneratorContext getInstance() {
+        return INSTANCE.get();
+    }
+
+    private static Map.Entry<String, String> gavMapEntry(String keyStart, String valueStart,
+                                                         Coordinate coordinate) {
+        return Map.entry(keyStart + ':' + coordinate.getVersion(), valueStart + ':' + coordinate.getVersion());
     }
 
     private static Map<GcnCloud, GcnFeatures> splitFeatures(Set<Feature> allFeatures,
@@ -263,7 +278,9 @@ public class GcnGeneratorContext extends GeneratorContext {
     public void setCloud(GcnCloud cloud) {
         this.cloud = cloud;
         if (cloud != NONE) {
+            applicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration());
             cloudApplicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration());
+            bootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration());
             cloudBootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration());
             cloudDependencyContexts.putIfAbsent(cloud, new DependencyContextImpl(coordinateResolver));
             cloudProjects.putIfAbsent(cloud, createProject(cloud));
@@ -312,7 +329,7 @@ public class GcnGeneratorContext extends GeneratorContext {
     @NonNull
     @Override
     public ApplicationConfiguration getConfiguration() {
-        return cloudApplicationConfigurations.getOrDefault(cloud, super.getConfiguration());
+        return applicationConfigurations.getOrDefault(cloud, super.getConfiguration());
     }
 
     /**
@@ -369,8 +386,22 @@ public class GcnGeneratorContext extends GeneratorContext {
     /**
      * @return application configurations grouped by cloud
      */
+    public Map<GcnCloud, ApplicationConfiguration> getApplicationConfigurations() {
+        return Collections.unmodifiableMap(applicationConfigurations);
+    }
+
+    /**
+     * @return cloud application configurations grouped by cloud
+     */
     public Map<GcnCloud, ApplicationConfiguration> getCloudApplicationConfigurations() {
         return Collections.unmodifiableMap(cloudApplicationConfigurations);
+    }
+
+    /**
+     * @return the application configuration for the current cloud
+     */
+    public ApplicationConfiguration getCloudConfiguration() {
+        return getConfiguration(cloud);
     }
 
     /**
@@ -384,7 +415,7 @@ public class GcnGeneratorContext extends GeneratorContext {
     @NonNull
     @Override
     public BootstrapConfiguration getBootstrapConfiguration() {
-        return cloudBootstrapConfigurations.getOrDefault(cloud, super.getBootstrapConfiguration());
+        return bootstrapConfigurations.getOrDefault(cloud, super.getBootstrapConfiguration());
     }
 
     @NonNull
@@ -415,11 +446,18 @@ public class GcnGeneratorContext extends GeneratorContext {
     }
 
     /**
+     * @return the bootstrap configuration for the current cloud
+     */
+    public BootstrapConfiguration getCloudBootstrapConfiguration() {
+        return getBootstrapConfiguration(cloud);
+    }
+
+    /**
      * @param cloud the cloud
      * @return the bootstrap configuration for the specified cloud
      */
     public BootstrapConfiguration getBootstrapConfiguration(GcnCloud cloud) {
-        return cloudBootstrapConfigurations.get(cloud);
+        return cloudBootstrapConfigurations.getOrDefault(cloud, super.getBootstrapConfiguration());
     }
 
     /**
@@ -431,6 +469,13 @@ public class GcnGeneratorContext extends GeneratorContext {
 
     /**
      * @return bootstrap configurations grouped by cloud
+     */
+    public Map<GcnCloud, BootstrapConfiguration> getBootstrapConfigurations() {
+        return Collections.unmodifiableMap(bootstrapConfigurations);
+    }
+
+    /**
+     * @return cloud bootstrap configurations grouped by cloud
      */
     public Map<GcnCloud, BootstrapConfiguration> getCloudBootstrapConfigurations() {
         return Collections.unmodifiableMap(cloudBootstrapConfigurations);
@@ -675,7 +720,7 @@ public class GcnGeneratorContext extends GeneratorContext {
                 .filter(cloud -> cloud != NONE)
                 .map(GcnCloud::getModuleName)
                 .sorted()
-                .collect(Collectors.toList()));
+                .toList());
 
         return names;
     }
@@ -954,13 +999,11 @@ public class GcnGeneratorContext extends GeneratorContext {
      * @return the language-specific ApplicationRenderingContext
      */
     public ApplicationRenderingContext getApplicationRenderingContext(Language language) {
-        String defaultEnvironment = featureContext.getSelectedNames().contains("kubernetes") ? null : getCloud().getEnvironmentName();
         boolean eagerInitSingleton = getFeatures().isFeaturePresent(RequireEagerSingletonInitializationFeature.class);
         return switch (language) {
-            case JAVA -> new JavaApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            case GROOVY -> new GroovyApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            case KOTLIN -> new KotlinApplicationRenderingContext(defaultEnvironment, eagerInitSingleton);
-            default -> throw new IllegalStateException("Unexpected language: " + language);
+            case JAVA -> new JavaApplicationRenderingContext(null, eagerInitSingleton);
+            case GROOVY -> new GroovyApplicationRenderingContext(null, eagerInitSingleton);
+            case KOTLIN -> new KotlinApplicationRenderingContext(null, eagerInitSingleton);
         };
     }
 
@@ -1044,10 +1087,12 @@ public class GcnGeneratorContext extends GeneratorContext {
         sb.append("\n   Module Names: ").append(getModuleNames()).append('\n');
 
         sb.append("\n   Lib Configuration: ").append(getLibConfiguration()).append('\n');
+        sb.append("\n   App Configurations: ").append(getApplicationConfigurations()).append('\n');
         sb.append("\n   Cloud App Configurations: ").append(getCloudApplicationConfigurations()).append('\n');
         sb.append("\n   Cloud App Env Configurations: ").append(getCloudApplicationEnvConfigurations()).append('\n');
 
-        sb.append("\n   Bootstrap Configuration: ").append(getLibBootstrapConfiguration()).append('\n');
+        sb.append("\n   Lib Bootstrap Configuration: ").append(getLibBootstrapConfiguration()).append('\n');
+        sb.append("\n   Bootstrap Configurations: ").append(getBootstrapConfigurations()).append('\n');
         sb.append("\n   Cloud Bootstrap Configurations: ").append(getCloudBootstrapConfigurations()).append('\n');
         sb.append("\n   Cloud Bootstrap Env Configurations: ").append(getCloudBootstrapEnvConfigurations()).append('\n');
 

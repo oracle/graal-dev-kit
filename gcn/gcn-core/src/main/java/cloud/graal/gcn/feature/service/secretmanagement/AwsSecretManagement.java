@@ -83,18 +83,17 @@ public class AwsSecretManagement extends AbstractSecretManagementFeature {
 
             Project project = generatorContext.getProject();
 
+            generatorContext.getBootstrapConfiguration().addNested("aws.secretsmanager.secrets", List.of(Map.of(
+                    "secret-name", "demo-oauth",
+                    "prefix", "micronaut.security.oauth2.clients.demo-oauth"
+            )));
+
             generatorContext.addTemplate(getModuleName(), "ClientIdController",
                     generatorContext.getSourcePath("/{packagePath}/ClientIdController"),
                     ClientIdControllerJava.template(project),
                     ClientIdControllerKotlin.template(project),
                     ClientIdControllerGroovy.template(project)
             );
-
-            Map<String, Object> bootstrap = generatorContext.getBootstrapConfiguration();
-            bootstrap.put("aws.secretsmanager.secrets", List.of(Map.of(
-                    "secret-name", "demo-oauth",
-                    "prefix", "micronaut.security.oauth2.clients.demo-oauth"
-            )));
 
             generatorContext.addTestTemplate(getModuleName(), "SecretsManagerClient",
                     generatorContext.getTestSourcePath("/{packagePath}/SecretsManagerClient"),

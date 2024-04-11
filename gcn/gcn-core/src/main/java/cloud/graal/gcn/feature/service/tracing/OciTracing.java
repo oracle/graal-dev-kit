@@ -35,6 +35,12 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
 @Singleton
 public class OciTracing extends AbstractTracingFeature {
 
+    private static final Dependency ZIPKIN_EXPORTER = Dependency.builder()
+            .groupId("io.micronaut.tracing")
+            .artifactId("micronaut-tracing-opentelemetry-zipkin-exporter")
+            .compile()
+            .build();
+
     /**
      * @param openTelemetry            OpenTelemetry feature
      * @param openTelemetryHttp        OpenTelemetryHttp feature
@@ -49,17 +55,14 @@ public class OciTracing extends AbstractTracingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        generatorContext.addDependency(
-                Dependency.builder()
-                        .groupId("io.micronaut.tracing")
-                        .artifactId("micronaut-tracing-opentelemetry-zipkin-exporter")
-                        .compile()
-                        .build()
-        );
-        generatorContext.getConfiguration().addNested(
+
+        generatorContext.addDependency(ZIPKIN_EXPORTER);
+
+        generatorContext.getCloudConfiguration().addNested(
                 "otel.exporter.zipkin.url",
                 "https://<DataUploadEndpoint>");
-        generatorContext.getConfiguration().addNested(
+
+        generatorContext.getCloudConfiguration().addNested(
                 "otel.exporter.zipkin.path",
                 "/20200101/observations/public-span?dataFormat=zipkin&dataFormatVersion=2&dataKey=[public key]"
         );

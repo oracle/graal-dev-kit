@@ -1,0 +1,11 @@
+plugins {
+    id 'java'
+}
+
+def generateDependencyUtils = tasks.register("generateDependencyUtils", cloud.graal.gcn.dependencies.DependenciesSourceGenerator) {
+    packageName = "cloud.graal.gcn.build.dependencies"
+    outputDirectory = layout.buildDirectory.dir("generated-sources/dependencies")
+    versionCatalog = project.extensions.getByType(VersionCatalogsExtension).named("templateLibs")
+}
+
+sourceSets.main.java.srcDir(generateDependencyUtils)

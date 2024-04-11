@@ -32,7 +32,6 @@ import cloud.graal.gcn.feature.service.email.template.OciSessionProviderKotlin;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
 import io.micronaut.starter.feature.email.TemplateEmailFeature;
 import io.micronaut.starter.feature.validator.MicronautValidationFeature;
@@ -102,15 +101,16 @@ public class OciEmail extends AbstractEmailFeature {
         //        starttls:
         //          enable: true
         //        host: ${SMTP_HOST:''}
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("micronaut.email.from.email", "${FROM_EMAIL:''}");
-        config.addNested("micronaut.email.from.name", "${FROM_NAME:''}");
-        config.addNested("smtp.password", "${SMTP_PASSWORD:''}");
-        config.addNested("smtp.user", "${SMTP_USER:''}");
-        config.addNested("javamail.properties.mail.smtp.port", 587);
-        config.addNested("javamail.properties.mail.smtp.auth", true);
-        config.addNested("javamail.properties.mail.smtp.starttls.enable", true);
-        config.addNested("javamail.properties.mail.smtp.host", "${SMTP_HOST:''}");
+        generatorContext.getConfiguration().addNested(Map.of(
+                "micronaut.email.from.email", "${FROM_EMAIL:''}",
+                "micronaut.email.from.name", "${FROM_NAME:''}",
+                "smtp.password", "${SMTP_PASSWORD:''}",
+                "smtp.user", "${SMTP_USER:''}",
+                "javamail.properties.mail.smtp.port", 587,
+                "javamail.properties.mail.smtp.auth", true,
+                "javamail.properties.mail.smtp.starttls.enable", true,
+                "javamail.properties.mail.smtp.host", "${SMTP_HOST:''}"
+        ));
 
         if (generatorContext.generateExampleCode()) {
 

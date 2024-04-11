@@ -28,10 +28,11 @@ import cloud.graal.gcn.feature.service.email.template.NonCloudMailControllerTest
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.email.JavamailFeature;
 import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.NONE;
 
@@ -48,7 +49,8 @@ public class NonCloudEmail extends AbstractEmailFeature {
     /**
      * @param javamailFeature JavamailFeature feature
      */
-    public NonCloudEmail(JavamailFeature javamailFeature, MicronautValidationFeature micronautValidationFeature) {
+    public NonCloudEmail(JavamailFeature javamailFeature,
+                         MicronautValidationFeature micronautValidationFeature) {
         super(micronautValidationFeature);
         this.javamailFeature = javamailFeature;
     }
@@ -62,38 +64,41 @@ public class NonCloudEmail extends AbstractEmailFeature {
     protected void doApply(GcnGeneratorContext generatorContext) {
 
 //        micronaut:
-//            email:
-//                from:
-//                    email: ${FROM_EMAIL}
-//                    name: ${FROM_NAME:}
+//          email:
+//            from:
+//              email: ${FROM_EMAIL}
+//              name: ${FROM_NAME:}
 //        javamail:
-//            properties:
-//                mail:
-//                    smtp:
-//                        port: ${SMTP_PORT} || 465 (example code)
-//                        auth: true
-//                        host: ${SMTP_HOST} || smtp.gmail.com
-//                        ssl:
-//                            enable: false || true
-//                        starttls:
-//                            enable: false
-//            authentication:
-//                username: ${SMTP_USERNAME} || ${FROM_EMAIL}
-//                password: ${SMTP_PASSWORD} || ${FROM_PASSWORD}
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("micronaut.email.from.email", "${FROM_EMAIL}");
-        config.addNested("micronaut.email.from.name", "${FROM_NAME:}");
+//          properties:
+//            mail:
+//              smtp:
+//                port: ${SMTP_PORT} || 465 (example code)
+//                auth: true
+//                host: ${SMTP_HOST} || smtp.gmail.com
+//                ssl:
+//                  enable: false || true
+//                starttls:
+//                  enable: false
+//          authentication:
+//            username: ${SMTP_USERNAME} || ${FROM_EMAIL}
+//            password: ${SMTP_PASSWORD} || ${FROM_PASSWORD}
 
-        config.addNested("javamail.properties.mail.smtp.auth", true);
-        config.addNested("javamail.properties.mail.smtp.starttls.enable", false);
+        generatorContext.getConfiguration().addNested(Map.of(
+                "micronaut.email.from.email", "${FROM_EMAIL}",
+                "micronaut.email.from.name", "${FROM_NAME:}",
+                "javamail.properties.mail.smtp.auth", true,
+                "javamail.properties.mail.smtp.starttls.enable", false
+        ));
 
         if (generatorContext.generateExampleCode()) {
 
-            config.addNested("javamail.properties.mail.smtp.port", 465);
-            config.addNested("javamail.properties.mail.smtp.ssl.enable", true);
-            config.addNested("javamail.properties.mail.smtp.host", "smtp.gmail.com");
-            config.addNested("javamail.authentication.username", "${FROM_EMAIL}");
-            config.addNested("javamail.authentication.password", "${FROM_PASSWORD}");
+            generatorContext.getConfiguration().addNested(Map.of(
+                    "javamail.properties.mail.smtp.port", 465,
+                    "javamail.properties.mail.smtp.ssl.enable", true,
+                    "javamail.properties.mail.smtp.host", "smtp.gmail.com",
+                    "javamail.authentication.username", "${FROM_EMAIL}",
+                    "javamail.authentication.password", "${FROM_PASSWORD}"
+            ));
 
             Project project = generatorContext.getProject();
 
@@ -112,11 +117,13 @@ public class NonCloudEmail extends AbstractEmailFeature {
                     NonCloudMailControllerTestKotest.template(project));
 
         } else {
-            config.addNested("javamail.properties.mail.smtp.port", "${SMTP_PORT}");
-            config.addNested("javamail.properties.mail.smtp.ssl.enable", false);
-            config.addNested("javamail.properties.mail.smtp.host", "${SMTP_HOST}");
-            config.addNested("javamail.authentication.username", "${SMTP_USERNAME}");
-            config.addNested("javamail.authentication.password", "${SMTP_PASSWORD}");
+            generatorContext.getConfiguration().addNested(Map.of(
+                    "javamail.properties.mail.smtp.port", "${SMTP_PORT}",
+                    "javamail.properties.mail.smtp.ssl.enable", false,
+                    "javamail.properties.mail.smtp.host", "${SMTP_HOST}",
+                    "javamail.authentication.username", "${SMTP_USERNAME}",
+                    "javamail.authentication.password", "${SMTP_PASSWORD}"
+            ));
         }
     }
 

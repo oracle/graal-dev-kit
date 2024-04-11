@@ -19,7 +19,6 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.micrometer.Core;
 import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.micrometer.OracleCloud;
@@ -61,8 +60,7 @@ public class OciMetrics extends AbstractMetricsFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         if (generatorContext.generateExampleCode()) {
-            Configuration testConfig = generatorContext.getTestConfiguration();
-            testConfig.put("micronaut.metrics.export.oraclecloud.enabled", false);
+            generatorContext.getTestConfiguration().addNested("micronaut.metrics.export.oraclecloud.enabled", false);
         }
     }
 

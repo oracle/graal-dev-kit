@@ -45,7 +45,7 @@ class JavaGeneratorRunnable implements Runnable {
         generator.plainTextStrategy = STATIC_STRINGS
         parser.configuration.options.discardLogicWhitespace = true
         parser.configuration.options.optimize = true
-        parser.configuration.options.postProcessing = [WhitespaceProcessor.class.name] as String[]
+        parser.configuration.options.postProcessing = [WhitespaceProcessor.name] as String[]
         parser.configuration.templateDirectory = templateDirectory
     }
 

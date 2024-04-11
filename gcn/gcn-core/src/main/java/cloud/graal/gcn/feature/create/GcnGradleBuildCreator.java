@@ -19,6 +19,7 @@ import cloud.graal.gcn.buildtool.GcnGradleBuild;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.MavenLocal;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.gradle.GradleBuild;
 import io.micronaut.starter.build.gradle.GradleBuildCreator;
@@ -27,7 +28,6 @@ import io.micronaut.starter.build.gradle.GradleRepository;
 import jakarta.inject.Singleton;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 
@@ -54,7 +54,7 @@ public class GcnGradleBuildCreator extends GradleBuildCreator {
                 .filter(GradlePlugin.class::isInstance)
                 .map(GradlePlugin.class::cast)
                 .sorted(OrderUtil.COMPARATOR)
-                .collect(Collectors.toList());
+                .toList();
 
         return new GcnGradleBuild(
                 build.getDsl(),
@@ -69,11 +69,19 @@ public class GcnGradleBuildCreator extends GradleBuildCreator {
                                                      List<Repository> repositories) {
 
         if (repositories.stream().noneMatch(it -> it.getId().equals(REPO.getId()))) {
-            repositories.add(0, REPO);
+            repositories.add(REPO);
+        }
+
+        MavenLocal mavenLocal = new MavenLocal();
+
+        if (repositories.stream().anyMatch(it -> it.getId().equals(mavenLocal.getId()))) {
+            repositories.removeIf(it -> it.getId().equals(mavenLocal.getId()));
+            repositories.add(0, mavenLocal);
         }
 
         return GradleRepository.listOf(
                 generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY),
-                repositories);
+                repositories
+        );
     }
 }

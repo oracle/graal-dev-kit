@@ -24,18 +24,23 @@ file('.').eachDir {
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-String micronautPlatformVersion = new File(rootProject.projectDir, 'gcn-core/src/main/resources/micronautPlatformVersion.txt').text.trim()
+String[] fileLines = new File(rootProject.projectDir.absoluteFile, "gradle/templates.versions.toml").text.split("\n")
+String micronautPlatformVersion = fileLines.find { it.contains("micronaut-platform") }.split("=")[1].replace('"', '').strip()
 
 dependencyResolutionManagement {
     repositories {
         maven {
-            url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+            url 'https://artifacthub-phx.oci.oraclecorp.com/artifactory/micronaut-gcn-stage/'
         }
         mavenCentral()
+        gradlePluginPortal()
     }
     versionCatalogs {
         mnLibs {
-            from 'io.micronaut.platform:micronaut-platform:' + micronautPlatformVersion
+            from "io.micronaut.platform:micronaut-platform:$micronautPlatformVersion"
+        }
+        templateLibs {
+            from(files("gradle/templates.versions.toml"))
         }
     }
 }

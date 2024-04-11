@@ -38,30 +38,18 @@ import static cloud.graal.gcn.model.GcnCloud.OCI;
 @Singleton
 public class OciLogging extends AbstractLoggingFeature implements OracleCloudNettyClientDependencies {
 
+    private static final Dependency ORACLECLOUD_LOGGING = Dependency.builder()
+            .groupId("io.micronaut.oraclecloud")
+            .artifactId("micronaut-oraclecloud-logging")
+            .compile()
+            .build();
+
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
 
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("io.micronaut.oraclecloud")
-                .artifactId("micronaut-oraclecloud-logging")
-                .compile());
+        generatorContext.addDependency(ORACLECLOUD_LOGGING);
 
         addNettyDependencies(generatorContext);
-
-        // TODO delete these two dependencies and change the JSON formatter back to
-        //  "io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter" (from
-        // "ch.qos.logback.contrib.jackson.JacksonJsonFormatter") when Micronaut 4 is out.
-        // The version will fix an issue related to Oracle cloud formatter
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("ch.qos.logback.contrib")
-                .artifactId("logback-json-classic")
-                .version("0.1.5")
-                .compile());
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("ch.qos.logback.contrib")
-                .artifactId("logback-jackson")
-                .version("0.1.5")
-                .compile());
 
         generatorContext.addTemplate("loggingConfig-oci",
                 new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",

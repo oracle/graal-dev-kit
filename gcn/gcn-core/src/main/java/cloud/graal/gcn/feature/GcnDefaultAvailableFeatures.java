@@ -51,7 +51,7 @@ public class GcnDefaultAvailableFeatures extends DefaultAvailableFeatures {
         super(features.stream()
                 .filter(f -> !(f instanceof GcnFeature))
                 .sorted(Comparator.comparing(Feature::getName))
-                .collect(Collectors.toList()));
+                .toList());
 
         // filter out our features so they're not visible in the cli,
         // but we need these features for findFeature below
