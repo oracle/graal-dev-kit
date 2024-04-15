@@ -15,10 +15,14 @@
  */
 package cloud.graal.gcn.feature;
 
+import cloud.graal.gcn.GcnUtils;
 import cloud.graal.gcn.feature.create.GcnRepository;
+import cloud.graal.gcn.feature.create.GcnStageRepository;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.MavenLocal;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.RequiresRepository;
 import io.micronaut.starter.build.dependencies.Dependency;
@@ -28,6 +32,7 @@ import io.micronaut.starter.feature.Feature;
 import io.micronaut.starter.options.Options;
 import jakarta.inject.Singleton;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
@@ -39,15 +44,13 @@ import java.util.Set;
 @Singleton
 public class GcnBom implements DefaultFeature, RequiresRepository {
 
-    private static final String BOM_VERSION = "4.2.1.3";
     private static final Dependency BOM = Dependency.builder()
             .groupId("cloud.graal.gcn")
             .artifactId("gcn-bom")
-            .version(BOM_VERSION)
+            .version(GcnUtils.getGcnBomVersion())
             .pom()
             .compile()
             .build();
-
     private static final GradlePlugin BOM_PLUGIN = GradlePlugin.builder().id("cloud.graal.gcn.gcn-bom").build();
 
     @Override
@@ -80,8 +83,19 @@ public class GcnBom implements DefaultFeature, RequiresRepository {
         return false;
     }
 
+    @NonNull
     @Override
-    public @NonNull List<Repository> getRepositories() {
-        return List.of(new GcnRepository());
+    public List<Repository> getRepositories() {
+        List<Repository> result = new ArrayList<>();
+
+        if (!StringUtils.isEmpty(GcnUtils.getenv("USE_MAVEN_LOCAL"))) {
+            result.add(new MavenLocal());
+        }
+        if (!StringUtils.isEmpty(GcnUtils.getenv("STAGE_URL"))) {
+            result.add(new GcnStageRepository());
+        } else {
+            result.add(new GcnRepository());
+        }
+        return result;
     }
 }

@@ -23,11 +23,13 @@ import io.micronaut.starter.build.Property;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import static io.micronaut.starter.feature.MicronautRuntimeFeature.PROPERTY_MICRONAUT_RUNTIME;
 
@@ -84,7 +86,8 @@ public class GcnBuildProperties extends BuildProperties {
      * @return properties for the specified cloud
      */
     public List<Property> getProperties(GcnCloud cloud) {
-        return new ArrayList<>(propertyMaps.get(cloud).values());
+        return new ArrayList<>(propertyMaps.get(cloud).values()).stream().sorted(Comparator.comparing(Property::getKey)).
+                collect(Collectors.toList());
     }
 
     private void put(String key,

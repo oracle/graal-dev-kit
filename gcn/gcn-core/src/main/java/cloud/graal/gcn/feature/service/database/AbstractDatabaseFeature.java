@@ -69,6 +69,12 @@ import static cloud.graal.gcn.model.GcnService.DATABASE;
  */
 public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature {
 
+    private static final Dependency TESTCONTAINERS_ORACLE_XE = Dependency.builder()
+            .groupId("org.testcontainers")
+            .artifactId("oracle-xe")
+            .testRuntime()
+            .build();
+
     private final Data data;
     private final DataJdbc dataJdbc;
     private final Flyway flyway;
@@ -139,25 +145,22 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         generatorContext.getConfiguration().addNested("flyway.datasources.default.enabled", true);
 
         // set datasource and flyway properties in application-test.properties
-        Map<String, Object> jdbcConfig = new LinkedHashMap<>();
-        jdbcConfig.put("flyway.datasources.default.enabled", true);
-        jdbcConfig.put("datasources.default.dialect", driverFeature.getDataDialect());
+        Map<String, Object> jdbcConfig = new LinkedHashMap<>(Map.of(
+                "flyway.datasources.default.enabled", true,
+                "datasources.default.dialect", driverFeature.getDataDialect()
+        ));
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
         if (driverFeature instanceof OracleCloudAutonomousDatabase) {
-            Map<String, Object> testConfig = new LinkedHashMap<>();
-            testConfig.put("datasources.default.url", "jdbc:tc:oracle:thin:@/xe");
-            testConfig.put("datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver");
-            testConfig.put("datasources.default.username", "system");
-            testConfig.put("datasources.default.password", "oracle");
-            testConfig.put("datasources.default.connectionTimeout", "60000");
-            testConfig.put("flyway.datasources.default.locations", "classpath:db/migration");
-            testConfig.put("flyway.datasources.default.baseline-version", "0");
-            testConfig.put("flyway.datasources.default.baseline-on-migrate", "true");
-            generatorContext.getTestConfiguration().addNested(testConfig);
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("org.testcontainers")
-                    .artifactId("oracle-xe")
-                    .testRuntime());
+            generatorContext.getTestConfiguration().addNested(Map.of(
+                    "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",
+                    "datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver",
+                    "datasources.default.username", "system",
+                    "datasources.default.password", "oracle",
+                    "datasources.default.connectionTimeout", "60000",
+                    "flyway.datasources.default.locations", "classpath:db/migration",
+                    "flyway.datasources.default.baseline-version", "0",
+                    "flyway.datasources.default.baseline-on-migrate", "true"));
+            generatorContext.addDependency(TESTCONTAINERS_ORACLE_XE);
         } else {
             generatorContext.getTestConfiguration().addNested(jdbcConfig);
         }
@@ -175,7 +178,11 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
         if (!generatorContext.isPlatformIndependent()) {
             applyForLib(generatorContext, () -> {
                 generatorContext.addTemplate("flyway-resource-config",
-                        new RockerTemplate(getDefaultModule(), "src/main/resources/META-INF/native-image/resource-config.json", FlywayResourcesConfigJson.template()));
+                        new RockerTemplate(
+                                getDefaultModule(),
+                                "src/main/resources/META-INF/native-image/resource-config.json",
+                                FlywayResourcesConfigJson.template())
+                );
             });
         }
 
@@ -195,26 +202,14 @@ public abstract class AbstractDatabaseFeature extends AbstractGcnServiceFeature 
 
             applyForLib(generatorContext, () -> {
 
-                RockerModel flywayModel;
-                switch (dialect) {
-                    case "H2":
-                        flywayModel = GenreFlywayMigrationH2.template();
-                        break;
-                    case "MYSQL":
-                        flywayModel = GenreFlywayMigrationMySQL.template();
-                        break;
-                    case "POSTGRES":
-                        flywayModel = GenreFlywayMigrationPostgreSQL.template();
-                        break;
-                    case "SQL_SERVER":
-                        flywayModel = GenreFlywayMigrationSQLServer.template();
-                        break;
-                    case "ORACLE":
-                        flywayModel = GenreFlywayMigrationOracle.template();
-                        break;
-                    default:
-                        throw new IllegalStateException("Unknown SQL dialect '" + dialect + "'");
-                }
+                RockerModel flywayModel = switch (dialect) {
+                    case "H2" -> GenreFlywayMigrationH2.template();
+                    case "MYSQL" -> GenreFlywayMigrationMySQL.template();
+                    case "POSTGRES" -> GenreFlywayMigrationPostgreSQL.template();
+                    case "SQL_SERVER" -> GenreFlywayMigrationSQLServer.template();
+                    case "ORACLE" -> GenreFlywayMigrationOracle.template();
+                    default -> throw new IllegalStateException("Unknown SQL dialect '" + dialect + "'");
+                };
                 generatorContext.addTemplate("flyway",
                         new RockerTemplate(getDefaultModule(), "src/main/resources/db/migration/V1__schema.sql", flywayModel));
 

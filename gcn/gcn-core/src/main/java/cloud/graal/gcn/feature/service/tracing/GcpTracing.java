@@ -37,6 +37,12 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 @Singleton
 public class GcpTracing extends AbstractTracingFeature {
 
+    private static final Dependency OPENTELEMETRY_SEMCONV = Dependency.builder()
+            .groupId("io.opentelemetry")
+            .artifactId("opentelemetry-semconv")
+            .compile()
+            .build();
+
     private final OpenTelemetryGoogleCloudTrace openTelemetryGoogleCloudTrace;
 
     /**
@@ -62,11 +68,7 @@ public class GcpTracing extends AbstractTracingFeature {
 
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("io.opentelemetry")
-                .artifactId("opentelemetry-semconv")
-                .compile()
-                .build());
+        generatorContext.addDependency(OPENTELEMETRY_SEMCONV);
     }
 
     @NonNull

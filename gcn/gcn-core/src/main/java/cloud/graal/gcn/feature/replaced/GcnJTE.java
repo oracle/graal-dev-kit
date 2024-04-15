@@ -15,6 +15,8 @@
  */
 package cloud.graal.gcn.feature.replaced;
 
+import cloud.graal.gcn.feature.replaced.template.gcnGradlePluginJTE;
+import cloud.graal.gcn.feature.replaced.template.gcnMvnPluginJTE;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.generator.GeneratorContext;
@@ -28,8 +30,6 @@ import io.micronaut.starter.feature.build.Kapt;
 import io.micronaut.starter.feature.server.MicronautServerDependent;
 import io.micronaut.starter.feature.view.JTE;
 import io.micronaut.starter.feature.view.ViewFeature;
-import cloud.graal.gcn.feature.replaced.template.gcnGradlePluginJTE;
-import cloud.graal.gcn.feature.replaced.template.gcnMvnPluginJTE;
 import io.micronaut.starter.options.BuildTool;
 import io.micronaut.starter.options.Language;
 import io.micronaut.starter.template.RockerWritable;

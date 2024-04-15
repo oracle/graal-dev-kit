@@ -15,7 +15,9 @@
  */
 package cloud.graal.gcn.template;
 
+import cloud.graal.gcn.GcnUtils;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.build.gradle.GradleDsl;
 
@@ -44,43 +46,61 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     private static final String SNAPSHOT_VERSION = "version = \"1.0-SNAPSHOT\"";
 
     private static final String DOCKER_IMAGE_NAME_GROOVY =
-            "\ntasks.named('dockerBuild') {\n" +
-            "    images = [\"${rootProject.name}-${project.name}\"]\n" +
-            "}\n";
+            """
+
+                    tasks.named('dockerBuild') {
+                        images = ["${rootProject.name}-${project.name}"]
+                    }
+                    """;
 
     private static final String DOCKER_IMAGE_NATIVE_NAME_GROOVY =
-            "\ntasks.named('dockerBuildNative') {\n" +
-                    "    images = [\"${rootProject.name}-${project.name}\"]\n" +
-                    "}\n";
+            """
+
+                    tasks.named('dockerBuildNative') {
+                        images = ["${rootProject.name}-${project.name}"]
+                    }
+                    """;
 
     private static final String SHADOW_JAR_ZIP_64_GROOVY =
-            "\ntasks.named('shadowJar') {\n" +
-                    "    zip64 = true\n" +
-                    "}\n";
+            """
+
+                    tasks.named('shadowJar') {
+                        zip64 = true
+                    }
+                    """;
 
     private static final String DOCKER_IMAGE_NAME_KOTLIN =
-            "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuild\") {\n" +
-            "    images.add(\"${rootProject.name}-${project.name}\")\n" +
-            "}\n";
+            """
+
+                    tasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>("dockerBuild") {
+                        images.add("${rootProject.name}-${project.name}")
+                    }
+                    """;
 
     private static final String DOCKER_IMAGE_NATIVE_NAME_KOTLIN =
-            "\ntasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>(\"dockerBuildNative\") {\n" +
-                    "    images.add(\"${rootProject.name}-${project.name}\")\n" +
-                    "}\n";
+            """
+
+                    tasks.named<com.bmuschko.gradle.docker.tasks.image.DockerBuildImage>("dockerBuildNative") {
+                        images.add("${rootProject.name}-${project.name}")
+                    }
+                    """;
     private static final String SHADOW_JAR_ZIP_64_KOTLIN =
-            "\ntasks.shadowJar {\n" +
-                    "    setProperty(\"zip64\", true)\n" +
-                    "}\n";
+            """
+
+                    tasks.shadowJar {
+                        setProperty("zip64", true)
+                    }
+                    """;
 
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
 
     private static final Pattern BOM_PLATFORM_REGEX = Pattern.compile(
-      "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.]+\"\\))\\)?");
+            "implementation[ (](platform\\(\"cloud\\.graal\\.gcn:gcn-bom:[0-9.\\-]+(-SNAPSHOT)?\"\\))\\)?");
 
     private static final String BOM_ENFORCED_PLATFORM_REPLACEMENT = "micronautBoms($1)";
 
     private static final Pattern RESOLUTION_STRATEGY_REGEX = Pattern.compile(
-      "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
+            "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
 
     private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", BOM_VERSION_SUFFIX);
 
@@ -92,8 +112,8 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     /**
      * @param dsl               the Gradle DSL
      * @param forCloudModule    true if the build.gradle is for a cloud module, not lib or platform-independent
-     * @param isGatewayFunction
-     * @param applicationType
+     * @param isGatewayFunction true if creating a gateway function app
+     * @param applicationType   the app type
      */
     public BuildGradlePostProcessor(@NonNull GradleDsl dsl,
                                     boolean forCloudModule, boolean isGatewayFunction, ApplicationType applicationType) {
@@ -119,12 +139,20 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = makeBomEnforced(buildGradle);
         buildGradle = updateResolutionStrategyVersions(buildGradle);
         buildGradle = fixLibDependency(buildGradle);
+        buildGradle = replaceMavenCentral(buildGradle);
         return buildGradle;
     }
 
     @NonNull
     private String updateVersion(@NonNull String buildGradle) {
         return buildGradle.replaceFirst(DEFAULT_VERSION, SNAPSHOT_VERSION);
+    }
+
+    private String replaceMavenCentral(@NonNull String buildGradle) {
+        if (!StringUtils.isEmpty(GcnUtils.getenv("MIRROR_URL"))) {
+            buildGradle = buildGradle.replace("mavenCentral()", "maven { url \"%s\" }".formatted(GcnUtils.getenv("MIRROR_URL")));
+        }
+        return buildGradle;
     }
 
     @NonNull

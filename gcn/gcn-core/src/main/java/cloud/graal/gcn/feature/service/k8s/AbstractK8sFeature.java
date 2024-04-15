@@ -21,6 +21,7 @@ import cloud.graal.gcn.feature.service.AbstractGcnServiceFeature;
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.feature.k8s.Kubernetes;
 import io.micronaut.starter.feature.k8s.KubernetesClient;
 import io.micronaut.starter.feature.other.Management;
 
@@ -34,36 +35,41 @@ import static io.micronaut.starter.feature.k8s.KubernetesClient.MICRONAUT_KUBERN
  */
 public abstract class AbstractK8sFeature extends AbstractGcnServiceFeature {
 
+    private static final Dependency DISCOVERY_CLIENT = Dependency.builder()
+            .groupId(MICRONAUT_KUBERNETES_GROUP_ID)
+            .artifactId("micronaut-kubernetes-discovery-client")
+            .compile()
+            .build();
+
     private final KubernetesClient kubernetesClient;
     private final Management management;
+    private final Kubernetes kubernetes;
 
     /**
      * @param kubernetesClient KubernetesClient feature
      */
-    protected AbstractK8sFeature(KubernetesClient kubernetesClient, Management management) {
+    protected AbstractK8sFeature(KubernetesClient kubernetesClient,
+                                 Management management,
+                                 Kubernetes kubernetes) {
         this.kubernetesClient = kubernetesClient;
         this.management = management;
+        this.kubernetes = kubernetes;
     }
 
     @Override
     public final void processSelectedFeatures(GcnFeatureContext featureContext) {
         featureContext.addFeature(kubernetesClient, KubernetesClient.class);
         featureContext.addFeature(management, Management.class);
+        featureContext.addFeature(kubernetes, Kubernetes.class);
     }
 
     @Override
     public final void apply(GcnGeneratorContext generatorContext) {
 
-        Dependency discoveryClient = Dependency.builder()
-                .groupId(MICRONAUT_KUBERNETES_GROUP_ID)
-                .artifactId("micronaut-kubernetes-discovery-client")
-                .compile()
-                .build();
-
-        generatorContext.addDependency(discoveryClient);
+        generatorContext.addDependency(DISCOVERY_CLIENT);
 
         applyForLib(generatorContext, () -> {
-            generatorContext.addDependency(discoveryClient);
+            generatorContext.addDependency(DISCOVERY_CLIENT);
             kubernetesClient.apply(generatorContext);
         });
     }

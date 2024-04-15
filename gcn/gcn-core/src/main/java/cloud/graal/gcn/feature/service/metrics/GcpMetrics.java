@@ -60,7 +60,7 @@ public class GcpMetrics extends AbstractMetricsFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         if (generatorContext.generateExampleCode()) {
-            generatorContext.getTestConfiguration().put("micronaut.metrics.export.stackdriver.enabled", false);
+            generatorContext.getTestConfiguration().addNested("micronaut.metrics.export.stackdriver.enabled", false);
         }
     }
 

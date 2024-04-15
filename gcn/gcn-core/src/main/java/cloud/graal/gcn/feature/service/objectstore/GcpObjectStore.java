@@ -52,10 +52,11 @@ public class GcpObjectStore extends AbstractObjectStore {
         //  object-storage:
         //    gcp:
         //      default:
-        //        bucket: ${OBJECT_STORAGE_BUCKET}
-        generatorContext.getConfiguration().addNested(
-                "micronaut.object-storage.gcp.default.bucket",
-                "${OBJECT_STORAGE_BUCKET}");
+        //        bucket:
+        generatorContext.getCloudConfiguration().addNested("micronaut.object-storage.gcp.default.bucket", "");
+        generatorContext.getCloudConfiguration().addNested("micronaut.object-storage.gcp.default.enabled", "true");
+        generatorContext.getTestConfiguration().addNested("micronaut.object-storage.gcp.default.enabled", "false");
+
     }
 
     @NonNull

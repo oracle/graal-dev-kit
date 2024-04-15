@@ -32,6 +32,12 @@ import static io.micronaut.starter.application.ApplicationType.FUNCTION;
  */
 public abstract class AbstractEmailFeature extends AbstractGcnServiceFeature {
 
+    private static final Dependency HTTP_SERVER_NETTY = Dependency.builder()
+            .groupId("io.micronaut")
+            .artifactId("micronaut-http-server-netty")
+            .testRuntime()
+            .build();
+
     private final MicronautValidationFeature micronautValidationFeature;
 
     protected AbstractEmailFeature(MicronautValidationFeature micronautValidationFeature) {
@@ -47,10 +53,7 @@ public abstract class AbstractEmailFeature extends AbstractGcnServiceFeature {
 
         doApply(generatorContext);
         if (generatorContext.getApplicationType() == FUNCTION) {
-            generatorContext.addDependency(Dependency.builder()
-                    .groupId("io.micronaut")
-                    .artifactId("micronaut-http-server-netty")
-                    .testRuntime());
+            generatorContext.addDependency(HTTP_SERVER_NETTY);
         }
     }
 

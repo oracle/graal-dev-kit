@@ -29,10 +29,11 @@ import cloud.graal.gcn.feature.service.metrics.template.MetricsServiceTestKotlin
 import cloud.graal.gcn.model.GcnService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
-import io.micronaut.starter.feature.config.Configuration;
 import io.micronaut.starter.feature.micrometer.Core;
 import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnService.METRICS;
 import static io.micronaut.starter.application.ApplicationType.DEFAULT;
@@ -92,9 +93,10 @@ public abstract class AbstractMetricsFeature extends AbstractGcnServiceFeature {
 
         if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
 
-            Configuration testConf = generatorContext.getTestConfiguration();
-            testConf.put("custom.thread.count.initialDelay", "10h");
-            testConf.put("micronaut.metrics.enabled", true);
+            generatorContext.getTestConfiguration().addNested(Map.of(
+                    "custom.thread.count.initialDelay", "10h",
+                    "micronaut.metrics.enabled", true
+            ));
 
             generatorContext.addTestTemplate(getModuleName(), "MetricsServiceTest-" + getModuleName(),
                     generatorContext.getTestSourcePath("/{packagePath}/service/MetricsService"),

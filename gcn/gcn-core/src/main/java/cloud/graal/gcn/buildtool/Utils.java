@@ -19,7 +19,6 @@ import io.micronaut.starter.template.Writable;
 import io.micronaut.starter.template.WritableUtils;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * Utility methods.
@@ -38,6 +37,6 @@ final class Utils {
                     repo.write(outputStream);
                     outputStream.write('\n');
                 })
-                .collect(Collectors.toList()), 4);
+                .toList(), 4);
     }
 }

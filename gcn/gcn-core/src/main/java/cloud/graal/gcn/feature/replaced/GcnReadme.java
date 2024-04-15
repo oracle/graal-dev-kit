@@ -35,7 +35,6 @@ import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static io.micronaut.starter.template.Template.ROOT;
 
@@ -55,7 +54,7 @@ public class GcnReadme extends Readme {
 
         List<Feature> featuresWithDocumentationLinks = generatorContext.getFeatures().getFeatures().stream()
                 .filter(feature -> feature.getMicronautDocumentation() != null || feature.getThirdPartyDocumentation() != null)
-                .collect(Collectors.toList());
+                .toList();
         List<Writable> helpTemplates = generatorContext.getHelpTemplates();
         if (helpTemplates.isEmpty() && featuresWithDocumentationLinks.isEmpty()) {
             return;

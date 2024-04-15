@@ -25,7 +25,7 @@ import io.micronaut.starter.feature.awslambdacustomruntime.AwsLambdaCustomRuntim
 import io.micronaut.starter.feature.function.awslambda.AwsLambda;
 import io.micronaut.starter.feature.function.awslambda.DefaultAwsLambdaHandlerProvider;
 import io.micronaut.starter.feature.function.awslambda.FunctionAwsLambdaHandlerProvider;
-import io.micronaut.starter.feature.other.HttpClient;
+import io.micronaut.starter.feature.httpclient.HttpClientJdk;
 import io.micronaut.starter.feature.other.ShadePlugin;
 import jakarta.inject.Singleton;
 
@@ -47,13 +47,12 @@ public class GcnAwsLambda extends AwsLambda {
      */
     public GcnAwsLambda(ShadePlugin shadePlugin,
                         AwsLambdaCustomRuntime customRuntime,
-                        X86 x86,
-                        AwsLambdaSnapstart snapstart,
-                        HttpClient httpClient,
+                        X86 x86, AwsLambdaSnapstart snapstart,
+                        HttpClientJdk httpClientJdk,
                         AwsLambdaEventsSerde awsLambdaEventsSerde,
                         DefaultAwsLambdaHandlerProvider defaultAwsLambdaHandlerProvider,
                         FunctionAwsLambdaHandlerProvider functionAwsLambdaHandlerProvider) {
-        super(shadePlugin, customRuntime, x86, snapstart, httpClient, awsLambdaEventsSerde, defaultAwsLambdaHandlerProvider, functionAwsLambdaHandlerProvider);
+        super(shadePlugin, customRuntime, x86, snapstart, httpClientJdk, awsLambdaEventsSerde, defaultAwsLambdaHandlerProvider, functionAwsLambdaHandlerProvider);
     }
 
     @Override

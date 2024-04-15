@@ -19,9 +19,10 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.objectstorage.ObjectStorageOracleCloud;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.OCI;
 
@@ -53,11 +54,14 @@ public class OciObjectStore extends AbstractObjectStore {
         //  object-storage:
         //    oracle-cloud:
         //      default:
-        //        bucket: ${OBJECT_STORAGE_BUCKET}
-        //        namespace: ${OBJECT_STORAGE_NAMESPACE}
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("micronaut.object-storage.oracle-cloud.default.bucket", "${OBJECT_STORAGE_BUCKET}");
-        config.addNested("micronaut.object-storage.oracle-cloud.default.namespace", "${OBJECT_STORAGE_NAMESPACE}");
+        //        bucket:
+        //        namespace:
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "micronaut.object-storage.oracle-cloud.default.enabled", "true",
+                "micronaut.object-storage.oracle-cloud.default.bucket", "",
+                "micronaut.object-storage.oracle-cloud.default.namespace", ""
+        ));
+        generatorContext.getTestConfiguration().addNested("micronaut.object-storage.oracle-cloud.default.enabled", "false");
     }
 
     @NonNull

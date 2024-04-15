@@ -18,11 +18,12 @@ package cloud.graal.gcn.feature.service.security;
 import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.security.SecurityJWT;
 import io.micronaut.starter.feature.security.SecurityOAuth2;
 import io.micronaut.starter.feature.view.JTE;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.AWS;
 
@@ -60,12 +61,13 @@ public class AwsSecurity extends AbstractSecurityFeature {
         //      endpoints:
         //        logout:
         //          get-allowed: true
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("micronaut.security.authentication", "idtoken");
-        config.addNested("micronaut.security.oauth2.clients.cognito.client-id", "${OAUTH_CLIENT_ID:xxx}");
-        config.addNested("micronaut.security.oauth2.clients.cognito.client-secret", "${OAUTH_CLIENT_SECRET:yyy}");
-        config.addNested("micronaut.security.oauth2.clients.cognito.openid.issuer", "https://cognito-idp.${COGNITO_REGION:zzz}.amazonaws.com/${COGNITO_POOL_ID:www}");
-        config.addNested("micronaut.security.endpoints.logout.get-allowed", true);
+        generatorContext.getConfiguration().addNested(Map.of(
+                "micronaut.security.authentication", "idtoken",
+                "micronaut.security.oauth2.clients.cognito.client-id", "${OAUTH_CLIENT_ID:xxx}",
+                "micronaut.security.oauth2.clients.cognito.client-secret", "${OAUTH_CLIENT_SECRET:yyy}",
+                "micronaut.security.oauth2.clients.cognito.openid.issuer", "https://cognito-idp.${COGNITO_REGION:zzz}.amazonaws.com/${COGNITO_POOL_ID:www}",
+                "micronaut.security.endpoints.logout.get-allowed", true
+        ));
     }
 
     @Override

@@ -29,7 +29,7 @@ import java.util.Collection;
 import java.util.Map;
 import java.util.function.Function;
 
-import static io.micronaut.starter.feature.FeaturePhase.HIGHEST;
+import static cloud.graal.gcn.model.GcnCloud.NONE;
 
 /**
  * Replaces the default feature to customize properties file writing.
@@ -56,16 +56,29 @@ public class GcnProperties extends Properties {
     }
 
     private void createApplicationCloudProperties(GcnGeneratorContext generatorContext, GcnCloud gcnCloud) {
-        if (gcnCloud == GcnCloud.NONE) {
+        if (gcnCloud == NONE) {
             return;
         }
+
         generatorContext.addTemplate("application-properties-" + gcnCloud.getModuleName(),
+                new GcnPropertiesTemplate(
+                        gcnCloud.getModuleName(),
+                        "src/main/resources/application.properties",
+                        generatorContext.getConfiguration()));
+
+        generatorContext.addTemplate("application-properties-env-" + gcnCloud.getModuleName(),
                 new GcnPropertiesTemplate(
                         gcnCloud.getModuleName(),
                         "src/main/resources/application" + gcnCloud.getEnvironmentNameSuffix() + ".properties",
                         generatorContext.getConfiguration(gcnCloud)));
 
         generatorContext.addTemplate("bootstrap-properties-" + gcnCloud.getModuleName(),
+                new GcnPropertiesTemplate(
+                        gcnCloud.getModuleName(),
+                        "src/main/resources/bootstrap.properties",
+                        generatorContext.getBootstrapConfiguration()));
+
+        generatorContext.addTemplate("bootstrap-properties-env-" + gcnCloud.getModuleName(),
                 new GcnPropertiesTemplate(
                         gcnCloud.getModuleName(),
                         "src/main/resources/bootstrap" + gcnCloud.getEnvironmentNameSuffix() + ".properties",
@@ -80,10 +93,5 @@ public class GcnProperties extends Properties {
                         new GcnPropertiesTemplate(cloud.getModuleName(), c.getFullPath("properties"), c));
             }
         }
-    }
-
-    @Override
-    public int getOrder() {
-        return HIGHEST.getOrder();
     }
 }

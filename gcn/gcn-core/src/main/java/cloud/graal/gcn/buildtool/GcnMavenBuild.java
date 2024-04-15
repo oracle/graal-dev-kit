@@ -18,6 +18,7 @@ package cloud.graal.gcn.buildtool;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.Property;
 import io.micronaut.starter.build.dependencies.DependencyCoordinate;
+import io.micronaut.starter.build.dependencies.MavenCoordinate;
 import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenCombineAttribute;
 import io.micronaut.starter.build.maven.MavenDependency;
@@ -59,9 +60,10 @@ public class GcnMavenBuild extends MavenBuild {
                          MavenCombineAttribute annotationProcessorCombineAttribute,
                          MavenCombineAttribute testAnnotationProcessorCombineAttribute,
                          Collection<Profile> profiles,
-                         List<DependencyCoordinate> aotDependencies) {
+                         List<DependencyCoordinate> aotDependencies,
+                         List<MavenCoordinate> testResourcesDependencies) {
         super(artifactId, annotationProcessors, testAnnotationProcessors, dependencies, properties, plugins,
-                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies);
+                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies, testResourcesDependencies);
         this.repositories = repositories;
     }
 

@@ -19,14 +19,14 @@ plugins {
     id 'maven-publish'
 }
 
-version = new File(rootProject.projectDir, 'gcn-core/src/main/resources/version.txt').text.trim()
 group = 'gcn'
-
-ext.micronautVersion = new File(rootProject.projectDir, 'gcn-core/src/main/resources/micronautVersion.txt').text.trim()
 
 repositories {
     maven {
         url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
+    }
+    maven {
+        url 'https://artifacthub-phx.oci.oraclecorp.com/artifactory/micronaut-gcn-stage/'
     }
     mavenCentral()
 }
@@ -51,6 +51,12 @@ publishing {
     publications {
         mavenJava(MavenPublication) {
             from components.java
+        }
+    }
+    repositories {
+        maven {
+            name = "build"
+            url = rootProject.layout.buildDirectory.dir("repo")
         }
     }
 }

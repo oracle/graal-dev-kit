@@ -15,12 +15,20 @@
  */
 package cloud.graal.gcn;
 
+import cloud.graal.gcn.build.dependencies.GcnDependencies;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.annotation.Nullable;
+import io.micronaut.starter.options.JdkVersion;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static io.micronaut.starter.options.JdkVersion.JDK_17;
+import static io.micronaut.starter.options.JdkVersion.JDK_21;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -41,33 +49,22 @@ public final class GcnUtils {
      */
     public static final String LIB_MODULE = "lib";
 
+    /**
+     * The name of the Micronaut default module.
+     */
     public static final String APP_MODULE = "app";
-
-    /**
-     * The default version of micronaut plugin
-     */
-    public static final String MICRONAUT_MAVEN_PLUGIN_VERSION = "4.3.1";
-
-    /**
-     * The default version of test resources plugin
-     */
-    public static final String TEST_RESOURCES_VERSION = "2.3.3";
 
     /**
      * All supported JDK versions.
      */
-    public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_17.majorVersion());
+    public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_17.majorVersion(), JDK_21.majorVersion());
 
     /**
      * The version suffix appended to the Micronaut version in the BOM.
      */
-    public static final String BOM_VERSION_SUFFIX = "-oracle-00001";
+    public static final String BOM_VERSION_SUFFIX = getBomVersionSuffix();
 
-    private static final String GCN_VERSION = loadVersion("version.txt");
-    private static final String MICRONAUT_VERSION = loadVersion("micronautPlatformVersion.txt");
-
-    private GcnUtils() {
-    }
+    private static final String GCN_BOM_VERSION = loadVersion("version.txt");
 
     private static String loadVersion(String resourcePath) {
         URL resource = GcnUtils.class.getResource("/" + resourcePath);
@@ -82,17 +79,52 @@ public final class GcnUtils {
         }
     }
 
-    /**
-     * @return the version of Micronaut Platform
-     */
-    public static String getMicronautVersion() {
-        return MICRONAUT_VERSION;
+    private static String getBomVersionSuffix() {
+        Matcher m = Pattern.compile("(-oracle-\\d+)").matcher(GcnDependencies.MICRONAUT_CORE.getVersion());
+        m.find();
+        return m.group();
     }
 
     /**
      * @return the GCN version
      */
     public static String getVersion() {
-        return GCN_VERSION;
+        return GCN_BOM_VERSION;
+    }
+
+    /**
+     * @return the version of Micronaut Platform
+     */
+    public static String getMicronautVersion() {
+        return GcnDependencies.MICRONAUT_PARENT.getVersion();
+    }
+
+    /**
+     * @return the BOM version
+     */
+    public static String getGcnBomVersion() {
+        return GCN_BOM_VERSION;
+    }
+
+    /**
+     * Add any supported JDK versions that aren't supported in Micronaut.
+     */
+    public static void configureJdkVersions() {
+        new JdkVersion(22);
+    }
+
+    /**
+     * Safely gets an environment variable (System.getenv fails when running inside the launcher).
+     *
+     * @param name the name
+     * @return the value
+     */
+    @Nullable
+    public static String getenv(@NonNull String name) {
+        try {
+            return System.getenv(name);
+        } catch (Throwable t) {
+            return null;
+        }
     }
 }

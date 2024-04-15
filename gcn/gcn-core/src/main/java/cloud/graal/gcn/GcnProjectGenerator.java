@@ -61,10 +61,11 @@ public class GcnProjectGenerator implements ProjectGenerator {
      * @param contextFactory context factory
      * @param features       all feature beans
      */
-    public GcnProjectGenerator(GcnContextFactory contextFactory,
-                               List<Feature> features) {
+    protected GcnProjectGenerator(GcnContextFactory contextFactory,
+                                  List<Feature> features) {
         this.features = features;
         this.contextFactory = contextFactory;
+        GcnUtils.configureJdkVersions();
     }
 
     @Override

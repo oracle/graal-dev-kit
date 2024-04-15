@@ -17,12 +17,7 @@
 plugins {
     id 'gcn-base'
     id 'checkstyle'
-    id 'io.spring.nohttp'
     id 'com.diffplug.spotless'
-}
-
-nohttp {
-    source.exclude 'src/test/**', 'build/**'
 }
 
 spotless {
@@ -34,5 +29,18 @@ spotless {
     format 'javaMisc', {
         target 'src/main/**/package-info.java', 'src/main/**/module-info.java'
         licenseHeaderFile rootProject.file('config/spotless.license.java'), '\\/\\*\\*'
+    }
+}
+
+publishing {
+    repositories {
+        maven {
+            name = "External"
+            url = providers.environmentVariable('PUBLISH_REPO')
+            credentials {
+                username = providers.environmentVariable('PUBLISH_USERNAME').getOrElse("")
+                password = providers.environmentVariable('PUBLISH_PASSWORD').getOrElse("")
+            }
+        }
     }
 }

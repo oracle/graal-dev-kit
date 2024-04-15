@@ -60,7 +60,7 @@ public class AwsMetrics extends AbstractMetricsFeature {
     @Override
     protected void doApply(GcnGeneratorContext generatorContext) {
         if (generatorContext.generateExampleCode()) {
-            generatorContext.getTestConfiguration().put("micronaut.metrics.export.cloudwatch.enabled", false);
+            generatorContext.getTestConfiguration().addNested("micronaut.metrics.export.cloudwatch.enabled", false);
         }
     }
 

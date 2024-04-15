@@ -37,14 +37,16 @@ import static cloud.graal.gcn.model.GcnCloud.GCP;
 @Singleton
 public class GcpLogging extends AbstractLoggingFeature {
 
+    private static final Dependency LOGGING_LOGBACK = Dependency.builder()
+            .groupId("com.google.cloud")
+            .artifactId("google-cloud-logging-logback")
+            .compile()
+            .build();
+
     @Override
     public void apply(GcnGeneratorContext generatorContext) {
 
-        generatorContext.addDependency(Dependency.builder()
-                .groupId("com.google.cloud")
-                .artifactId("google-cloud-logging-logback")
-                .version("0.130.28-alpha")
-                .compile());
+        generatorContext.addDependency(LOGGING_LOGBACK);
 
         generatorContext.addTemplate("loggingConfig-gcp",
                 new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",

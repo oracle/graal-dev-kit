@@ -19,9 +19,10 @@ import cloud.graal.gcn.GcnGeneratorContext;
 import cloud.graal.gcn.feature.GcnFeatureContext;
 import cloud.graal.gcn.model.GcnCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.feature.config.ApplicationConfiguration;
 import io.micronaut.starter.feature.objectstorage.ObjectStorageAzure;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gcn.model.GcnCloud.AZURE;
 
@@ -49,15 +50,13 @@ public class AzureObjectStore extends AbstractObjectStore {
 
     @Override
     protected void addConfig(GcnGeneratorContext generatorContext) {
-        //micronaut:
-        //  object-storage:
-        //    azure:
-        //      default:
-        //        container: ${OBJECT_STORAGE_CONTAINER}
-        //        endpoint: ${OBJECT_STORAGE_ENDPOINT}
-        ApplicationConfiguration config = generatorContext.getConfiguration();
-        config.addNested("micronaut.object-storage.azure.default.container", "${OBJECT_STORAGE_CONTAINER}");
-        config.addNested("micronaut.object-storage.azure.default.endpoint", "${OBJECT_STORAGE_ENDPOINT}");
+
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "micronaut.object-storage.azure.default.bucket", "true",
+                "micronaut.object-storage.azure.default.container", "${OBJECT_STORAGE_CONTAINER}",
+                "micronaut.object-storage.azure.default.endpoint", "${OBJECT_STORAGE_ENDPOINT}"
+        ));
+        generatorContext.getTestConfiguration().addNested("micronaut.object-storage.azure.default.enabled", "false");
     }
 
     @NonNull
