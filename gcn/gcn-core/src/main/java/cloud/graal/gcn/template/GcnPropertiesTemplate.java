@@ -42,25 +42,31 @@ public class GcnPropertiesTemplate extends DefaultTemplate {
 
     @Override
     public void write(OutputStream outputStream) throws IOException {
-        OutputStream outputStream1 = new OutputStream() {
-            private final StringBuilder string = new StringBuilder();
 
-            @Override
+        final StringBuilder buffer = new StringBuilder();
+
+        properties.store(new OutputStream() {
             public void write(int b) {
-                this.string.append((char) b);
+                buffer.append((char) b);
             }
+        }, null);
 
-            public String toString() {
-                return this.string.toString();
-            }
-        };
+        String renderedProperties = buffer.toString();
 
-        properties.store(outputStream1, null);
-        String string = outputStream1.toString();
-        string = string.substring(string.indexOf('\n') + 1);
-        List<String> lines = Stream.of(string.split("\n")).sorted().toList();
-        string = String.join("\n", lines);
-        outputStream.write(string.getBytes());
+        // remove date comment
+        String cleanedProperties;
+        if (renderedProperties.startsWith("#")) {
+            cleanedProperties = renderedProperties.substring(renderedProperties.indexOf(System.lineSeparator()) + 1);
+        } else {
+            cleanedProperties = renderedProperties;
+        }
+
+        // sort the properties
+        List<String> lines = Stream.of(cleanedProperties.split(System.lineSeparator())).sorted().toList();
+
+        cleanedProperties = String.join(System.lineSeparator(), lines);
+
+        outputStream.write(cleanedProperties.getBytes());
     }
 
     public Map<String, Object> getOriginalConfig() {
