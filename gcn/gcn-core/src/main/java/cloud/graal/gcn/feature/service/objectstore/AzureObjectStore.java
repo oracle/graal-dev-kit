@@ -53,8 +53,8 @@ public class AzureObjectStore extends AbstractObjectStore {
 
         generatorContext.getCloudConfiguration().addNested(Map.of(
                 "micronaut.object-storage.azure.default.bucket", "true",
-                "micronaut.object-storage.azure.default.container", "${OBJECT_STORAGE_CONTAINER}",
-                "micronaut.object-storage.azure.default.endpoint", "${OBJECT_STORAGE_ENDPOINT}"
+                "micronaut.object-storage.azure.default.container", "",
+                "micronaut.object-storage.azure.default.endpoint", ""
         ));
         generatorContext.getTestConfiguration().addNested("micronaut.object-storage.azure.default.enabled", "false");
     }

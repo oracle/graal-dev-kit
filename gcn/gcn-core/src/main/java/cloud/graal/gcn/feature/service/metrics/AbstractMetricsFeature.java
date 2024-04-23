@@ -91,6 +91,16 @@ public abstract class AbstractMetricsFeature extends AbstractGcnServiceFeature {
             }
         });
 
+        generatorContext.getConfiguration().addNested(Map.of(
+                "micronaut.metrics.enabled", "true",
+                "micronaut.metrics.binders.files.enabled", "true",
+                "micronaut.metrics.binders.jvm.enabled", "true",
+                "micronaut.metrics.binders.logback.enabled", "true",
+                "micronaut.metrics.binders.processor.enabled", "true",
+                "micronaut.metrics.binders.uptime.enabled", "true",
+                "micronaut.metrics.binders.web.enabled", "true"
+        ));
+
         if (generatorContext.generateExampleCode() && generatorContext.getApplicationType() == DEFAULT) {
 
             generatorContext.getTestConfiguration().addNested(Map.of(

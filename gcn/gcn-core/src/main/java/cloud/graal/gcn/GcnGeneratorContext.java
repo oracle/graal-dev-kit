@@ -278,10 +278,10 @@ public class GcnGeneratorContext extends GeneratorContext {
     public void setCloud(GcnCloud cloud) {
         this.cloud = cloud;
         if (cloud != NONE) {
-            applicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration());
-            cloudApplicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration());
-            bootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration());
-            cloudBootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration());
+            applicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration(cloud.getModuleName()));
+            cloudApplicationConfigurations.putIfAbsent(cloud, new ApplicationConfiguration(cloud.getModuleName()));
+            bootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration(cloud.getModuleName()));
+            cloudBootstrapConfigurations.putIfAbsent(cloud, new BootstrapConfiguration(cloud.getModuleName()));
             cloudDependencyContexts.putIfAbsent(cloud, new DependencyContextImpl(coordinateResolver));
             cloudProjects.putIfAbsent(cloud, createProject(cloud));
         }
@@ -1057,19 +1057,10 @@ public class GcnGeneratorContext extends GeneratorContext {
                 gavs.add(JTE_GROUP_ID + ":" + JTE_NATIVE_RESOURCES + ":" + plugin.getVersion());
             }
 
-            gav = updateVersion(gav);
             gavs.add(gav);
         }
 
         return gavs;
-    }
-
-    // TODO remove this once we upgrade to a version of Micronaut that uses these plugin versions or higher
-    private String updateVersion(String gav) {
-        if (gav.startsWith("io.micronaut.gradle:") && gav.endsWith(":3.7.2")) {
-            gav = gav.replace("3.7.2", "3.7.7");
-        }
-        return gav;
     }
 
     @Override

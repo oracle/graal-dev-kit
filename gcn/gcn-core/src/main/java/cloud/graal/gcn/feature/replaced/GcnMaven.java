@@ -101,23 +101,26 @@ public class GcnMaven extends Maven {
 
     private void addMavenBuild(GcnGeneratorContext generatorContext) {
 
-        GcnCloud reset = generatorContext.getCloud();
+        GcnCloud currentCloud = generatorContext.getCloud();
 
-        generatorContext.getClouds().forEach(x -> cloudPom(generatorContext, x));
+        for (GcnCloud cloud : generatorContext.getClouds()) {
+            cloudPom(generatorContext, cloud);
+        }
 
-        generatorContext.setCloud(reset);
+        generatorContext.setCloud(currentCloud);
+
+        String templateName = generatorContext.getModuleNames().size() > 1 ? "multi-module-pom" : "mavenPom";
 
         // this is called for each cloud, but the templates are stored in a Map, so it's idempotent
-        generatorContext.addTemplate("multi-module-pom", new RockerTemplate(ROOT, generatorContext.getBuildTool().getBuildFileName(),
+        generatorContext.addTemplate(templateName, new RockerTemplate(ROOT, generatorContext.getBuildTool().getBuildFileName(),
                 multimodule.template(MavenRepository.listOf(repositoryResolver.resolveRepositories(generatorContext)),
                         generatorContext.getLibProject(),
                         generatorContext.getModuleNames())
         ));
 
-        generatorContext.addPostProcessor("multi-module-pom", new MavenPlatformPostProcessor());
+        generatorContext.addPostProcessor(templateName, new MavenPlatformPostProcessor());
 
         if (generatorContext.getClouds().size() > 1) {
-
             // this is called for each cloud, but the post processors are stored in a Set, so it's idempotent
             generatorContext.addPostProcessor("mavenPom", new MavenPomPostProcessor(
                     generatorContext.getLibProject().getName(),
@@ -142,7 +145,6 @@ public class GcnMaven extends Maven {
         MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext, repositoryResolver.resolveRepositories(generatorContext));
 
         String templateKey = "mavenPom-" + gcnCloud.getModuleName();
-
         if (templateKey.equals("mavenPom-")) {
             templateKey = "mavenPom";
         }

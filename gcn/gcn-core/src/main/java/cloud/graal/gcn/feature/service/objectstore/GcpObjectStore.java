@@ -22,6 +22,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.objectstorage.ObjectStorageGcp;
 import jakarta.inject.Singleton;
 
+import java.util.Map;
+
 import static cloud.graal.gcn.model.GcnCloud.GCP;
 
 /**
@@ -53,10 +55,11 @@ public class GcpObjectStore extends AbstractObjectStore {
         //    gcp:
         //      default:
         //        bucket:
-        generatorContext.getCloudConfiguration().addNested("micronaut.object-storage.gcp.default.bucket", "");
-        generatorContext.getCloudConfiguration().addNested("micronaut.object-storage.gcp.default.enabled", "true");
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "micronaut.object-storage.gcp.default.bucket", "",
+                "micronaut.object-storage.gcp.default.enabled", "true"
+        ));
         generatorContext.getTestConfiguration().addNested("micronaut.object-storage.gcp.default.enabled", "false");
-
     }
 
     @NonNull
