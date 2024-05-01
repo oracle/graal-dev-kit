@@ -1,11 +1,11 @@
-# Graal Cloud Native (GCN)
+# Graal Development Kit (GDK)
 
-Graal Cloud Native (GCN) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
-With GCN, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
+Graal Development Kit (GDK) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
+With GDK, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
 
 ## Installation
 
-You can use GCN by generating an application using either the [Launcher on the GCN website][launcher] or install the CLI using the package managers below:
+You can use GDK by generating an application using either the [Launcher on the GDK website][launcher] or install the CLI using the package managers below:
 
 ### MacOS
 
@@ -14,13 +14,13 @@ You can use GCN by generating an application using either the [Launcher on the G
 Setup the tap for the cask:
 
 ```sh
-brew tap oracle/gcn https://github.com/oracle/gcn
+brew tap oracle/gcn https://github.com/oracle/graal-dev-kit
 ```
 
-Then install the GCN CLI tool:
+Then install the GDK CLI tool:
 
 ```sh
-brew install gcn
+brew install graal-dev-kit
 ```
 
 ##### SDKMAN
@@ -29,10 +29,10 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GCN CLI
+Install GDK CLI
 
 ```sh
-sdk install gcn
+sdk install graal-dev-kit
 ```
 
 ### Linux
@@ -43,19 +43,19 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GCN CLI
+Install GDK CLI
 
 ```sh
-sdk install gcn
+sdk install graal-dev-kit
 ```
 
 ### Other Platforms
 
-Get the binary from https://github.com/oracle/gcn/releases  
+Get the binary from https://github.com/oracle/graal-dev-kit/releases  
 
 ## Documentation
 
-Please refer to the [GCN website for documentation][docs].
+Please refer to the [GDK website for documentation][docs].
 
 ## Examples
 
@@ -68,14 +68,14 @@ Check out our collection of [guides and examples][guides].
 
 ## Repository Structure
 
-This source repository is the main repository for GCN and includes the following components:
+This source repository is the main repository for GDK and includes the following components:
 
 Directory | Description
 ------------ | -------------
-[`gcn/buildSrc/`](gcn/buildSrc/) | Gradle build and convention plugins.
-[`gcn/config/`](gcn/config/) | Configuration files for Gradle code quality plugins.
-[`gcn/gcn-cli/`](gcn/gcn-cli/) | The GCN CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GCN applications.
-[`gcn/gcn-core/`](gcn/gcn-core/) | The main GCN library.
+[`graal-dev-kit/buildSrc/`](graal-dev-kit/buildSrc/) | Gradle build and convention plugins.
+[`graal-dev-kit/config/`](graal-dev-kit/config/) | Configuration files for Gradle code quality plugins.
+[`graal-dev-kit/gcn-cli/`](graal-dev-kit/gcn-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
+[`graal-dev-kit/gcn-core/`](graal-dev-kit/gcn-core/) | The main GDK library.
 
 ## Contributing
 
@@ -87,7 +87,7 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 ## License
 
-Copyright (c) 2023 Oracle and/or its affiliates.
+Copyright (c) 2023, 2024 Oracle and/or its affiliates.
 
 GCN is open source and distributed under the [Apache License version 2.0](LICENSE.txt).
 
