@@ -14,13 +14,13 @@ You can use GDK by generating an application using either the [Launcher on the G
 Setup the tap for the cask:
 
 ```sh
-brew tap oracle/gcn https://github.com/oracle/graal-dev-kit
+brew tap oracle/gcn https://github.com/oracle/gcn
 ```
 
-Then install the GDK CLI tool:
+Then install the GCN CLI tool:
 
 ```sh
-brew install graal-dev-kit
+brew install gcn
 ```
 
 ##### SDKMAN
@@ -29,10 +29,10 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GDK CLI
+Install GCN CLI
 
 ```sh
-sdk install graal-dev-kit
+sdk install gcn
 ```
 
 ### Linux
@@ -43,10 +43,10 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GDK CLI
+Install GCN CLI
 
 ```sh
-sdk install graal-dev-kit
+sdk install gcn
 ```
 
 ### Other Platforms
