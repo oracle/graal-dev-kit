@@ -17,7 +17,7 @@ Setup the tap for the cask:
 brew tap oracle/gcn https://github.com/oracle/gcn
 ```
 
-Then install the GCN CLI tool:
+Then install the GDK CLI tool:
 
 ```sh
 brew install gcn
@@ -29,7 +29,7 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GCN CLI
+Install GDK CLI
 
 ```sh
 sdk install gcn
@@ -43,7 +43,7 @@ Get [SDKMAN](https://sdkman.io)  (Always make sure to review content of the bash
 ```sh
 curl -s "https://get.sdkman.io" | bash
 ```
-Install GCN CLI
+Install GDK CLI
 
 ```sh
 sdk install gcn
@@ -72,10 +72,10 @@ This source repository is the main repository for GDK and includes the following
 
 Directory | Description
 ------------ | -------------
-[`gdk/buildSrc/`](gcn/buildSrc/) | Gradle build and convention plugins.
-[`gdk/config/`](gcn/config/) | Configuration files for Gradle code quality plugins.
-[`gdk/gdk-cli/`](gcn/gcn-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
-[`gdk/gdk-core/`](gcn/gcn-core/) | The main GDK library.
+[`gcn/buildSrc/`](gcn/buildSrc/) | Gradle build and convention plugins.
+[`gcn/config/`](gcn/config/) | Configuration files for Gradle code quality plugins.
+[`gcn/gdk-cli/`](gcn/gcn-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
+[`gcn/gdk-core/`](gcn/gcn-core/) | The main GDK library.
 
 ## Contributing
 
