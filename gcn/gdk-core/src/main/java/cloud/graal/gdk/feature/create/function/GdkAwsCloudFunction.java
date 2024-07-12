@@ -1,0 +1,60 @@
+/*
+ * Copyright 2023 Oracle and/or its affiliates
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package cloud.graal.gdk.feature.create.function;
+
+import cloud.graal.gdk.feature.GdkFeatureContext;
+import cloud.graal.gdk.feature.replaced.GdkAwsLambda;
+import cloud.graal.gdk.model.GdkCloud;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.function.awslambda.AwsLambda;
+import jakarta.inject.Singleton;
+
+import static cloud.graal.gdk.model.GdkCloud.AWS;
+
+/**
+ * AWS create-function feature.
+ *
+ * @since 1.0.0
+ */
+@Singleton
+public class GdkAwsCloudFunction extends AbstractGdkCloudFunction {
+
+    private final GdkAwsLambda awsLambda;
+
+    /**
+     * @param awsLambda GdkAwsLambda feature
+     */
+    public GdkAwsCloudFunction(GdkAwsLambda awsLambda) {
+        this.awsLambda = awsLambda;
+    }
+
+    @Override
+    public void processSelectedFeatures(GdkFeatureContext featureContext) {
+        featureContext.addFeature(awsLambda, AwsLambda.class);
+    }
+
+    @NonNull
+    @Override
+    public GdkCloud getCloud() {
+        return AWS;
+    }
+
+    @NonNull
+    @Override
+    public String getName() {
+        return "gdk-aws-cloud-function";
+    }
+}

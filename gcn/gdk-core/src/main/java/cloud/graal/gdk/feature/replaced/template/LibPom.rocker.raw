@@ -1,0 +1,316 @@
+@import io.micronaut.starter.application.Project
+@import io.micronaut.starter.build.maven.MavenBuild
+@import io.micronaut.starter.build.maven.MavenDependency
+@import io.micronaut.starter.build.Property
+@import io.micronaut.starter.feature.build.maven.templates.dependency
+@import io.micronaut.starter.feature.build.maven.templates.profiles
+@import io.micronaut.starter.feature.database.JpaFeature
+@import io.micronaut.starter.feature.Features
+@import io.micronaut.starter.util.VersionInfo
+@import cloud.graal.gdk.GdkUtils
+
+@args (Project project, Features features, MavenBuild mavenBuild)
+
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>@project.getPackageName()</groupId>
+  <artifactId>@mavenBuild.getArtifactId()</artifactId>
+  <version>0.1</version>
+  <packaging>jar</packaging>
+
+  <parent>
+    <groupId>io.micronaut</groupId>
+    <artifactId>micronaut-parent</artifactId>
+    <version>@GdkUtils.getMicronautVersion()</version>
+  </parent>
+
+  <properties>
+    <packaging>jar</packaging>
+    <jdk.version>@features.getTargetJdk()</jdk.version>
+    <release.version>@features.javaVersion().majorVersion()</release.version>
+@for (Property prop : mavenBuild.getProperties()) {
+@if (prop.isComment()) {
+    <!--@prop.getComment()-->
+} else {
+    <@prop.getKey()>@prop.getValue()</@prop.getKey()>
+}
+}
+  </properties>
+
+  <repositories>
+@mavenBuild.renderRepositories(4)
+  </repositories>
+
+@if (mavenBuild.hasPomDependency()) {
+  <dependencyManagement>
+    <dependencies>
+@for (MavenDependency f : mavenBuild.getDependencies(true)) {
+@dependency.template(f.getGroupId(), f.getArtifactId(), f.getMavenScope().toString(), f.getVersion(), true, f.getExclusions())
+}
+    </dependencies>
+  </dependencyManagement>
+}
+
+  <dependencies>
+@if (features.language().isGroovy()) {
+@dependency.template("io.micronaut", "micronaut-inject-groovy", "provided", null, false, null)
+@dependency.template("org.apache.groovy", "groovy", "compile", "${groovyVersion}", false, null)
+@for (processor : mavenBuild.getAnnotationProcessors()) {
+@dependency.template(processor.getGroupId(), processor.getArtifactId(), "provided", null, false, null)
+}
+}
+@dependency.template("io.micronaut", "micronaut-inject", "compile", null, false, null)
+@if (features.language().isKotlin()) {
+@dependency.template("com.fasterxml.jackson.module", "jackson-module-kotlin", "runtime", null, false, null)
+}
+@for (MavenDependency f : mavenBuild.getDependencies(false)) {
+@dependency.template(f.getGroupId(), f.getArtifactId(), f.getMavenScope().toString(), f.getVersion(), false, f.getExclusions())
+}
+  </dependencies>
+
+  <build>
+
+    <resources>
+      <resource>
+        <directory>${basedir}/src/main/resources</directory>
+      </resource>
+    </resources>
+
+    <plugins>
+@mavenBuild.renderPlugins(6)
+@if (features.language().isJava()) {
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <!-- Uncomment to enable incremental compilation -->
+          <!-- <useIncrementalCompilation>false</useIncrementalCompilation> -->
+
+          <annotationProcessorPaths @mavenBuild.getAnnotationProcessorCombineAttribute()>
+@for (processor : mavenBuild.getAnnotationProcessors()) {
+            <path>
+              <groupId>@processor.getGroupId()</groupId>
+              <artifactId>@processor.getArtifactId()</artifactId>
+              <version>@processor.getVersion()</version>
+            </path>
+}
+          </annotationProcessorPaths>
+          <compilerArgs>
+            <arg>-Amicronaut.processing.group=@project.getPackageName()</arg>
+            <arg>-Amicronaut.processing.module=@project.getName()</arg>
+          </compilerArgs>
+        </configuration>
+      </plugin>
+} else if (features.language().isKotlin()) {
+      <plugin>
+        <artifactId>kotlin-maven-plugin</artifactId>
+        <groupId>org.jetbrains.kotlin</groupId>
+        <version>${kotlinVersion}</version>
+        <configuration>
+          <jvmTarget>${jdk.version}</jvmTarget>
+          <compilerPlugins>
+@if (features.isFeaturePresent(JpaFeature.class)) {
+            <plugin>jpa</plugin>
+}
+            <plugin>all-open</plugin>
+          </compilerPlugins>
+          <pluginOptions>
+            <option>all-open:annotation=io.micronaut.aop.Around</option>
+          </pluginOptions>
+        </configuration>
+        <executions>
+          <execution>
+            <id>kapt</id>
+            <goals>
+              <goal>kapt</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+              </sourceDirs>
+              <annotationProcessorPaths @mavenBuild.getAnnotationProcessorCombineAttribute()>
+@for (processor : mavenBuild.getAnnotationProcessors()) {
+               <annotationProcessorPath>
+                 <groupId>@processor.getGroupId()</groupId>
+                 <artifactId>@processor.getArtifactId()</artifactId>
+                 <version>@processor.getVersion()</version>
+               </annotationProcessorPath>
+}
+              </annotationProcessorPaths>
+              <annotationProcessorArgs>
+                <annotationProcessorArg>micronaut.processing.group=@project.getPackageName()</annotationProcessorArg>
+                <annotationProcessorArg>micronaut.processing.module=@project.getPropertyName()</annotationProcessorArg>
+              </annotationProcessorArgs>
+            </configuration>
+          </execution>
+          <execution>
+            <id>compile</id>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/main/kotlin</sourceDir>
+                @if (features.contains("grpc")) {
+                <sourceDir>${project.build.directory}/generated-sources/</sourceDir>
+                }
+              </sourceDirs>
+            </configuration>
+          </execution>
+@if (features.testFramework().isKotlinTestFramework() || features.testFramework().isJunit()) {
+          <execution>
+            <id>test-kapt</id>
+            <goals>
+              <goal>test-kapt</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+              </sourceDirs>
+              <annotationProcessorPaths @mavenBuild.getTestAnnotationProcessorCombineAttribute()>
+@for (processor : mavenBuild.getTestAnnotationProcessors()) {
+               <annotationProcessorPath>
+                 <groupId>@processor.getGroupId()</groupId>
+                 <artifactId>@processor.getArtifactId()</artifactId>
+                 <version>@processor.getVersion()</version>
+               </annotationProcessorPath>
+}
+              </annotationProcessorPaths>
+            </configuration>
+          </execution>
+          <execution>
+            <id>test-compile</id>
+            <goals>
+              <goal>test-compile</goal>
+            </goals>
+            <configuration>
+              <sourceDirs>
+                <sourceDir>${project.basedir}/src/test/kotlin</sourceDir>
+                <sourceDir>${project.basedir}/target/generated-sources/kapt/test</sourceDir>
+              </sourceDirs>
+            </configuration>
+          </execution>
+}
+        </executions>
+        <dependencies>
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-allopen</artifactId>
+            <version>${kotlinVersion}</version>
+          </dependency>
+@if (features.isFeaturePresent(JpaFeature.class)) {
+          <dependency>
+            <groupId>org.jetbrains.kotlin</groupId>
+            <artifactId>kotlin-maven-noarg</artifactId>
+            <version>${kotlinVersion}</version>
+          </dependency>
+}
+        </dependencies>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <proc>none</proc>
+          <source>${jdk.version}</source>
+          <target>${jdk.version}</target>
+        </configuration>
+        <executions>
+          <execution>
+            <id>default-compile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>default-testCompile</id>
+            <phase>none</phase>
+          </execution>
+          <execution>
+            <id>java-compile</id>
+            <phase>compile</phase>
+            <goals>
+              <goal>compile</goal>
+            </goals>
+          </execution>
+          <execution>
+            <id>java-test-compile</id>
+            <phase>test-compile</phase>
+            <goals>
+              <goal>testCompile</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+}
+@if (features.language().isGroovy()) {
+      <plugin>
+        <artifactId>maven-compiler-plugin</artifactId>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>properties-maven-plugin</artifactId>
+        <version>1.0.0</version>
+        <executions>
+          <execution>
+            <goals>
+              <goal>set-system-properties</goal>
+            </goals>
+            <configuration>
+              <properties>
+                <property>
+                  <name>groovy.target.directory</name>
+                  <value>${project.build.directory}/classes</value>
+                </property>
+                <property>
+                  <name>groovy.parameters</name>
+                  <value>true</value>
+                </property>
+              </properties>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+}
+@if (features.contains("grpc")) {
+      <plugin>
+        <groupId>com.github.os72</groupId>
+        <artifactId>protoc-jar-maven-plugin</artifactId>
+      </plugin>
+}
+    </plugins>
+  </build>
+
+@if (features.language().isGroovy() || features.testFramework().isSpock()) {
+  <pluginRepositories>
+    @if (VersionInfo.isStarterSnapshot()) {
+    <pluginRepository>
+       <id>central</id>
+       <url>https://repo.maven.apache.org/maven2</url>
+    </pluginRepository>
+    <pluginRepository>
+       <id>ossrh</id>
+       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+       <snapshots>
+           <enabled>true</enabled>
+       </snapshots>
+    </pluginRepository>
+    }
+  </pluginRepositories>
+} else if (VersionInfo.isStarterSnapshot()) {
+    <pluginRepositories>
+       <pluginRepository>
+           <id>central</id>
+           <url>https://repo.maven.apache.org/maven2</url>
+       </pluginRepository>
+       <pluginRepository>
+           <id>ossrh</id>
+           <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+           <snapshots>
+               <enabled>true</enabled>
+           </snapshots>
+       </pluginRepository>
+    </pluginRepositories>
+}
+@profiles.template(mavenBuild.getProfiles())
+</project>

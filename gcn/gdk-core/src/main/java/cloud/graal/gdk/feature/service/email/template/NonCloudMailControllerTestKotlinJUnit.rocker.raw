@@ -1,0 +1,68 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.context.annotation.Property
+import io.micronaut.email.Email
+import io.micronaut.email.TransactionalEmailSender
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.HttpResponse
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Named
+import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Test
+import java.util.function.Consumer
+import jakarta.mail.Message
+import jakarta.validation.Valid
+
+import io.micronaut.http.HttpStatus.ACCEPTED
+import io.micronaut.email.BodyType.HTML
+import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertNotNull
+
+@@Property(name = "FROM_EMAIL", value = "bob@@gdk.example")
+@@Property(name = "FROM_PASSWORD", value = "example-password")
+@@MicronautTest(rebuildContext = true)
+class EmailControllerTest(@@Client("/") val client: HttpClient) {
+
+    lateinit var sentEmail: Email
+
+    @@Test
+    fun testSend() {
+        val response: HttpResponse<*> = client.toBlocking().exchange<Map<String, String>, Any>(
+            HttpRequest.POST(
+                "/email/send",
+                mapOf("to" to "alice@@gdk.example")
+            )
+        )
+
+        assertEquals(ACCEPTED, response.status())
+        assertNotNull(sentEmail)
+        assertEquals("bob@@gdk.example", sentEmail.from.email)
+        assertEquals(1, sentEmail.to?.size)
+        assertEquals("alice@@gdk.example", sentEmail.to?.stream()?.findFirst()?.get()?.email)
+        assertEquals("Sending email with JavaMail is Fun", sentEmail.subject)
+        assertNotNull(sentEmail.body)
+        assertEquals(
+            "and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>",
+            sentEmail.body?.get(HTML)?.get()
+        )
+    }
+
+    @@MockBean(TransactionalEmailSender::class)
+    @@Named("mock")
+    fun mockSender(): TransactionalEmailSender<Message, Unit> = object : TransactionalEmailSender<Message, Unit> {
+
+        override fun getName() = "test"
+
+        override fun send(@@Valid email: Email, emailRequest: Consumer<Message>) {
+            sentEmail = email
+        }
+    }
+}

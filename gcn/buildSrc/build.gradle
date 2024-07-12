@@ -44,16 +44,16 @@ sourceSets.main.java.srcDir(writeRockerHelper)
 gradlePlugin {
     plugins {
         rockerPlugin {
-            id = 'gcn.rocker'
-            implementationClass = 'cloud.graal.gcn.rocker.plugin.RockerPlugin'
+            id = 'gdk.rocker'
+            implementationClass = 'cloud.graal.gdk.rocker.plugin.RockerPlugin'
         }
-        gcnBomPlugin {
-            id = 'gcn.bom'
-            implementationClass = 'cloud.graal.gcn.pom.GcnBomPlugin'
+        gdkBomPlugin {
+            id = 'gdk.bom'
+            implementationClass = 'cloud.graal.gdk.pom.GdkBomPlugin'
         }
         versionCatalogUpdates {
-            id = 'gcn.version-catalog-updates'
-            implementationClass = 'cloud.graal.gcn.dependencies.GcnVersionCatalogUpdatePlugin'
+            id = 'gdk.version-catalog-updates'
+            implementationClass = 'cloud.graal.gdk.dependencies.GdkVersionCatalogUpdatePlugin'
         }
     }
 }
@@ -68,10 +68,10 @@ abstract class WriteRockerHelper extends DefaultTask {
     @TaskAction
     void execute() {
         var outputFile = outputDirectory.get().asFile.toPath()
-            .resolve('cloud/graal/gcn/rocker/plugin/RockerHelper.java')
+            .resolve('cloud/graal/gdk/rocker/plugin/RockerHelper.java')
         outputFile.parent.toFile().mkdirs()
         outputFile.text = """\
-package cloud.graal.gcn.rocker.plugin;
+package cloud.graal.gdk.rocker.plugin;
 
 abstract class RockerHelper {
     public static final String VERSION = "${rockerVersion.get()}";

@@ -1,6 +1,6 @@
-# Graal Development Kit (GDK)
+# Graal Development Kit for Micronaut (GDK)
 
-Graal Development Kit (GDK) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
+Graal Development Kit for Micronaut (GDK) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
 With GDK, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
 
 ## Installation
@@ -32,7 +32,7 @@ curl -s "https://get.sdkman.io" | bash
 Install GDK CLI
 
 ```sh
-sdk install gcn
+sdk install gdk
 ```
 
 ### Linux
@@ -46,12 +46,12 @@ curl -s "https://get.sdkman.io" | bash
 Install GDK CLI
 
 ```sh
-sdk install gcn
+sdk install gdk
 ```
 
 ### Other Platforms
 
-Get the binary from https://github.com/oracle/graal-dev-kit/releases  
+Get the binary from https://github.com/oracle/graal-dev-kit/releases
 
 ## Documentation
 
@@ -72,10 +72,10 @@ This source repository is the main repository for GDK and includes the following
 
 Directory | Description
 ------------ | -------------
-[`gcn/buildSrc/`](gcn/buildSrc/) | Gradle build and convention plugins.
-[`gcn/config/`](gcn/config/) | Configuration files for Gradle code quality plugins.
-[`gcn/gdk-cli/`](gcn/gcn-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
-[`gcn/gdk-core/`](gcn/gcn-core/) | The main GDK library.
+[`gdk/buildSrc/`](gdk/buildSrc/) | Gradle build and convention plugins.
+[`gdk/config/`](gdk/config/) | Configuration files for Gradle code quality plugins.
+[`gdk/gdk-cli/`](gdk/gdk-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
+[`gdk/gdk-core/`](gdk/gdk-core/) | The main GDK library.
 
 ## Contributing
 
@@ -87,12 +87,12 @@ Please consult the [security guide](./SECURITY.md) for our responsible security 
 
 ## License
 
-Copyright (c) 2023, 2024 Oracle and/or its affiliates.
+Copyright (c) 2023 Oracle and/or its affiliates.
 
-GCN is open source and distributed under the [Apache License version 2.0](LICENSE.txt).
+GDK is open source and distributed under the [Apache License version 2.0](LICENSE.txt).
 
-[docs]: https://www.graal.cloud/gcn/
-[guides]: https://www.graal.cloud/gcn/guides/
-[issues]: https://github.com/oracle/gcn/issues
-[launcher]: https://www.graal.cloud/gcn/launcher/
+[docs]: https://graal.cloud/gdk/
+[guides]: https://graal.cloud/gdk/guides/
+[issues]: https://github.com/oracle/graal-dev-kit/issues
+[launcher]: https://graal.cloud/gdk/launcher/
 [reporting-vulnerabilities]: https://www.oracle.com/corporate/security-practices/assurance/vulnerability/reporting.html

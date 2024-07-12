@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-rootProject.name = 'gcn'
+rootProject.name = 'gdk'
 
 file('.').eachDir {
-    if (it.name.startsWith('gcn-')) {
+    if (it.name.startsWith('gdk-')) {
         include it.name
     }
 }

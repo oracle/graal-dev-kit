@@ -15,22 +15,22 @@
 #
 
 [versions]
-bouncycastle = '1.77'
+bouncycastle = '1.78.1'
 docker = '3.3.6'
-groovy = '4.0.20' # TODO keep in sync when changing Micronaut version
+groovy = '4.0.21' # TODO keep in sync when changing Micronaut version
 jansi = '2.4.1'
-jline = '3.25.1'
-logback = "1.5.3"
-micronaut-plugins = '4.3.6'
-micronaut-starter = '4.3.7'
+jline = '3.26.2'
+logback = "1.5.6"
+micronaut-plugins = '4.4.0'
+micronaut-starter = '4.5.0'
 reflections = '0.10.2'
 rocker = '1.4.0'
 shadow = '8.1.1'
-slf4j = '2.0.12'
+slf4j = '2.0.13'
 spotless = '6.25.0'
 test-logger = '4.0.0'
 tomlj = "1.1.1"
-micronaut-internal-build = "6.7.0"
+micronaut-internal-build = "6.7.1"
 
 [libraries]
 bouncycastle-bcpkix = { module = 'org.bouncycastle:bcpkix-jdk18on', version.ref = 'bouncycastle' }
