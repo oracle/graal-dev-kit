@@ -1,0 +1,73 @@
+@import io.micronaut.starter.application.Project
+@args (Project project)
+
+@if (project.getPackageName() != null) {
+package @(project.getPackageName())
+
+}
+import io.micronaut.context.annotation.Property
+import io.micronaut.email.Email
+import io.micronaut.email.TransactionalEmailSender
+import io.micronaut.http.HttpRequest
+import io.micronaut.http.client.HttpClient
+import io.micronaut.http.client.annotation.Client
+import io.micronaut.test.annotation.MockBean
+import io.micronaut.test.extensions.junit5.annotation.MicronautTest
+import jakarta.inject.Inject
+import jakarta.inject.Named
+import org.junit.jupiter.api.Test
+
+import java.util.function.Consumer
+
+import static io.micronaut.email.BodyType.HTML
+import static io.micronaut.http.HttpStatus.ACCEPTED
+import static org.junit.jupiter.api.Assertions.assertEquals
+import static org.junit.jupiter.api.Assertions.assertNotNull
+
+@@Property(name = 'FROM_EMAIL', value = 'bob@@gdk.example')
+@@Property(name = 'FROM_PASSWORD', value = 'example-password')
+@@MicronautTest
+class EmailControllerTest {
+
+    @@Inject
+    @@Client('/')
+    HttpClient client
+
+    Email sentEmail
+
+    @@Test
+    void testSend() {
+        def response = client.toBlocking().exchange(
+                HttpRequest.POST('/email/send',
+                        [to: 'alice@@gdk.example']))
+
+        assertEquals(ACCEPTED, response.status())
+
+        assertNotNull(sentEmail)
+        assertEquals('bob@@gdk.example', sentEmail.from.email)
+        assertEquals(1, sentEmail.to.size())
+        assertEquals('alice@@gdk.example', sentEmail.to.first().email)
+        assertEquals('Sending email with JavaMail is Fun', sentEmail.subject)
+        assertNotNull(sentEmail.body)
+        assertEquals('and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>',
+                sentEmail.body.get(HTML).get())
+
+    }
+
+    @@MockBean(TransactionalEmailSender)
+    @@Named('mock')
+    TransactionalEmailSender mockSender() {
+        new TransactionalEmailSender() {
+
+            @@Override
+            String getName() {
+                'test'
+            }
+
+            @@Override
+            def send(Email email, Consumer emailRequest) {
+                sentEmail = email
+            }
+        }
+    }
+}

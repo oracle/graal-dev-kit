@@ -1,0 +1,20 @@
+@import cloud.graal.gdk.GdkGeneratorContext
+@args (GdkGeneratorContext gc, boolean kotlin)
+plugins {
+@if (kotlin) {
+    `kotlin-dsl`
+} else {
+    id 'groovy-gradle-plugin'
+}
+}
+
+repositories {
+    mavenCentral()
+    gradlePluginPortal()
+}
+
+dependencies {
+@for (String gav : gc.getBuildPluginsGAV()) {
+    implementation("@gav")
+}
+}

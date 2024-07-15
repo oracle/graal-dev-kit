@@ -15,6 +15,7 @@ build/
 dev.properties
 out/
 target/
+bin/
 gen/
 mdguides/
 mdinfo/

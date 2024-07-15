@@ -1,0 +1,19 @@
+= gdk-cli
+
+This submodule generates the GDK CLI application which is compiled to a native executable `gdk`, which works similarly to the Micronaut `mn` CLI with the addition of being able to generate GDK applications by specifying clouds and services.
+
+== GdkStarter
+
+The main class is `GdkStarter` which defines the "core" command and the 3 subcommands "create-app" (`GdkCreateAppCommand`), "create-function" (`GdkCreateFunctionCommand`), and "create-gateway-function" (`GdkCreateGatewayFunctionCommand`).
+
+When you run the application and provide valid arguments, the `ProjectGenerator` bean (`GdkProjectGenerator`) creates the applications or functions. These are generated as a multi-module project with the core library "lib" and one module for each selected cloud.
+
+== Generating projects
+
+There are a few ways to generate a project.
+
+* Run `./gradlew clean assemble` from the project root to build the jars in each submodule's `build/libs` directory. Then run `java -jar path/to/gdk/gdk-cli/build/libs/gdk-cli-<VERSION>-all.jar create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
+
+* Run `./gradlew clean :gdk-cli:nativeCompile` from the project root to build a native executable in `build/native/nativeCompile`, then run `path/to/gdk/gdk-cli/build/native/nativeCompile/gdk create-app com.example.demo --services=... --clouds=... --features=...` passing any features and clouds or other args
+
+* Run in IntelliJ by creating a Micronaut run configuration with `Main class` `cloud.graal.gdk.GdkStarter`. Set the `Working directory` to the location where you want to generate the project, and specify the command and args in the `Program arguments` field, e.g., `create-app com.example.demo --services=... --clouds=... --features=...`

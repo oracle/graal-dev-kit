@@ -1,0 +1,21 @@
+dependencies {
+    components {
+        withModule<EnforceBomDependencies>("cloud.graal.gdk:gdk-bom")
+    }
+}
+
+open class EnforceBomDependencies : ComponentMetadataRule {
+    override fun execute(ctx: ComponentMetadataContext) {
+        if (ctx.details.id.group == "cloud.graal.gdk" && ctx.details.id.name == "gdk-bom") {
+            ctx.details.allVariants {
+                withDependencyConstraints {
+                    for (md in this) {
+                        md.version {
+                            strictly(md.versionConstraint.requiredVersion)
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
