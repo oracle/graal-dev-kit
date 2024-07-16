@@ -14,13 +14,13 @@ You can use GDK by generating an application using either the [Launcher on the G
 Setup the tap for the cask:
 
 ```sh
-brew tap oracle/gcn https://github.com/oracle/gcn
+brew tap oracle/graal-dev-kit https://github.com/oracle/graal-dev-kit
 ```
 
 Then install the GDK CLI tool:
 
 ```sh
-brew install gcn
+brew install gdk
 ```
 
 ##### SDKMAN
