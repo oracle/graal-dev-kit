@@ -32,7 +32,7 @@ curl -s "https://get.sdkman.io" | bash
 Install GDK CLI
 
 ```sh
-sdk install gdk
+sdk install gcn
 ```
 
 ### Linux
@@ -46,7 +46,7 @@ curl -s "https://get.sdkman.io" | bash
 Install GDK CLI
 
 ```sh
-sdk install gdk
+sdk install gcn
 ```
 
 ### Other Platforms
