@@ -17,9 +17,11 @@ package cloud.graal.gdk.feature.service;
 
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.AbstractGdkFeature;
+import cloud.graal.gdk.feature.service.template.AzureNativeImageProperties;
 import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.template.RockerTemplate;
 
 import static io.micronaut.starter.feature.FeaturePhase.DEFAULT;
 
@@ -88,5 +90,19 @@ public abstract class AbstractGdkServiceFeature extends AbstractGdkFeature {
         } finally {
             generatorContext.setCloud(cloud);
         }
+    }
+
+    /**
+     * Add --initialize-at-build-time for building Azure native executables.
+     *
+     * @param generatorContext generator context
+     */
+    protected void addAzureNativeImageProperties(GdkGeneratorContext generatorContext) {
+        generatorContext.addTemplate("azure-native-image-properties",
+                new RockerTemplate(
+                        getCloud().getModuleName(),
+                        "src/main/resources/META-INF/native-image/native-image.properties",
+                        AzureNativeImageProperties.template())
+        );
     }
 }

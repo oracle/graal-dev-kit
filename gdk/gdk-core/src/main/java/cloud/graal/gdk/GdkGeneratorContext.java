@@ -183,6 +183,8 @@ public class GdkGeneratorContext extends GeneratorContext {
         if (!featureContext.getBuildTool().isGradle()) {
             buildProperties.put("micronaut-maven-plugin.version", GdkDependencies.MICRONAUT_MAVEN_PLUGIN.getVersion());
             buildProperties.put("micronaut.test.resources.version", GdkDependencies.MICRONAUT_TEST_RESOURCES_CORE.getVersion());
+            buildProperties.put("kotlin.version", GdkDependencies.KOTLIN_STDLIB.getVersion());
+            buildProperties.put("micronaut.core.version", GdkDependencies.MICRONAUT_CORE.getVersion());
         }
 
         INSTANCE.set(this);

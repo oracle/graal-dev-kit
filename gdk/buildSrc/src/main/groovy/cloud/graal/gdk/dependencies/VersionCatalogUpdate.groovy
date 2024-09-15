@@ -201,7 +201,7 @@ abstract class VersionCatalogUpdate extends DefaultTask {
                             if (reference != null) {
                                 model.findVersion(reference).ifPresent { referencedVersion ->
                                     RichVersion richVersion = referencedVersion.getVersion()
-                                    if (supportsUpdate(richVersion)) {
+                                    if (VersionCatalogUpdate.supportsUpdate(richVersion)) {
                                         String require = richVersion.getRequire()
                                         Status sourceStatus = Status.detectStatus(require)
                                         if (!Objects.equals(require, latest) && targetStatus.isAsStableOrMoreStableThan(sourceStatus)) {

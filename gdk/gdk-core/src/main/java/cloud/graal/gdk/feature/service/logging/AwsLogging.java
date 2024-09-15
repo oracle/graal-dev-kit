@@ -16,15 +16,9 @@
 package cloud.graal.gdk.feature.service.logging;
 
 import cloud.graal.gdk.GdkGeneratorContext;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerGroovy;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerJava;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerKotlin;
-import cloud.graal.gdk.feature.service.logging.template.LogbackXml;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
 import io.micronaut.starter.build.dependencies.Dependency;
-import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.AWS;
@@ -37,34 +31,22 @@ import static cloud.graal.gdk.model.GdkCloud.AWS;
 @Singleton
 public class AwsLogging extends AbstractLoggingFeature {
 
+    // TODO replace with io.micronaut.starter.feature.aws.AwsLogging feature when
+    //      https://github.com/micronaut-projects/micronaut-starter/pull/2547 is published
     private static final Dependency CLOUDWATCH_LOGGING = Dependency.builder()
             .groupId("io.micronaut.aws")
             .artifactId("micronaut-aws-cloudwatch-logging")
             .compile()
             .build();
 
+    private static final String APPENDER_NAME = "CLOUDWATCH";
+    private static final String APPENDER_CLASS = "io.micronaut.aws.cloudwatch.logging.CloudWatchLoggingAppender";
+    private static final String JSON_FORMATTER = "io.micronaut.aws.cloudwatch.logging.CloudWatchJsonFormatter";
+
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
-
         generatorContext.addDependency(CLOUDWATCH_LOGGING);
-
-        generatorContext.addTemplate("loggingConfig-aws",
-                new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
-                        LogbackXml.template("CLOUDWATCH",
-                                "io.micronaut.aws.cloudwatch.logging.CloudWatchLoggingAppender",
-                                "io.micronaut.aws.cloudwatch.logging.CloudWatchJsonFormatter",
-                                getModuleName())));
-
-        if (generatorContext.generateExampleCode()) {
-
-            Project project = generatorContext.getProject();
-
-            generatorContext.addTemplate(getModuleName(), "AwsLogController",
-                    generatorContext.getSourcePath("/{packagePath}/LogController"),
-                    LogControllerJava.template(project),
-                    LogControllerKotlin.template(project),
-                    LogControllerGroovy.template(project));
-        }
+        applyCommon(generatorContext, APPENDER_NAME, APPENDER_CLASS, JSON_FORMATTER);
     }
 
     @NonNull

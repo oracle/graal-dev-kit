@@ -21,6 +21,8 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
 import jakarta.inject.Singleton;
 
+import java.util.Map;
+
 import static cloud.graal.gdk.model.GdkCloud.AZURE;
 
 /**
@@ -40,7 +42,19 @@ public class AzureStreaming extends AbstractStreamingFeature {
 
     @Override
     protected void doApply(GdkGeneratorContext generatorContext) {
-        // TODO
+
+        generatorContext.getConfiguration().addNested(Map.of(
+                "kafka.max.partition.fetch.bytes", 1048576,
+                "kafka.max.request.size", 1048576,
+                "kafka.retries", 3
+        ));
+
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "kafka.bootstrap.servers", "${AZURE_NAMESPACE_NAME}.servicebus.windows.net:9093",
+                "kafka.sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"$ConnectionString\" password=\"${AZURE_EVENTHUB_CONNECTION_STRING}\";",
+                "kafka.sasl.mechanism", "PLAIN",
+                "kafka.security.protocol", "SASL_SSL"
+        ));
     }
 
     @NonNull

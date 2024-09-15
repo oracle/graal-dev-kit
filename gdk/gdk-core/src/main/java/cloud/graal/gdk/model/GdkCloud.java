@@ -120,8 +120,7 @@ public enum GdkCloud {
      * @return the subset of GdkCloud enum values that are currently supported
      */
     public static GdkCloud[] supportedValues() {
-//        return SUPPORTED; // TODO only supporting AWS, GCP, and OCI for now
-        return new GdkCloud[]{GdkCloud.AWS, GdkCloud.GCP, GdkCloud.OCI};
+        return SUPPORTED;
     }
 
     /**

@@ -16,15 +16,9 @@
 package cloud.graal.gdk.feature.service.logging;
 
 import cloud.graal.gdk.GdkGeneratorContext;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerGroovy;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerJava;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerKotlin;
-import cloud.graal.gdk.feature.service.logging.template.LogbackXml;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
 import io.micronaut.starter.build.dependencies.Dependency;
-import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.GCP;
@@ -37,34 +31,22 @@ import static cloud.graal.gdk.model.GdkCloud.GCP;
 @Singleton
 public class GcpLogging extends AbstractLoggingFeature {
 
+    // TODO replace with io.micronaut.starter.feature.gcp.GoogleLogging feature when
+    //      https://github.com/micronaut-projects/micronaut-starter/pull/2547 is published
     private static final Dependency LOGGING_LOGBACK = Dependency.builder()
             .groupId("com.google.cloud")
             .artifactId("google-cloud-logging-logback")
             .compile()
             .build();
 
+    private static final String APPENDER_NAME = "GOOGLE";
+    private static final String APPENDER_CLASS = "com.google.cloud.logging.logback.LoggingAppender";
+    private static final String JSON_FORMATTER = "";
+
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
-
         generatorContext.addDependency(LOGGING_LOGBACK);
-
-        generatorContext.addTemplate("loggingConfig-gcp",
-                new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
-                        LogbackXml.template("GOOGLE",
-                                "com.google.cloud.logging.logback.LoggingAppender",
-                                "",
-                                getModuleName())));
-
-        if (generatorContext.generateExampleCode()) {
-
-            Project project = generatorContext.getProject();
-
-            generatorContext.addTemplate(getModuleName(), "GcpLogController",
-                    generatorContext.getSourcePath("/{packagePath}/LogController"),
-                    LogControllerJava.template(project),
-                    LogControllerKotlin.template(project),
-                    LogControllerGroovy.template(project));
-        }
+        applyCommon(generatorContext, APPENDER_NAME, APPENDER_CLASS, JSON_FORMATTER);
     }
 
     @NonNull

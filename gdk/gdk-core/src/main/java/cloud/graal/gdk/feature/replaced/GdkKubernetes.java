@@ -25,7 +25,6 @@ import io.micronaut.starter.feature.jib.Jib;
 import io.micronaut.starter.feature.k8s.Kubernetes;
 import io.micronaut.starter.feature.other.Management;
 import io.micronaut.starter.template.RockerTemplate;
-import io.micronaut.starter.template.Template;
 import jakarta.inject.Singleton;
 
 import java.util.Map;
@@ -35,6 +34,7 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
 import static cloud.graal.gdk.model.GdkCloud.GCP;
 import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static cloud.graal.gdk.model.GdkCloud.OCI;
+import static io.micronaut.starter.template.Template.ROOT;
 
 /**
  * Replaces {@link Kubernetes} and adds different Kubernetes config file depending on the selected clouds.
@@ -45,13 +45,14 @@ public class GdkKubernetes extends Kubernetes {
 
     private static final Map<GdkCloud, String> IMAGES = Map.of(
             AWS, "<aws-account-id>.dkr.ecr.<aws-region>.amazonaws.com/%s:latest",
-            AZURE, "TODO",
+            AZURE, "<acr-repo-name>.azurecr.io/%s:latest",
             GCP, "gcr.io/<gcp-project-id>/%s:latest",
             OCI, "<region-key>.ocir.io/<tenancy-namespace>/gdk-k8s/%s:latest",
             NONE, "%s"
     );
 
-    public GdkKubernetes(Jib jib, Management management) {
+    public GdkKubernetes(Jib jib,
+                         Management management) {
         super(jib, management);
     }
 
@@ -71,18 +72,17 @@ public class GdkKubernetes extends Kubernetes {
     protected void addYamlTemplate(GdkGeneratorContext generatorContext,
                                    GdkCloud cloud) {
 
-        if (cloud.equals(NONE) && generatorContext.getClouds().size() > 1) {
+        if (cloud == NONE && generatorContext.getClouds().size() > 1) {
             return;
         }
 
-        String moduleName = cloud.equals(NONE) ? "" : "-" + cloud.getModuleName();
+        String moduleName = cloud == NONE ? "" : "-" + cloud.getModuleName();
 
         generatorContext.addTemplate(cloud.name() + "k8sYaml",
-                new RockerTemplate(
-                        Template.ROOT,
-                        "k8s" + moduleName + ".yml",
+                new RockerTemplate(ROOT, "k8s" + moduleName + ".yml",
                         k8sYaml.template(
                                 generatorContext.getProject(),
-                                IMAGES.get(cloud).formatted(generatorContext.getProject().getName()), cloud)));
+                                IMAGES.get(cloud).formatted(generatorContext.getProject().getName()),
+                                cloud)));
     }
 }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oracle and/or its affiliates
+ * Copyright 2024 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,27 +15,22 @@
  */
 package cloud.graal.gdk.feature.replaced;
 
-import cloud.graal.gdk.OracleCloudNettyClientDependencies;
 import io.micronaut.context.annotation.Replaces;
-import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.feature.database.TestContainers;
+import io.micronaut.starter.feature.database.jdbc.JdbcFeature;
 import io.micronaut.starter.feature.function.Cloud;
 import io.micronaut.starter.feature.function.CloudFeature;
+import io.micronaut.starter.feature.oraclecloud.OracleCloudAutonomousDatabase;
 import io.micronaut.starter.feature.oraclecloud.OracleCloudSdk;
+import io.micronaut.starter.feature.testresources.TestResources;
 import jakarta.inject.Singleton;
 
-/**
- * Replaces the default feature to also add Oracle Cloud Netty dependencies.
- *
- * @since 1.0.0
- */
-@Replaces(OracleCloudSdk.class)
+@Replaces(OracleCloudAutonomousDatabase.class)
 @Singleton
-public class GdkOracleCloudSdk extends OracleCloudSdk implements OracleCloudNettyClientDependencies, CloudFeature {
+public class GdkOracleCloudAutonomousDatabase extends OracleCloudAutonomousDatabase implements CloudFeature {
 
-    @Override
-    public void apply(GeneratorContext generatorContext) {
-        super.apply(generatorContext);
-        addNettyDependencies(generatorContext);
+    public GdkOracleCloudAutonomousDatabase(JdbcFeature jdbcFeature, TestContainers testContainers, TestResources testResources, OracleCloudSdk oracleCloudSdkFeature) {
+        super(jdbcFeature, testContainers, testResources, oracleCloudSdkFeature);
     }
 
     @Override

@@ -18,8 +18,6 @@ package cloud.graal.gdk.feature;
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.service.email.AbstractEmailFeature;
 import cloud.graal.gdk.feature.service.security.AbstractSecurityFeature;
-import cloud.graal.gdk.GdkUtils;
-import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.application.Project;
@@ -28,6 +26,8 @@ import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.MultiProjectFeature;
 import io.micronaut.starter.template.StringTemplate;
 
+import static cloud.graal.gdk.GdkUtils.LIB_MODULE;
+import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static io.micronaut.starter.template.Template.ROOT;
 
 /**
@@ -80,7 +80,7 @@ public abstract class AbstractGdkFeature implements GdkFeature, MultiProjectFeat
     }
 
     protected String getDefaultModule() {
-        return getCloud() == GdkCloud.NONE ? ROOT : GdkUtils.LIB_MODULE;
+        return getCloud() == NONE ? ROOT : LIB_MODULE;
     }
 
     /**
@@ -97,17 +97,24 @@ public abstract class AbstractGdkFeature implements GdkFeature, MultiProjectFeat
 
         Project project = generatorContext.getProject();
 
-        addGitkeep(generatorContext, "gitkeep-resources", "src/main/resources");
-        addGitkeep(generatorContext, "gitkeep-src",
-                generatorContext.getLanguage().getSrcDir() + '/' + project.getPackagePath());
+        // add lib/src/main/resources/.gitkeep
+        addGitkeep(generatorContext, "gitkeep-resources-lib", "src/main/resources", getDefaultModule());
+
+        // add lib/src/main/java/com/example/.gitkeep
+        addGitkeep(generatorContext, "gitkeep-src-lib",
+                generatorContext.getLanguage().getSrcDir() + '/' + project.getPackagePath(), getDefaultModule());
+
+        // add cloud/src/test/resources/.gitkeep
+        addGitkeep(generatorContext, "gitkeep-resources-test-" + getModuleName(), "src/test/resources", getModuleName());
 
         if (generatorContext.hasFeature(AbstractEmailFeature.class) || generatorContext.hasFeature(AbstractSecurityFeature.class)) {
-            addGitkeep(generatorContext, "gitkeep-jte", "src/main/jte");
+            addGitkeep(generatorContext, "gitkeep-jte", "src/main/jte", getDefaultModule());
         }
     }
 
-    private void addGitkeep(GdkGeneratorContext generatorContext, String name, String path) {
+    private void addGitkeep(GdkGeneratorContext generatorContext,
+                            String name, String path, String module) {
         generatorContext.addTemplate(name,
-                new StringTemplate(getDefaultModule(), path + "/.gitkeep", ""));
+                new StringTemplate(module, path + "/.gitkeep", ""));
     }
 }

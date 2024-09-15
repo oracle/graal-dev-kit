@@ -16,8 +16,10 @@
 package cloud.graal.gdk.feature.service.secretmanagement;
 
 import cloud.graal.gdk.GdkGeneratorContext;
+import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.azure.AzureKeyVaultFeature;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.AZURE;
@@ -30,9 +32,30 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
 @Singleton
 public class AzureSecretManagement extends AbstractSecretManagementFeature {
 
+    private final AzureKeyVaultFeature azureKeyVault;
+
+    /**
+     * @param azureKeyVault Azure Key Vault feature
+     */
+    public AzureSecretManagement(AzureKeyVaultFeature azureKeyVault) {
+        this.azureKeyVault = azureKeyVault;
+    }
+
+    @Override
+    public void processSelectedFeatures(GdkFeatureContext featureContext) {
+        featureContext.addFeature(azureKeyVault, AzureKeyVaultFeature.class);
+    }
+
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
-        // TODO
+
+        // write to bootstrap-azure.properties to avoid problem with invalid value in application.properties/bootstrap.properties
+        generatorContext.getCloudBootstrapConfiguration().addNested("azure.key-vault.vault-url", "<key_vault_url>");
+
+        // TODO move this to base class so it's applied for all clouds - will need to update AWS and OCI guides
+        generatorContext.getTestBootstrapConfiguration().addNested("micronaut.config-client.enabled", false);
+
+        addAzureNativeImageProperties(generatorContext);
     }
 
     @NonNull
