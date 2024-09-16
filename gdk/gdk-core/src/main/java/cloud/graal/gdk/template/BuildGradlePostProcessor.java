@@ -130,8 +130,6 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = updateVersion(buildGradle);
         if (forCloudModule && applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
             buildGradle = configureDockerImageName(buildGradle);
-        }
-        if (forCloudModule && applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
             buildGradle = configureDockerNativeImageName(buildGradle);
             buildGradle = configureShadowJarZip64(buildGradle);
         }
@@ -140,7 +138,14 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = updateResolutionStrategyVersions(buildGradle);
         buildGradle = fixLibDependency(buildGradle);
         buildGradle = replaceMavenCentral(buildGradle);
+        if (forCloudModule) {
+            buildGradle = fixNativeName(buildGradle);
+        }
         return buildGradle;
+    }
+
+    private String fixNativeName(String buildGradle) {
+        return buildGradle + "\n" + "graalvmNative.binaries.main.imageName = \"${rootProject.name}-${project.name}\"" + "\n";
     }
 
     @NonNull

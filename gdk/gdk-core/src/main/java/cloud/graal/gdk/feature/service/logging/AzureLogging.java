@@ -18,7 +18,10 @@ package cloud.graal.gdk.feature.service.logging;
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
 import jakarta.inject.Singleton;
+
+import java.util.Map;
 
 import static cloud.graal.gdk.model.GdkCloud.AZURE;
 
@@ -30,9 +33,41 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
 @Singleton
 public class AzureLogging extends AbstractLoggingFeature {
 
+    // TODO replace with io.micronaut.starter.feature.azure.AzureLogging feature when
+    //      https://github.com/micronaut-projects/micronaut-starter/pull/2547 is published
+    private static final Dependency AZURE_LOGGING_DEPENDENCY = Dependency.builder()
+            .groupId("io.micronaut.azure")
+            .artifactId("micronaut-azure-logging")
+            .compile()
+            .build();
+
+    // default is runtime scope, needs to be compile
+    private static final Dependency LOGBACK_DEPENDENCY = Dependency.builder()
+            .groupId("ch.qos.logback")
+            .artifactId("logback-classic")
+            .compile()
+            .build();
+
+    private static final String APPENDER_NAME = "AZURE";
+    private static final String APPENDER_CLASS = "io.micronaut.azure.logging.AzureAppender";
+    private static final String JSON_FORMATTER = "io.micronaut.azure.logging.AzureJsonFormatter";
+
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
-        // TODO
+
+        generatorContext.addDependency(AZURE_LOGGING_DEPENDENCY);
+        generatorContext.addDependency(LOGBACK_DEPENDENCY);
+
+        applyCommon(generatorContext, APPENDER_NAME, APPENDER_CLASS, JSON_FORMATTER);
+
+        generatorContext.getCloudConfiguration().addNested(Map.of(
+                "azure.logging.enabled", true,
+                "azure.logging.data-collection-endpoint", "",
+                "azure.logging.rule-id", "",
+                "azure.logging.stream-name", ""
+        ));
+
+        addAzureNativeImageProperties(generatorContext);
     }
 
     @NonNull

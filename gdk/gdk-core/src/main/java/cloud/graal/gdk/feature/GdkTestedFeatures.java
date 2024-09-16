@@ -67,8 +67,12 @@ public final class GdkTestedFeatures {
             "micrometer-oracle-cloud",
             // METRICS GCP
             "micrometer-stackdriver",
+            // METRICS Azure
+            "micrometer-azure-monitor",
             // OBJECTSTORAGE AWS
             "object-storage-aws",
+            // OBJECTSTORAGE Azure
+            "object-storage-azure",
             // OBJECTSTORAGE GCP
             "object-storage-gcp",
             // OBJECTSTORAGE OCI
@@ -83,6 +87,9 @@ public final class GdkTestedFeatures {
             "gcp-secrets-manager",
             // SECRETMANAGEMENT OCI
             "oracle-cloud-vault",
+            // SECRETMANAGEMENT Azure
+            "azure-key-vault",
+            "discovery-client",
             // STREAMING
             "kafka",
             // TRACING

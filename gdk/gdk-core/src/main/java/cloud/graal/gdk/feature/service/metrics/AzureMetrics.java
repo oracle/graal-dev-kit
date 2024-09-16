@@ -16,8 +16,11 @@
 package cloud.graal.gdk.feature.service.metrics;
 
 import cloud.graal.gdk.GdkGeneratorContext;
+import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.feature.micrometer.AzureMonitor;
 import io.micronaut.starter.feature.micrometer.Core;
 import io.micronaut.starter.feature.micrometer.MicrometerAnnotations;
 import io.micronaut.starter.feature.other.Management;
@@ -33,19 +36,43 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
 @Singleton
 public class AzureMetrics extends AbstractMetricsFeature {
 
+    private static final Dependency HTTP_SERVER_NETTY = Dependency.builder()
+            .groupId("io.micronaut")
+            .artifactId("micronaut-http-server-netty")
+            .testRuntime()
+            .build();
+
+    private final AzureMonitor azureMonitor;
+
     /**
-     * @param core       the Core feature
-     * @param management the Management feature
+     * @param azureMonitor AzureMonitor feature
+     * @param core         the Core feature
+     * @param management   the Management feature
      */
-    public AzureMetrics(Core core,
+    public AzureMetrics(AzureMonitor azureMonitor,
+                        Core core,
                         Management management,
                         MicrometerAnnotations micrometerAnnotations) {
         super(core, management, micrometerAnnotations);
+        this.azureMonitor = azureMonitor;
     }
 
     @Override
+    public void processSelectedFeatures(GdkFeatureContext featureContext) {
+        super.processSelectedFeatures(featureContext);
+        featureContext.addFeature(azureMonitor, AzureMonitor.class);
+    }
+
+    @NonNull
+    @Override
     protected void doApply(GdkGeneratorContext generatorContext) {
-        // TODO
+
+        applyForLib(generatorContext, () -> {
+            generatorContext.addDependency(HTTP_SERVER_NETTY);
+        });
+        if (generatorContext.generateExampleCode()) {
+            generatorContext.getTestConfiguration().addNested("micronaut.metrics.export.azuremonitor.enabled", false);
+        }
     }
 
     @NonNull

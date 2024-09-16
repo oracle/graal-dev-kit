@@ -15,9 +15,16 @@
  */
 package cloud.graal.gdk.feature.service.logging;
 
+import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.service.AbstractGdkServiceFeature;
+import cloud.graal.gdk.feature.service.logging.template.LogControllerGroovy;
+import cloud.graal.gdk.feature.service.logging.template.LogControllerJava;
+import cloud.graal.gdk.feature.service.logging.template.LogControllerKotlin;
+import cloud.graal.gdk.feature.service.logging.template.LogbackXml;
 import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.application.Project;
+import io.micronaut.starter.template.RockerTemplate;
 
 import static cloud.graal.gdk.model.GdkService.LOGGING;
 
@@ -32,5 +39,26 @@ public abstract class AbstractLoggingFeature extends AbstractGdkServiceFeature {
     @Override
     public final GdkService getService() {
         return LOGGING;
+    }
+
+    protected void applyCommon(GdkGeneratorContext generatorContext,
+                               String appenderName,
+                               String appenderClass,
+                               String jsonFormatter) {
+
+        generatorContext.addTemplate("loggingConfig-" + getModuleName(),
+                new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
+                        LogbackXml.template(appenderName, appenderClass, jsonFormatter, getModuleName())));
+
+        if (generatorContext.generateExampleCode()) {
+
+            Project project = generatorContext.getProject();
+
+            generatorContext.addTemplate(getModuleName(), getModuleName() + "LogController",
+                    generatorContext.getSourcePath("/{packagePath}/LogController"),
+                    LogControllerJava.template(project),
+                    LogControllerKotlin.template(project),
+                    LogControllerGroovy.template(project));
+        }
     }
 }

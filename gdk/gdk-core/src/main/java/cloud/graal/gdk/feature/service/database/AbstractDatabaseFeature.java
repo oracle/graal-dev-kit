@@ -149,7 +149,9 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
                 "flyway.datasources.default.enabled", true,
                 "datasources.default.dialect", driverFeature.getDataDialect()
         ));
+
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
+
         if (driverFeature instanceof OracleCloudAutonomousDatabase) {
             generatorContext.getTestConfiguration().addNested(Map.of(
                     "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",

@@ -57,6 +57,8 @@ public class AzureObjectStore extends AbstractObjectStore {
                 "micronaut.object-storage.azure.default.endpoint", ""
         ));
         generatorContext.getTestConfiguration().addNested("micronaut.object-storage.azure.default.enabled", "false");
+
+        addAzureNativeImageProperties(generatorContext);
     }
 
     @NonNull

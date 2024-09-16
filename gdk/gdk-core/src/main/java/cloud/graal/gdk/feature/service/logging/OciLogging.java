@@ -17,15 +17,9 @@ package cloud.graal.gdk.feature.service.logging;
 
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.OracleCloudNettyClientDependencies;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerGroovy;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerJava;
-import cloud.graal.gdk.feature.service.logging.template.LogControllerKotlin;
-import cloud.graal.gdk.feature.service.logging.template.LogbackXml;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.application.Project;
 import io.micronaut.starter.build.dependencies.Dependency;
-import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.OCI;
@@ -38,36 +32,23 @@ import static cloud.graal.gdk.model.GdkCloud.OCI;
 @Singleton
 public class OciLogging extends AbstractLoggingFeature implements OracleCloudNettyClientDependencies {
 
+    // TODO replace with io.micronaut.starter.feature.oraclecloud.OracleCloudLogging feature when
+    //      https://github.com/micronaut-projects/micronaut-starter/pull/2547 is published
     private static final Dependency ORACLECLOUD_LOGGING = Dependency.builder()
             .groupId("io.micronaut.oraclecloud")
             .artifactId("micronaut-oraclecloud-logging")
             .compile()
             .build();
 
+    private static final String APPENDER_NAME = "ORACLE";
+    private static final String APPENDER_CLASS = "io.micronaut.oraclecloud.logging.OracleCloudAppender";
+    private static final String JSON_FORMATTER = "io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter";
+
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
-
         generatorContext.addDependency(ORACLECLOUD_LOGGING);
-
         addNettyDependencies(generatorContext);
-
-        generatorContext.addTemplate("loggingConfig-oci",
-                new RockerTemplate(getModuleName(), "src/main/resources/logback.xml",
-                        LogbackXml.template("ORACLE",
-                                "io.micronaut.oraclecloud.logging.OracleCloudAppender",
-                                "io.micronaut.oraclecloud.logging.OracleCloudJsonFormatter",
-                                getModuleName())));
-
-        if (generatorContext.generateExampleCode()) {
-
-            Project project = generatorContext.getProject();
-
-            generatorContext.addTemplate(getModuleName(), "OciLogController",
-                    generatorContext.getSourcePath("/{packagePath}/LogController"),
-                    LogControllerJava.template(project),
-                    LogControllerKotlin.template(project),
-                    LogControllerGroovy.template(project));
-        }
+        applyCommon(generatorContext, APPENDER_NAME, APPENDER_CLASS, JSON_FORMATTER);
     }
 
     @NonNull
