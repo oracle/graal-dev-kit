@@ -55,6 +55,10 @@ gradlePlugin {
             id = 'gdk.version-catalog-updates'
             implementationClass = 'cloud.graal.gdk.dependencies.GdkVersionCatalogUpdatePlugin'
         }
+        gdkParentPlugin {
+            id = 'gdk.parent'
+            implementationClass = 'cloud.graal.gdk.pom.GdkParentPlugin'
+        }
     }
 }
 

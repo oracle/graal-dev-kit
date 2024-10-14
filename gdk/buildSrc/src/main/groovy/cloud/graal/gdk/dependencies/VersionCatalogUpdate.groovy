@@ -130,7 +130,6 @@ abstract class VersionCatalogUpdate extends DefaultTask {
                         'io.micronaut.build',
                         'io.micronaut.build.internal.bom',
                         'io.micronaut.gradle',
-                        'io.micronaut.platform',
                         'io.micronaut.starter',
                         'io.micronaut.maven',
                         'io.micronaut.testresources'

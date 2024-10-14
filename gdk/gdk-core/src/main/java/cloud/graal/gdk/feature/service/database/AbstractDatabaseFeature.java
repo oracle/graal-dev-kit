@@ -51,6 +51,7 @@ import io.micronaut.starter.feature.database.DataJdbc;
 import io.micronaut.starter.feature.database.DatabaseDriverFeature;
 import io.micronaut.starter.feature.database.H2;
 import io.micronaut.starter.feature.database.MySQL;
+import io.micronaut.starter.feature.database.Oracle;
 import io.micronaut.starter.feature.database.jdbc.JdbcFeature;
 import io.micronaut.starter.feature.migration.Flyway;
 import io.micronaut.starter.feature.oraclecloud.OracleCloudAutonomousDatabase;
@@ -149,9 +150,7 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
                 "flyway.datasources.default.enabled", true,
                 "datasources.default.dialect", driverFeature.getDataDialect()
         ));
-
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
-
         if (driverFeature instanceof OracleCloudAutonomousDatabase) {
             generatorContext.getTestConfiguration().addNested(Map.of(
                     "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",
@@ -162,6 +161,18 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
                     "flyway.datasources.default.locations", "classpath:db/migration",
                     "flyway.datasources.default.baseline-version", "0",
                     "flyway.datasources.default.baseline-on-migrate", "true"));
+            generatorContext.addDependency(TESTCONTAINERS_ORACLE_XE);
+        } else if (driverFeature instanceof Oracle) {
+            generatorContext.getTestConfiguration().addNested(Map.of(
+                    "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",
+                    "datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver",
+                    "datasources.default.username", "system",
+                    "datasources.default.password", "oracle",
+                    "datasources.default.connectionTimeout", "60000",
+                    "flyway.datasources.default.locations", "classpath:db/migration",
+                    "flyway.datasources.default.baseline-version", "0",
+                    "flyway.datasources.default.baseline-on-migrate", "true",
+                    "flyway.datasources.default.enabled", "true"));
             generatorContext.addDependency(TESTCONTAINERS_ORACLE_XE);
         } else {
             generatorContext.getTestConfiguration().addNested(jdbcConfig);

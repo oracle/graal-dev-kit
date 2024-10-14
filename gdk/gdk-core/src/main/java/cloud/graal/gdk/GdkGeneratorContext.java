@@ -174,19 +174,12 @@ public class GdkGeneratorContext extends GeneratorContext {
         cloudFeatures = splitFeatures(features, featureContext, this);
         generateExampleCode = featureContext.getOptions().get(EXAMPLE_CODE, Boolean.class).orElse(true);
 
-        String key = featureContext.getOptions().getBuildTool().isGradle() ? "micronautVersion" : "micronaut.version";
         clouds = new HashSet<>(cloudFeatures.keySet());
         clouds.add(NONE); // for lib module
         buildProperties = new GdkBuildProperties(this, clouds);
-        buildProperties.put(key, GdkUtils.getMicronautVersion() + GdkUtils.BOM_VERSION_SUFFIX);
-
-        if (!featureContext.getBuildTool().isGradle()) {
-            buildProperties.put("micronaut-maven-plugin.version", GdkDependencies.MICRONAUT_MAVEN_PLUGIN.getVersion());
-            buildProperties.put("micronaut.test.resources.version", GdkDependencies.MICRONAUT_TEST_RESOURCES_CORE.getVersion());
-            buildProperties.put("kotlin.version", GdkDependencies.KOTLIN_STDLIB.getVersion());
-            buildProperties.put("micronaut.core.version", GdkDependencies.MICRONAUT_CORE.getVersion());
+        if (featureContext.getOptions().getBuildTool().isGradle()) {
+            buildProperties.put("micronautVersion", GdkUtils.getMicronautVersion() + GdkUtils.BOM_VERSION_SUFFIX);
         }
-
         INSTANCE.set(this);
     }
 

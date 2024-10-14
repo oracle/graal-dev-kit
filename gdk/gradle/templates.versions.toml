@@ -43,7 +43,7 @@ micronaut-mongo = "5.4.0-oracle-00001"
 micronaut-object-storage = "2.6.0-oracle-00001"
 micronaut-openapi = "6.12.3-oracle-00001"
 micronaut-oraclecloud = "4.2.0-oracle-00001"
-micronaut-platform = "4.6.0"
+micronaut-platform = "4.6.0-oracle-00001"
 micronaut-picocli = "5.5.0-oracle-00001"
 micronaut-reactor = "3.5.0-oracle-00001"
 micronaut-security = "4.10.1-oracle-00001"
@@ -56,6 +56,7 @@ micronaut-views = "5.5.0-oracle-00001"
 okhttp = "4.12.0"
 opentelemetry-semconv = "1.30.1-alpha"
 org-springframework-boot-spring-boot-starter-parent = "3.3.3"
+protobuf = "3.25.5"
 spring-boot-gradle-plugin = "3.3.3"
 test-containers-oracle-xe = "1.20.1"
 
@@ -66,6 +67,8 @@ com-google-api-gax = { module = 'com.google.api:gax', version.ref = 'gax'}
 com-google-api-gax-grpc = { module = 'com.google.api:gax-grpc', version.ref = 'gax-grpc'}
 com-google-cloud-google-cloud-logging-logback = { module = 'com.google.cloud:google-cloud-logging-logback', version.ref = 'google-cloud-logging'}
 com-google-guava-guava = { module = 'com.google.guava:guava', version.ref = 'guava'}
+com-google-protobuf-protobuf-java = { module = 'com.google.protobuf:protobuf-java', version.ref = 'protobuf'}
+com-google-protobuf-protobuf-java-util = { module = 'com.google.protobuf:protobuf-java-util', version.ref = 'protobuf'}
 com-squareup-okhttp3-logging-interceptor = { module = 'com.squareup.okhttp3:logging-interceptor', version.ref = 'okhttp'}
 com-squareup-okhttp3-okhttp = { module = 'com.squareup.okhttp3:okhttp', version.ref = 'okhttp'}
 io-micronaut-cache-micronaut-cache-core = { module = 'io.micronaut.cache:micronaut-cache-core', version.ref = 'micronaut-cache'}
