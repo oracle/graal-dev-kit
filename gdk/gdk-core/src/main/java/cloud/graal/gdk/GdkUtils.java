@@ -96,7 +96,7 @@ public final class GdkUtils {
      * @return the version of Micronaut Platform
      */
     public static String getMicronautVersion() {
-        return GdkDependencies.MICRONAUT_PARENT.getVersion();
+        return GdkDependencies.MICRONAUT_PARENT.getVersion().replaceAll("-oracle-\\d+", "");
     }
 
     /**

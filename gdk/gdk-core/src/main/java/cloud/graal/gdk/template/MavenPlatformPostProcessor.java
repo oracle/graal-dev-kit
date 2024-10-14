@@ -20,8 +20,6 @@ import io.micronaut.core.annotation.NonNull;
 
 import java.util.regex.Pattern;
 
-import static cloud.graal.gdk.GdkUtils.BOM_VERSION_SUFFIX;
-
 /**
  * Fixes parent element in platform independent pom.xml and multi-module root pom.xml.
  */
@@ -34,12 +32,23 @@ public class MavenPlatformPostProcessor implements TemplatePostProcessor {
     @NonNull
     @Override
     public String process(@NonNull String pom) {
+        return fixParent(pom);
+
+    }
+
+    @NonNull
+    private String fixParent(@NonNull String pom) {
         int start = pom.indexOf(PARENT_START);
         int end = pom.indexOf(PARENT_END, start) + PARENT_END.length();
+
         String top = pom.substring(0, start);
         String bottom = pom.substring(end);
         String parent = pom.substring(start, end);
-        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", GdkUtils.getMicronautVersion() + BOM_VERSION_SUFFIX));
+
+        parent = parent.replace("<groupId>io.micronaut.platform</groupId>", "<groupId>cloud.graal.gdk</groupId>");
+        parent = parent.replace("<artifactId>micronaut-parent</artifactId>", "<artifactId>gdk-parent</artifactId>");
+        parent = VERSION_PATTERN.matcher(parent).replaceAll(String.format("<version>%s</version>", GdkUtils.getGdkBomVersion()));
+
         return top + parent + bottom;
     }
 }

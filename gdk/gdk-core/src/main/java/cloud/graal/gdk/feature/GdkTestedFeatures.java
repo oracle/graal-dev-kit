@@ -46,6 +46,7 @@ public final class GdkTestedFeatures {
             "mysql",
             "flyway",
             "validation",
+            "oracle",
             // DATABASE OCI
             "oracle-cloud-atp",
             // EMAIL AWS

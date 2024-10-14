@@ -55,9 +55,8 @@ public class GdkBom implements DefaultFeature, RequiresRepository {
 
     @Override
     public void apply(GeneratorContext generatorContext) {
-        generatorContext.addDependency(BOM);
-
         if (generatorContext.getBuildTool().isGradle()) {
+            generatorContext.addDependency(BOM);
             generatorContext.addBuildPlugin(BOM_PLUGIN);
         }
     }
