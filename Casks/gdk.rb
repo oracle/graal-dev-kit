@@ -1,9 +1,9 @@
 cask 'gdk' do
     arch arm: 'aarch64', intel: 'amd64'
 
-    version '4.6.0.1'
-    sha256 arm:   '013af768ab22cd8a54993305ea7906d04375f1f46faf43b8179ad77f7e184a97',
-           intel: 'dfba64aa5cd59c9cdc9e13f44eb05b2b558b9a8f3c28e1a0efc8234a39613815'
+    version '4.6.0.3'
+    sha256 arm:   '02f4c60235e0bd9c6e8cc28982e7785f6131fcaa1766e68b850ba82653ac6428',
+           intel: '003096b853b3fa070a7926c04f2e6d87230ae391f26b962ce72b9be37607395d'
 
     url "https://github.com/oracle/graal-dev-kit/releases/download/#{version}/gdk-cli-#{version}-macos-#{arch}.tar.gz"
     name 'Graal Development Kit for Micronaut'
