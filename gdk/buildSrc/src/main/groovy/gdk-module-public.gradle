@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oracle and/or its affiliates
+ * Copyright 2024 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,19 @@
  */
 
 plugins {
-    id 'gdk-base'
-    id 'checkstyle'
+    id 'gdk-module'
+    id 'com.diffplug.spotless'
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "External"
-            url = providers.environmentVariable('PUBLISH_REPO')
-            credentials {
-                username = providers.environmentVariable('PUBLISH_USERNAME').getOrElse("")
-                password = providers.environmentVariable('PUBLISH_PASSWORD').getOrElse("")
-            }
-        }
+spotless {
+    java {
+        licenseHeaderFile rootProject.file('config/spotless.license.java')
+        target 'src/main/java/**'
+        targetExclude '**/*.rocker.raw', '**/GdkBaseCommand.java', '**/GdkStarter.java', '**/AbstractStarter.java'
+    }
+    format 'javaMisc', {
+        target 'src/main/**/package-info.java', 'src/main/**/module-info.java'
+        licenseHeaderFile rootProject.file('config/spotless.license.java'), '\\/\\*\\*'
     }
 }
+

@@ -1,0 +1,3 @@
+= gdk-cli-core
+
+This submodule is a reusable library contains most of the code for the CLI except for the main class and the build configuration to enable running the CLI.

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oracle and/or its affiliates
+ * Copyright 2024 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,14 +16,14 @@
 
 plugins {
     id 'gdk-module-public'
-    id 'gdk.rocker'
-    id 'gdk-dependencies'
     id 'io.micronaut.library'
 }
 
 dependencies {
-    // not in libs.versions.toml to keep Micronaut version in 1 place (micronautVersion.txt)
-    api(libs.micronaut.starter.api) {
+    annotationProcessor mnLibs.picocli.codegen
+
+    // not in libs.versions.toml to keep Micronaut version in one place
+    api(libs.micronaut.starter.cli) {
         exclude group: 'io.micronaut', module: 'micronaut-buffer-netty'
         exclude group: 'io.micronaut', module: 'micronaut-http-client'
         exclude group: 'io.micronaut', module: 'micronaut-http-client-core'
@@ -42,37 +42,13 @@ dependencies {
         exclude group: 'io.netty', module: 'netty-transport'
         exclude group: 'io.swagger.core.v3', module: 'swagger-annotations'
         exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
+        exclude group: 'org.jline', module: 'jline'
     }
-    implementation(mnLibs.micronaut.http.client)
-    implementation(libs.boms.netty)
-    implementation(libs.netty.buffer)
-    implementation(libs.netty.codec.http)
-    implementation(libs.netty.codec.http2)
-    implementation(libs.netty.common)
-    implementation(libs.netty.incubator.codec.http3)
-    implementation(libs.netty.handler)
-    implementation(libs.netty.handler.proxy)
-    implementation(libs.netty.transport.native.epoll)
-    implementation(libs.netty.transport.native.kqueue)
-    implementation(libs.netty.transport.native.iouring)
-    implementation(libs.netty.transport.native.unix.common)
-    implementation(libs.netty.tcnative.boringssl.static)
-}
-
-def writeVersions = tasks.register('writeVersions', cloud.graal.gdk.util.WriteVersionsTask) {
-    versions.put('version.txt', System.getenv('CI_COMMIT_TAG') ? System.getenv('CI_COMMIT_TAG').substring(1) : providers.gradleProperty('version'))
-    outputDirectory = layout.buildDirectory.dir('versions')
-}
-
-sourceSets {
-    main {
-        rocker {
-            srcDir 'src/main/java'
-        }
-        resources {
-            srcDir(writeVersions)
-        }
-    }
+    api mnLibs.micronaut.picocli
+    api mnLibs.picocli
+    api mnLibs.micronaut.jackson.databind
+    api mnLibs.micronaut.validation
+    api projects.gdkCore
 }
 
 micronaut {
@@ -80,20 +56,5 @@ micronaut {
     processing {
         incremental true
         annotations 'cloud.graal.gdk.*'
-    }
-}
-
-javadoc {
-    exclude '**/template/**'
-}
-
-publishing {
-    publications {
-        mavenGdkCore(MavenPublication) {
-            groupId = 'cloud.graal.gdk'
-            artifactId = 'gdk-core'
-
-            from components.java
-        }
     }
 }

@@ -53,12 +53,17 @@ public enum GdkCloud {
     NONE(null, "", "NONE", ROOT, ""),
 
     /**
+     * Used when all supported clouds is selected for testing, not used as supported option.
+     */
+    ALL(null, "", "", "all", ""),
+
+    /**
      * For testing.
      */
     TESTING("testing", "-testing", "TESTING", "testing", "");
 
     private static final GdkCloud[] SUPPORTED = Arrays.stream(values())
-            .filter(c -> c != GdkCloud.TESTING && c != GdkCloud.NONE)
+            .filter(c -> c != GdkCloud.TESTING && c != GdkCloud.ALL && c != GdkCloud.NONE)
             .toArray(GdkCloud[]::new);
 
     private final String environmentName;

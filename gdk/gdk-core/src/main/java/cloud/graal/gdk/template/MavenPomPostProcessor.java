@@ -101,13 +101,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         if (libModule) {
             pom = fixArtifactId(pom);
             pom = fixProcessingModule(pom);
-        } else {
-            if (applicationType == ApplicationType.DEFAULT && !isGatewayFunction) {
-                pom = addDefaultDockerImageName(pom);
-            }
-        }
-        if (libModule || cloud != GdkCloud.NONE) {
-            pom = fixName(pom);
         }
 
         return pom;
@@ -137,10 +130,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         parent = VERSION_PATTERN.matcher(parent).replaceAll("<version>1.0-SNAPSHOT</version>");
 
         return top + parent + bottom;
-    }
-
-    private String fixName(@NonNull String pom) {
-        return pom.replace("<packaging>${packaging}</packaging>", "<packaging>${packaging}</packaging>\n  <name>" + artifactId + "-${project.artifactId}</name>");
     }
 
     @NonNull
@@ -179,25 +168,6 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         String bottom = pom.substring(end);
 
         return top + LIB_MODULE + bottom;
-    }
-
-    @NonNull
-    private String addDefaultDockerImageName(@NonNull String pom) {
-        if (!pom.contains(PLUGINS_START)) {
-            return pom;
-        }
-
-        pom = pom.replace(PLUGINS_START, PLUGINS_START +
-                "      <plugin>\n" +
-                "        <groupId>com.google.cloud.tools</groupId>\n" +
-                "        <artifactId>jib-maven-plugin</artifactId>\n" +
-                "        <configuration>\n" +
-                "          <to>\n" +
-                "            <image>${project.name}</image>\n" +
-                "          </to>\n" +
-                "        </configuration>\n" +
-                "      </plugin>\n");
-        return pom;
     }
 
     @NonNull
