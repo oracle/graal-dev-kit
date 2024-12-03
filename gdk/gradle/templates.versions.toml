@@ -26,17 +26,17 @@ io-spring-gradle-dependency-management-plugin = "1.1.6"
 kotlin = "1.8.22"
 logback = "1.5.8"
 micronaut-cache = "5.0.1-oracle-00001"
-micronaut-core = "4.6.5-oracle-00001"
+micronaut-core = "4.6.8-oracle-00001"
 micronaut-data = "4.9.2-oracle-00001"
 micronaut-discovery = "4.4.0-oracle-00001"
 micronaut-email = "2.6.0-oracle-00001"
 micronaut-flyway = "7.4.0-oracle-00001"
-micronaut-gradle-plugin = "4.4.2"
+micronaut-gradle-plugin = "4.4.4"
 micronaut-jaxrs = "4.6.0-oracle-00001"
 micronaut-kafka = "5.6.0-oracle-00001"
 micronaut-kubernetes = "6.1.0-oracle-00001"
 micronaut-liquibase = "6.5.0-oracle-00001"
-micronaut-maven-plugin = "4.6.3"
+micronaut-maven-plugin = "4.7.0"
 micronaut-maven-test-resources-plugin = "2.6.0"
 micronaut-micrometer = "5.8.0-oracle-00001"
 micronaut-mongo = "5.4.0-oracle-00001"
@@ -53,6 +53,8 @@ micronaut-sql = "5.8.1-oracle-00001"
 micronaut-tracing = "6.8.0-oracle-00001"
 micronaut-validation = "4.7.0-oracle-00001"
 micronaut-views = "5.5.0-oracle-00001"
+netty = "4.1.115.Final"
+netty-tcnative = "2.0.69.Final"
 okhttp = "4.12.0"
 opentelemetry-semconv = "1.30.1-alpha"
 org-springframework-boot-spring-boot-starter-parent = "3.3.3"
@@ -137,6 +139,17 @@ io-micronaut-tracing-micronaut-tracing-bom = { module = 'io.micronaut.tracing:mi
 io-micronaut-validation-micronaut-validation-bom = { module = 'io.micronaut.validation:micronaut-validation-bom', version.ref = 'micronaut-validation'}
 io-micronaut-views-micronaut-views-core = { module = 'io.micronaut.views:micronaut-views-core', version.ref = 'micronaut-views'}
 io-micronaut-views-micronaut-views-jte = { module = 'io.micronaut.views:micronaut-views-jte', version.ref = 'micronaut-views'}
+boms-netty = { module = "io.netty:netty-bom", version.ref = "netty" }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
+netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
+netty-transport-native-kqueue = { module = "io.netty:netty-transport-native-kqueue", version.ref = "netty" }
+netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
+netty-tcnative-boringssl-static = { module = "io.netty:netty-tcnative-boringssl-static", version.ref = "netty-tcnative" }
 io-opentelemetry-opentelemetry-semconv = { module = 'io.opentelemetry:opentelemetry-semconv', version.ref = 'opentelemetry-semconv'}
 org-apache-commons-commons-compress = { module = 'org.apache.commons:commons-compress', version.ref = 'apache-commons-compress'}
 org-bouncycastle-bcpkix-jdk15to18 = { module = 'org.bouncycastle:bcpkix-jdk15to18', version.ref = 'bouncycastle'}

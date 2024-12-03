@@ -23,6 +23,10 @@ jline = '3.26.3'
 logback = '1.5.8'
 micronaut-plugins = '4.4.2'
 micronaut-starter = '4.6.1'
+netty = "4.1.115.Final"
+netty-iouring = "0.0.25.Final"
+netty-http3 = "0.0.28.Final"
+netty-tcnative = "2.0.69.Final"
 reflections = '0.10.2'
 rocker = '1.4.0'
 shadow = '8.1.1'
@@ -48,6 +52,19 @@ micronaut-application = { module = 'io.micronaut.gradle:micronaut-gradle-plugin'
 micronaut-library = { module = 'io.micronaut.gradle:micronaut-gradle-plugin', version.ref = 'micronaut-plugins' }
 micronaut-starter-api = { module = 'io.micronaut.starter:micronaut-starter-api', version.ref = 'micronaut-starter' }
 micronaut-starter-cli = { module = 'io.micronaut.starter:micronaut-cli', version.ref = 'micronaut-starter' }
+boms-netty = { module = "io.netty:netty-bom", version.ref = "netty" }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
+netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+netty-incubator-codec-http3 = { module = "io.netty.incubator:netty-incubator-codec-http3", version.ref = "netty-http3" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
+netty-transport-native-kqueue = { module = "io.netty:netty-transport-native-kqueue", version.ref = "netty" }
+netty-transport-native-iouring = { module = "io.netty.incubator:netty-incubator-transport-native-io_uring", version.ref = "netty-iouring" }
+netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
+netty-tcnative-boringssl-static = { module = "io.netty:netty-tcnative-boringssl-static", version.ref = "netty-tcnative" }
 reflections = { module = 'org.reflections:reflections', version.ref = 'reflections' }
 rocker = { module = 'com.fizzed:rocker-compiler', version.ref = 'rocker' }
 shadow = { module = 'com.github.johnrengelman:shadow', version.ref = 'shadow' }

@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oracle and/or its affiliates
+ * Copyright 2024 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package cloud.graal.gdk.command;
 
-plugins {
-    id 'gdk-base'
-    id 'checkstyle'
-}
-
-publishing {
-    repositories {
-        maven {
-            name = "External"
-            url = providers.environmentVariable('PUBLISH_REPO')
-            credentials {
-                username = providers.environmentVariable('PUBLISH_USERNAME').getOrElse("")
-                password = providers.environmentVariable('PUBLISH_PASSWORD').getOrElse("")
-            }
-        }
-    }
+/**
+ * Marker interface for addon commands, e.g. extensions created by users.
+ */
+public interface ExternalCommand {
 }

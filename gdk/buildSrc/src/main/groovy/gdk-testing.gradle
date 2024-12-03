@@ -1,5 +1,5 @@
 /*
- * Copyright 2023 Oracle and/or its affiliates
+ * Copyright 2024 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,19 +15,24 @@
  */
 
 plugins {
-    id 'gdk-base'
-    id 'checkstyle'
+    id 'groovy'
+    id 'com.adarshr.test-logger'
+    id 'io.micronaut.library'
 }
 
-publishing {
-    repositories {
-        maven {
-            name = "External"
-            url = providers.environmentVariable('PUBLISH_REPO')
-            credentials {
-                username = providers.environmentVariable('PUBLISH_USERNAME').getOrElse("")
-                password = providers.environmentVariable('PUBLISH_PASSWORD').getOrElse("")
-            }
-        }
-    }
+micronaut {
+    testRuntime 'spock2'
+}
+
+test {
+    maxHeapSize = '16G'
+}
+
+testlogger {
+    theme 'standard-parallel'
+    showFullStackTraces true
+    showStandardStreams true
+    showPassedStandardStreams false
+    showSkippedStandardStreams false
+    showFailedStandardStreams true
 }

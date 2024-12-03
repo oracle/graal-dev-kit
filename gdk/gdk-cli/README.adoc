@@ -1,6 +1,6 @@
 = gdk-cli
 
-This submodule generates the GDK CLI application which is compiled to a native executable `gdk`, which works similarly to the Micronaut `mn` CLI with the addition of being able to generate GDK applications by specifying clouds and services.
+This submodule generates the GDK CLI application which is compiled to a native executable `gdk`, which works similarly to the Micronaut `mn` CLI with the addition of being able to generate GDK applications by specifying clouds and services. It depends on the `gdk-cli-core` submodule which contains most of the code.
 
 == GdkStarter
 
