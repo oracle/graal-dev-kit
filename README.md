@@ -72,10 +72,11 @@ This source repository is the main repository for GDK and includes the following
 
 Directory | Description
 ------------ | -------------
-[`gdk/buildSrc/`](gdk/buildSrc/) | Gradle build and convention plugins.
-[`gdk/config/`](gdk/config/) | Configuration files for Gradle code quality plugins.
-[`gdk/gdk-cli/`](gdk/gdk-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
-[`gdk/gdk-core/`](gdk/gdk-core/) | The main GDK library.
+[`buildSrc`](buildSrc/) | Gradle build and convention plugins.
+[`config`](config/) | Configuration files for Gradle code quality plugins.
+[`gdk-cli`](gdk-cli/) | The GDK CLI, a Micronaut [Picocli](https://picocli.info/) application that generates GDK applications.
+[`gdk-cli-core`](gdk-cli-core/) | The core CLI classes, separated from `gdk-cli` to enable creating alternate CLIs.
+[`gdk-core`](gdk-core/) | The main GDK library.
 
 ## Contributing
 
