@@ -25,8 +25,8 @@ publishing {
             name = "External"
             url = providers.environmentVariable('PUBLISH_REPO')
             credentials {
-                username = providers.environmentVariable('PUBLISH_USERNAME').getOrElse("")
-                password = providers.environmentVariable('PUBLISH_PASSWORD').getOrElse("")
+                username = providers.environmentVariable('ARTIFACTHUB_ACCESS_TOKEN_USERNAME').getOrElse("")
+                password = providers.environmentVariable('ARTIFACTHUB_ACCESS_TOKEN').getOrElse("")
             }
         }
     }

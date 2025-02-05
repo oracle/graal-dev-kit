@@ -119,6 +119,7 @@ abstract class GdkBomPlugin implements Plugin<Project> {
         Configuration catalogs = project.configurations.detachedConfiguration()
 
         Map<String, String> mapAliasToVersion = new HashMap<>()
+        Map<String, String> pomProperties = new HashMap<>()
 
         publishing.publications.named("maven", MavenPublication, pub -> {
             pub.artifactId = "gdk-bom"
@@ -133,11 +134,21 @@ abstract class GdkBomPlugin implements Plugin<Project> {
                         String bomPropertyName = bomPropertyName(alias)
                         def version = modelProvider.versionsTable.find(x -> x.reference == library.version.reference).version
                         mapAliasToVersion[library.alias] = '\${' + bomPropertyName + '}'
-                        pom.properties.put(bomPropertyName, version.require)
+                        pomProperties.put(bomPropertyName, version.require)
                     }
                 })
                 pom.withXml { xml ->
-                    Node dependencies = childOf(childOf(xml.asNode(), "dependencyManagement"), "dependencies")
+                    Node properties = new Node(xml.asNode(), "properties")
+
+                    for(String key: pomProperties.keySet().sort()) {
+                        new Node(properties, key, pomProperties.get(key))
+                    }
+
+                    Node depManagement = childOf(xml.asNode(), "dependencyManagement")
+                    xml.asNode().remove(depManagement)
+                    xml.asNode().append(depManagement)
+
+                    Node dependencies = childOf(depManagement, "dependencies")
                     dependencyExclusion.exclusions.forEach {
                         String[] exclusionDependencyStrings = it.name.split(':')
                         it.from.forEach { parentDependency ->
@@ -199,8 +210,8 @@ abstract class GdkBomPlugin implements Plugin<Project> {
                     MavenArtifactRepository repository = (MavenArtifactRepository) maven
                     repository.name = "External"
                     repository.url = externalRepoUri
-                    Provider<String> externalRepoUsername = project.providers.environmentVariable("PUBLISH_USERNAME")
-                    Provider<String> externalRepoPassword = project.providers.environmentVariable("PUBLISH_PASSWORD")
+                    Provider<String> externalRepoUsername = project.providers.environmentVariable("ARTIFACTHUB_ACCESS_TOKEN_USERNAME")
+                    Provider<String> externalRepoPassword = project.providers.environmentVariable("ARTIFACTHUB_ACCESS_TOKEN")
                     if (externalRepoUsername.isPresent() && externalRepoPassword.isPresent()) {
                         repository.credentials(credentials -> {
                             credentials.username = externalRepoUsername.get()

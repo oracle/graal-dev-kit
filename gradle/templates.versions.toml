@@ -15,58 +15,128 @@
 #
 
 [versions]
-apache-commons-compress = "1.27.1"
+apache-commons-commons-collections4 = '4.4-oracle-00001'
+apache-commons-commons-lang3 = '3.13.0-oracle-00001'
+apache-commons-compress = "1.27.1-oracle-00001"
+apache-kafka-kafka-clients = '3.8.0-oracle-00001'
+asm = '9.7.1-oracle-00001'
 aws-msk-iam-auth = "2.2.0"
-bouncycastle = "1.78.1"
-gax = "2.53.0"
-gax-grpc = "2.53.0"
-google-cloud-logging = "0.131.11-alpha"
-guava = "33.3.0-jre"
-io-spring-gradle-dependency-management-plugin = "1.1.6"
-kotlin = "1.8.22"
-logback = "1.5.8"
-micronaut-cache = "5.0.1-oracle-00001"
-micronaut-core = "4.6.8-oracle-00001"
-micronaut-data = "4.9.2-oracle-00001"
-micronaut-discovery = "4.4.0-oracle-00001"
-micronaut-email = "2.6.0-oracle-00001"
-micronaut-flyway = "7.4.0-oracle-00001"
+ben-manes-caffeine-caffeine = '3.1.8-oracle-00001'
+bitbucket-b_c-jose4j = '0.9.3-oracle-00001'
+bouncycastle = "1.79"
+ch-randelshofer-fastdoubleparser = '1.0.0-oracle-00001'
+code-findbugs-jsr305 = '3.0.2-oracle-00001'
+code-gson-gson = '2.10.1-oracle-00001'
+com-nimbusds-nimbus-jose-jwt = '9.41.2-oracle-00001'
+com-zaxxer-HikariCP = '5.1.0-oracle-00001'
+commons-codec-commons-codec = '1.16.0-oracle-00001'
+commons-io-commons-io = '2.14.0-oracle-00002'
+context-propagation = '1.1.2-oracle-00001'
+dev-jna-jna = '5.14.0-oracle-00001'
+eclipse-angus-angus-activation = '2.0.2-oracle-00001'
+eclipse-angus-angus-mail = '2.0.3-oracle-00001'
+flipkart-zjsonpatch-zjsonpatch = '0.4.14-oracle-00002'
+flyway = "10.22.0"
+gax = "2.59.0"
+gax-grpc = "2.59.0"
+gg-jte = '3.1.13-oracle-00001'
+github-javaparser = '3.26.3-oracle-00001'
+github-resilience4j = '1.7.1-oracle-00002'
+github-vladimir-bukhtoyarov-bucket4j-core = '7.6.0-oracle-00001'
+google-auth-library = "1.30.1"
+google-cloud-logging = "0.132.0-alpha"
+google-errorprone-error_prone_annotations = '2.21.1-oracle-00001'
+graalvm-metadata-version = "0.3.15"
+guava = "33.4.0-jre"
+intellij-deps-trove4j = '1.0.20200330-oracle-00001'
+io-gsonfire-gson-fire = '1.8.5-oracle-00001'
+io-kubernetes = '19.0.1-oracle-00003'
+io-micrometer = '1.13.6-oracle-00001'
+io-opentelemetry = '1.43.0-oracle-00001'
+io-opentelemetry-opentelemetry-api-events = '1.36.0-alpha-oracle-00001'
+io-opentelemetry-opentelemetry-api-incubator = '1.40.0-alpha-oracle-00001'
+io-projectreactor = '3.6.6-oracle-00002'
+io-projectreactor-reactor-core = '3.6.10-oracle-00001'
+io-projectreactor-reactor-core-micrometer = '1.1.6-oracle-00002'
+io-prometheus = '0.16.0-oracle-00001'
+io-spring-gradle-dependency-management-plugin = "1.1.7"
+io-swagger-swagger-annotations = '1.6.11-oracle-00001'
+io-vavr = '0.10.2-oracle-00001'
+jackson-core = '2.17.2-oracle-00001'
+jackson-dataformat-jackson-dataformat-toml = '2.17.2-oracle-00001'
+jackson-datatype = '2.17.2-oracle-00001'
+jakarta-activation-jakarta-activation-api = '2.1.3-oracle-00001'
+jakarta-annotation-jakarta-annotation-api = '2.1.1-oracle-00001'
+jakarta-inject-jakarta-inject-api = '2.0.1-oracle-00001'
+jakarta-mail-jakarta-mail-api = '2.1.3-oracle-00001'
+jakarta-persistence-jakarta-persistence-api = '3.1.0-oracle-00001'
+jakarta-transaction-jakarta-transaction-api = '2.0.1-oracle-00001'
+jakarta-validation-jakarta-validation-api = '3.1.0-oracle-00001'
+javax-annotation-javax-annotation-api = '1.3.2-oracle-00001'
+kotlin = "1.8.22-oracle-00001"
+logback = "1.5.15-oracle-00001"
+logback-contrib = '0.1.5-oracle-00001'
+micronaut-cache = "5.1.0-oracle-00001"
+micronaut-core = "4.7.10-oracle-00001"
+micronaut-data = "4.10.5-oracle-00001"
+micronaut-discovery = "4.5.0-oracle-00001"
+micronaut-email = "2.7.0-oracle-00001"
+micronaut-flyway = "7.6.1-oracle-00001"
 micronaut-gradle-plugin = "4.4.4"
-micronaut-jaxrs = "4.6.0-oracle-00001"
-micronaut-kafka = "5.6.0-oracle-00001"
-micronaut-kubernetes = "6.1.0-oracle-00001"
-micronaut-liquibase = "6.5.0-oracle-00001"
-micronaut-maven-plugin = "4.7.0"
-micronaut-maven-test-resources-plugin = "2.6.0"
-micronaut-micrometer = "5.8.0-oracle-00001"
-micronaut-mongo = "5.4.0-oracle-00001"
-micronaut-object-storage = "2.6.0-oracle-00001"
-micronaut-openapi = "6.12.3-oracle-00001"
-micronaut-oraclecloud = "4.2.0-oracle-00001"
-micronaut-platform = "4.6.0-oracle-00001"
-micronaut-picocli = "5.5.0-oracle-00001"
-micronaut-reactor = "3.5.0-oracle-00001"
-micronaut-security = "4.10.1-oracle-00001"
-micronaut-serialization = "2.11.0-oracle-00001"
-micronaut-session = "4.4.0-oracle-00001"
-micronaut-sql = "5.8.1-oracle-00001"
-micronaut-tracing = "6.8.0-oracle-00001"
-micronaut-validation = "4.7.0-oracle-00001"
-micronaut-views = "5.5.0-oracle-00001"
-netty = "4.1.115.Final"
-netty-tcnative = "2.0.69.Final"
-okhttp = "4.12.0"
+micronaut-jaxrs = "4.7.2-oracle-00001"
+micronaut-kafka = "5.7.0-oracle-00001"
+micronaut-kubernetes = "6.2.1-oracle-00001"
+micronaut-liquibase = "6.6.1-oracle-00001"
+micronaut-maven-plugin = "4.7.1"
+micronaut-maven-test-resources-plugin = "2.7.0"
+micronaut-micrometer = "5.9.3-oracle-00001"
+micronaut-mongo = "5.5.0-oracle-00001"
+micronaut-object-storage = "2.7.0-oracle-00001"
+micronaut-openapi = "6.13.2-oracle-00001"
+micronaut-oracle-cloud = "4.3.6-oracle-00004"
+micronaut-picocli = "5.6.0-oracle-00001"
+micronaut-platform = "4.7.3-oracle-00001"
+micronaut-reactor = "3.6.0-oracle-00001"
+micronaut-security = "4.11.2-oracle-00001"
+micronaut-serde = "2.13.0-oracle-00001"
+micronaut-session = "4.5.0-oracle-00001"
+micronaut-sql = "5.8.2-oracle-00001"
+micronaut-tracing = "6.9.0-oracle-00001"
+micronaut-validation = "4.8.0-oracle-00001"
+micronaut-views = "5.6.0-oracle-00001"
+netty = "4.1.116.Final-oracle-00001"
+okhttp = "4.12.0-oracle-00001"
+opentelemetry-instrumentation = '1.33.6-oracle-00001'
+opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = '1.33.5-alpha-oracle-00001'
 opentelemetry-semconv = "1.30.1-alpha"
-org-springframework-boot-spring-boot-starter-parent = "3.3.3"
-protobuf = "3.25.5"
-spring-boot-gradle-plugin = "3.3.3"
-test-containers-oracle-xe = "1.20.1"
+opentelemetry-semconv-opentelemetry-semconv = '1.23.1-alpha-oracle-00001'
+org-checkerframework-checker-qual = '3.37.0-oracle-00002'
+org-flywaydb = '10.22.0-oracle-00001'
+org-hdrhistogram-HdrHistogram = '2.2.2-oracle-00001'
+org-jetbrains-annotations = '13.0-oracle-00001'
+org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
+org-lz4-lz4-java = '1.8.0-oracle-00001'
+org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
+org-slf4j-jcl-over-slf4j = '2.0.16-oracle-00001'
+org-slf4j-slf4j-api = '2.0.16-oracle-00001'
+org-springframework-boot-spring-boot-starter-parent = "3.4.0"
+protobuf = "3.25.5-oracle-00001"
+snakeyaml = '2.2-oracle-00002'
+spring-boot-gradle-plugin = "3.4.0"
+squareup-okio = '3.6.0-oracle-00001'
+test-containers-oracle-xe = "1.20.4"
+xerial-snappy-snappy-java = '1.1.10.5-oracle-00001'
+zipkin-reporter2 = '3.4.2-oracle-00001'
+zipkin-zipkin2-zipkin = '2.27.1-oracle-00001'
+zstd-jni='1.5.6-3-reduced-oracle-00001'
 
 [libraries]
 ch-qos-logback-logback-classic = { module = 'ch.qos.logback:logback-classic', version.ref = 'logback'}
 ch-qos-logback-logback-core = { module = 'ch.qos.logback:logback-core', version.ref = 'logback'}
 com-google-api-gax = { module = 'com.google.api:gax', version.ref = 'gax'}
 com-google-api-gax-grpc = { module = 'com.google.api:gax-grpc', version.ref = 'gax-grpc'}
+com-google-auth-google-auth-library-credentials = { module = 'com.google.auth:google-auth-library-credentials', version.ref = 'google-auth-library'}
+com-google-auth-google-auth-library-oauth2-http = { module = 'com.google.auth:google-auth-library-oauth2-http', version.ref = 'google-auth-library'}
 com-google-cloud-google-cloud-logging-logback = { module = 'com.google.cloud:google-cloud-logging-logback', version.ref = 'google-cloud-logging'}
 com-google-guava-guava = { module = 'com.google.guava:guava', version.ref = 'guava'}
 com-google-protobuf-protobuf-java = { module = 'com.google.protobuf:protobuf-java', version.ref = 'protobuf'}
@@ -127,11 +197,11 @@ io-micronaut-objectstorage-micronaut-object-storage-gcp = { module = 'io.microna
 io-micronaut-objectstorage-micronaut-object-storage-oracle-cloud = { module = 'io.micronaut.objectstorage:micronaut-object-storage-oracle-cloud', version.ref = 'micronaut-object-storage'}
 io-micronaut-openapi-micronaut-openapi = { module = 'io.micronaut.openapi:micronaut-openapi', version.ref = 'micronaut-openapi'}
 io-micronaut-openapi-micronaut-openapi-bom = { module = 'io.micronaut.openapi:micronaut-openapi-bom', version.ref = 'micronaut-openapi'}
-io-micronaut-oraclecloud-micronaut-oraclecloud-bom = { module = 'io.micronaut.oraclecloud:micronaut-oraclecloud-bom', version.ref = 'micronaut-oraclecloud'}
+io-micronaut-oraclecloud-micronaut-oraclecloud-bom = { module = 'io.micronaut.oraclecloud:micronaut-oraclecloud-bom', version.ref = 'micronaut-oracle-cloud'}
 io-micronaut-picocli-micronaut-picocli-bom = { module = 'io.micronaut.picocli:micronaut-picocli-bom', version.ref = 'micronaut-picocli'}
 io-micronaut-reactor-micronaut-reactor-bom = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = 'micronaut-reactor'}
 io-micronaut-security-micronaut-security-bom = { module = 'io.micronaut.security:micronaut-security-bom', version.ref = 'micronaut-security'}
-io-micronaut-serde-micronaut-serde-bom = { module = 'io.micronaut.serde:micronaut-serde-bom', version.ref = 'micronaut-serialization'}
+io-micronaut-serde-micronaut-serde-bom = { module = 'io.micronaut.serde:micronaut-serde-bom', version.ref = 'micronaut-serde'}
 io-micronaut-sql-micronaut-jdbc = { module = 'io.micronaut.sql:micronaut-jdbc', version.ref = 'micronaut-sql'}
 io-micronaut-sql-micronaut-jdbc-tomcat = { module = 'io.micronaut.sql:micronaut-jdbc-tomcat', version.ref = 'micronaut-sql'}
 io-micronaut-sql-micronaut-sql-bom = { module = 'io.micronaut.sql:micronaut-sql-bom', version.ref = 'micronaut-sql'}
@@ -139,17 +209,6 @@ io-micronaut-tracing-micronaut-tracing-bom = { module = 'io.micronaut.tracing:mi
 io-micronaut-validation-micronaut-validation-bom = { module = 'io.micronaut.validation:micronaut-validation-bom', version.ref = 'micronaut-validation'}
 io-micronaut-views-micronaut-views-core = { module = 'io.micronaut.views:micronaut-views-core', version.ref = 'micronaut-views'}
 io-micronaut-views-micronaut-views-jte = { module = 'io.micronaut.views:micronaut-views-jte', version.ref = 'micronaut-views'}
-boms-netty = { module = "io.netty:netty-bom", version.ref = "netty" }
-netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
-netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
-netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
-netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
-netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
-netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
-netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
-netty-transport-native-kqueue = { module = "io.netty:netty-transport-native-kqueue", version.ref = "netty" }
-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
-netty-tcnative-boringssl-static = { module = "io.netty:netty-tcnative-boringssl-static", version.ref = "netty-tcnative" }
 io-opentelemetry-opentelemetry-semconv = { module = 'io.opentelemetry:opentelemetry-semconv', version.ref = 'opentelemetry-semconv'}
 org-apache-commons-commons-compress = { module = 'org.apache.commons:commons-compress', version.ref = 'apache-commons-compress'}
 org-bouncycastle-bcpkix-jdk15to18 = { module = 'org.bouncycastle:bcpkix-jdk15to18', version.ref = 'bouncycastle'}
@@ -179,3 +238,122 @@ exclude-micronaut-test-resources-plugin = { module = 'io.micronaut.gradle:micron
 exclude-org-springframework-boot = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot-gradle-plugin'}
 exclude-org-springframework-boot-spring-boot-starter-parent = { module = 'org.springframework.boot:spring-boot-starter-parent', version.ref = 'org-springframework-boot-spring-boot-starter-parent'}
 exclude-org-testcontainers-oracle-xe = { module = 'org.testcontainers:oracle-xe', version.ref = 'test-containers-oracle-xe'}
+# New Added libs
+ch-qos-logback-contrib-logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-contrib' }
+ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:logback-json-core', version.ref = 'logback-contrib' }
+ch-randelshofer-fastdoubleparser = { module = 'ch.randelshofer:fastdoubleparser', version.ref = 'ch-randelshofer-fastdoubleparser' }
+com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-core' }
+com-fasterxml-jackson-core-jackson-core = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson-core' }
+com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-core' }
+com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
+com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
+com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
+com-flipkart-zjsonpatch-zjsonpatch = { module = 'com.flipkart.zjsonpatch:zjsonpatch', version.ref = 'flipkart-zjsonpatch-zjsonpatch' }
+com-github-ben-manes-caffeine-caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'ben-manes-caffeine-caffeine' }
+com-github-javaparser-javaparser-core = { module = 'com.github.javaparser:javaparser-core', version.ref = 'github-javaparser' }
+com-github-javaparser-javaparser-symbol-solver-core = { module = 'com.github.javaparser:javaparser-symbol-solver-core', version.ref = 'github-javaparser' }
+com-github-luben-zstd-jni={module = 'com.github.luben:zstd-jni', version.ref = 'zstd-jni' }
+com-github-vladimir-bukhtoyarov-bucket4j-core = { module = 'com.github.vladimir-bukhtoyarov:bucket4j-core', version.ref = 'github-vladimir-bukhtoyarov-bucket4j-core' }
+com-google-code-findbugs-jsr305 = { module = 'com.google.code.findbugs:jsr305', version.ref = 'code-findbugs-jsr305' }
+com-google-code-gson-gson = { module = 'com.google.code.gson:gson', version.ref = 'code-gson-gson' }
+com-google-errorprone-error_prone_annotations = { module = 'com.google.errorprone:error_prone_annotations', version.ref = 'google-errorprone-error_prone_annotations' }
+com-nimbusds-nimbus-jose-jwt = { module = 'com.nimbusds:nimbus-jose-jwt', version.ref = 'com-nimbusds-nimbus-jose-jwt' }
+com-squareup-okio-okio = { module = 'com.squareup.okio:okio', version.ref = 'squareup-okio' }
+com-squareup-okio-okio-jvm = { module = 'com.squareup.okio:okio-jvm', version.ref = 'squareup-okio' }
+com-zaxxer-HikariCP = { module = 'com.zaxxer:HikariCP', version.ref = 'com-zaxxer-HikariCP' }
+commons-codec-commons-codec = { module = 'commons-codec:commons-codec', version.ref = 'commons-codec-commons-codec' }
+commons-io-commons-io = { module = 'commons-io:commons-io', version.ref = 'commons-io-commons-io' }
+gg-jte-jte = { module = 'gg.jte:jte', version.ref = 'gg-jte' }
+gg-jte-jte-extension-api = { module = 'gg.jte:jte-extension-api', version.ref = 'gg-jte' }
+gg-jte-jte-kotlin = { module = 'gg.jte:jte-kotlin', version.ref = 'gg-jte' }
+gg-jte-jte-runtime = { module = 'gg.jte:jte-runtime', version.ref = 'gg-jte' }
+io-github-resilience4j-resilience4j-circuitbreaker = { module = 'io.github.resilience4j:resilience4j-circuitbreaker', version.ref = 'github-resilience4j' }
+io-github-resilience4j-resilience4j-core = { module = 'io.github.resilience4j:resilience4j-core', version.ref = 'github-resilience4j' }
+io-gsonfire-gson-fire = { module = 'io.gsonfire:gson-fire', version.ref = 'io-gsonfire-gson-fire' }
+io-kubernetes-client-java = { module = 'io.kubernetes:client-java', version.ref = 'io-kubernetes' }
+io-kubernetes-client-java-api = { module = 'io.kubernetes:client-java-api', version.ref = 'io-kubernetes' }
+io-kubernetes-client-java-api-fluent = { module = 'io.kubernetes:client-java-api-fluent', version.ref = 'io-kubernetes' }
+io-kubernetes-client-java-extended = { module = 'io.kubernetes:client-java-extended', version.ref = 'io-kubernetes' }
+io-kubernetes-client-java-proto = { module = 'io.kubernetes:client-java-proto', version.ref = 'io-kubernetes' }
+io-micrometer-context-propagation = { module = 'io.micrometer:context-propagation', version.ref = 'context-propagation' }
+io-micrometer-micrometer-commons = { module = 'io.micrometer:micrometer-commons', version.ref = 'io-micrometer' }
+io-micrometer-micrometer-core = { module = 'io.micrometer:micrometer-core', version.ref = 'io-micrometer' }
+io-micrometer-micrometer-observation = { module = 'io.micrometer:micrometer-observation', version.ref = 'io-micrometer' }
+io-netty-netty-bom = { module = "io.netty:netty-bom", version.ref = "netty" }
+io-netty-netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+io-netty-netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
+io-netty-netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+io-netty-netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
+io-netty-netty-codec-socks = { module = "io.netty:netty-codec-socks", version.ref = "netty" }
+io-netty-netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+io-netty-netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+io-netty-netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+io-netty-netty-resolver = { module = "io.netty:netty-resolver", version.ref = "netty" }
+io-netty-netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
+io-netty-netty-transport-native-kqueue = { module = "io.netty:netty-transport-native-kqueue", version.ref = "netty" }
+io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
+io-netty-netty-transport= { module = "io.netty:netty-transport", version.ref = "netty" }
+io-opentelemetry-instrumentation-opentelemetry-instrumentation-annotations = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations', version.ref = 'opentelemetry-instrumentation' }
+io-opentelemetry-instrumentation-opentelemetry-instrumentation-api = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api', version.ref = 'opentelemetry-instrumentation' }
+io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv', version.ref = 'opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv' }
+io-opentelemetry-opentelemetry-api = { module = 'io.opentelemetry:opentelemetry-api', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-api-events = { module = 'io.opentelemetry:opentelemetry-api-events', version.ref = 'io-opentelemetry-opentelemetry-api-events' }
+io-opentelemetry-opentelemetry-api-incubator = { module = 'io.opentelemetry:opentelemetry-api-incubator', version.ref = 'io-opentelemetry-opentelemetry-api-incubator' }
+io-opentelemetry-opentelemetry-context = { module = 'io.opentelemetry:opentelemetry-context', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-exporter-common = { module = 'io.opentelemetry:opentelemetry-exporter-common', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-exporter-zipkin = { module = 'io.opentelemetry:opentelemetry-exporter-zipkin', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk = { module = 'io.opentelemetry:opentelemetry-sdk', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-common = { module = 'io.opentelemetry:opentelemetry-sdk-common', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-extension-autoconfigure = { module = 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-extension-autoconfigure-spi = { module = 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure-spi', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-logs = { module = 'io.opentelemetry:opentelemetry-sdk-logs', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-metrics = { module = 'io.opentelemetry:opentelemetry-sdk-metrics', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-sdk-trace = { module = 'io.opentelemetry:opentelemetry-sdk-trace', version.ref = 'io-opentelemetry' }
+io-opentelemetry-semconv-opentelemetry-semconv = { module = 'io.opentelemetry.semconv:opentelemetry-semconv', version.ref = 'opentelemetry-semconv-opentelemetry-semconv' }
+io-projectreactor-reactor-core = { module = 'io.projectreactor:reactor-core', version.ref = 'io-projectreactor-reactor-core' }
+io-projectreactor-reactor-core-micrometer = { module = 'io.projectreactor:reactor-core-micrometer', version.ref = 'io-projectreactor-reactor-core-micrometer' }
+io-projectreactor-reactor-test = { module = 'io.projectreactor:reactor-test', version.ref = 'io-projectreactor' }
+io-projectreactor-reactor-tools = { module = 'io.projectreactor:reactor-tools', version.ref = 'io-projectreactor' }
+io-prometheus-simpleclient = { module = 'io.prometheus:simpleclient', version.ref = 'io-prometheus' }
+io-prometheus-simpleclient_common = { module = 'io.prometheus:simpleclient_common', version.ref = 'io-prometheus' }
+io-prometheus-simpleclient_httpserver = { module = 'io.prometheus:simpleclient_httpserver', version.ref = 'io-prometheus' }
+io-prometheus-simpleclient_tracer_common = { module = 'io.prometheus:simpleclient_tracer_common', version.ref = 'io-prometheus' }
+io-prometheus-simpleclient_tracer_otel = { module = 'io.prometheus:simpleclient_tracer_otel', version.ref = 'io-prometheus' }
+io-prometheus-simpleclient_tracer_otel_agent = { module = 'io.prometheus:simpleclient_tracer_otel_agent', version.ref = 'io-prometheus' }
+io-swagger-swagger-annotations = { module = 'io.swagger:swagger-annotations', version.ref = 'io-swagger-swagger-annotations' }
+io-vavr-vavr = { module = 'io.vavr:vavr', version.ref = 'io-vavr' }
+io-vavr-vavr-match = { module = 'io.vavr:vavr-match', version.ref = 'io-vavr' }
+io-zipkin-reporter2-zipkin-reporter = { module = 'io.zipkin.reporter2:zipkin-reporter', version.ref = 'zipkin-reporter2' }
+io-zipkin-reporter2-zipkin-sender-okhttp3 = { module = 'io.zipkin.reporter2:zipkin-sender-okhttp3', version.ref = 'zipkin-reporter2' }
+io-zipkin-zipkin2-zipkin = { module = 'io.zipkin.zipkin2:zipkin', version.ref = 'zipkin-zipkin2-zipkin' }
+jakarta-activation-jakarta-activation-api = { module = 'jakarta.activation:jakarta.activation-api', version.ref = 'jakarta-activation-jakarta-activation-api' }
+jakarta-annotation-jakarta-annotation-api = { module = 'jakarta.annotation:jakarta.annotation-api', version.ref = 'jakarta-annotation-jakarta-annotation-api' }
+jakarta-inject-jakarta-inject-api = { module = 'jakarta.inject:jakarta.inject-api', version.ref = 'jakarta-inject-jakarta-inject-api' }
+jakarta-mail-jakarta-mail-api = { module = 'jakarta.mail:jakarta.mail-api', version.ref = 'jakarta-mail-jakarta-mail-api' }
+jakarta-persistence-jakarta-persistence-api = { module = 'jakarta.persistence:jakarta.persistence-api', version.ref = 'jakarta-persistence-jakarta-persistence-api' }
+jakarta-transaction-jakarta-transaction-api = { module = 'jakarta.transaction:jakarta.transaction-api', version.ref = 'jakarta-transaction-jakarta-transaction-api' }
+jakarta-validation-jakarta-validation-api = { module = 'jakarta.validation:jakarta.validation-api', version.ref = 'jakarta-validation-jakarta-validation-api' }
+javax-annotation-javax-annotation-api = { module = 'javax.annotation:javax.annotation-api', version.ref = 'javax-annotation-javax-annotation-api' }
+net-java-dev-jna-jna = { module = 'net.java.dev.jna:jna', version.ref = 'dev-jna-jna' }
+org-apache-commons-commons-collections4 = { module = 'org.apache.commons:commons-collections4', version.ref = 'apache-commons-commons-collections4' }
+org-apache-commons-commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'apache-commons-commons-lang3' }
+org-apache-kafka-kafka-clients = { module = 'org.apache.kafka:kafka-clients', version.ref = 'apache-kafka-kafka-clients' }
+org-bitbucket-b_c-jose4j = { module = 'org.bitbucket.b_c:jose4j', version.ref = 'bitbucket-b_c-jose4j' }
+org-checkerframework-checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'org-checkerframework-checker-qual' }
+org-eclipse-angus-angus-activation = { module = 'org.eclipse.angus:angus-activation', version.ref = 'eclipse-angus-angus-activation' }
+org-eclipse-angus-angus-mail = { module = 'org.eclipse.angus:angus-mail', version.ref = 'eclipse-angus-angus-mail' }
+org-flywaydb-flyway-core = { module = 'org.flywaydb:flyway-core', version.ref = 'org-flywaydb' }
+org-flywaydb-flyway-database-oracle = { module = 'org.flywaydb:flyway-database-oracle', version.ref = 'org-flywaydb' }
+org-hdrhistogram-HdrHistogram = { module = 'org.hdrhistogram:HdrHistogram', version.ref = 'org-hdrhistogram-HdrHistogram' }
+org-jetbrains-annotations = { module = 'org.jetbrains:annotations', version.ref = 'org-jetbrains-annotations' }
+org-jetbrains-intellij-deps-trove4j = { module = 'org.jetbrains.intellij.deps:trove4j', version.ref = 'intellij-deps-trove4j' }
+org-latencyutils-LatencyUtils = { module = 'org.latencyutils:LatencyUtils', version.ref = 'org-latencyutils-LatencyUtils' }
+org-lz4-lz4-java = { module = 'org.lz4:lz4-java', version.ref = 'org-lz4-lz4-java' }
+org-ow2-asm-asm = { module = 'org.ow2.asm:asm', version.ref = 'asm' }
+org-ow2-asm-asm-commons = { module = 'org.ow2.asm:asm-commons', version.ref = 'asm' }
+org-ow2-asm-asm-tree = { module = 'org.ow2.asm:asm-tree', version.ref = 'asm' }
+org-reactivestreams-reactive-streams = { module = 'org.reactivestreams:reactive-streams', version.ref = 'org-reactivestreams-reactive-streams' }
+org-slf4j-jcl-over-slf4j = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'org-slf4j-jcl-over-slf4j' }
+org-slf4j-slf4j-api = { module = 'org.slf4j:slf4j-api', version.ref = 'org-slf4j-slf4j-api' }
+org-xerial-snappy-snappy-java = { module = 'org.xerial.snappy:snappy-java', version.ref = 'xerial-snappy-snappy-java' }
+org-yaml-snakeyaml = { module = 'org.yaml:snakeyaml', version.ref = 'snakeyaml' }

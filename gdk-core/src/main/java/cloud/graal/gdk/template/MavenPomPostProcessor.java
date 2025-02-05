@@ -15,6 +15,7 @@
  */
 package cloud.graal.gdk.template;
 
+import cloud.graal.gdk.build.dependencies.GdkDependencies;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
@@ -57,6 +58,10 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     private static final String PARENT_END = "  </parent>";
     private static final String PARENT_START = "  <parent>";
     private static final String PLUGINS_START = "<plugins>\n";
+
+    private static final String PLUGIN_CONFIGURATION = "<configuration>";
+
+    private static final String PLUGIN_START = "<plugin>";
     private static final String PROCESSING_MODULE_END = "</arg>";
     private static final String PROCESSING_MODULE_END_KOTLIN = "</annotationProcessorArg>";
     private static final String PROCESSING_MODULE_START = "micronaut.processing.module=";
@@ -64,6 +69,7 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     private static final Pattern ARTIFACT_ID_PATTERN = Pattern.compile("<artifactId>.+</artifactId>");
     private static final Pattern MICRONAUT_VERSION_PATTERN = Pattern.compile(MICRONAUT_VERSION_START + "(.+)" + MICRONAUT_VERSION_END);
     private static final Pattern VERSION_PATTERN = Pattern.compile("<version>.+</version>");
+    private static final String ARTIFACT_ID_NATIVE_MAVEN_PLUGIN_ARTIFACT_ID = "<artifactId>native-maven-plugin</artifactId>";
 
     private final String artifactId;
     private final String groupId;
@@ -95,8 +101,8 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         }
 
         pom = fixMicronautVersion(pom);
-
         pom = fixSourceDirectory(pom);
+        pom = addMetadataRepositoryId(pom);
 
         if (libModule) {
             pom = fixArtifactId(pom);
@@ -181,6 +187,52 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
         }
 
         return pom;
+    }
+
+    @NonNull
+    private String addMetadataRepositoryId(@NonNull String pom) {
+        String graalVMRepositoryVersion = GdkDependencies.GRAALVM_METADATA_REPOSITORY_VERSION;
+        if (pom.contains("<metadataRepository>")) {
+            return pom;
+        }
+
+        int start = pom.indexOf(ARTIFACT_ID_NATIVE_MAVEN_PLUGIN_ARTIFACT_ID);
+        if (start > 0) {
+            start = pom.indexOf(PLUGIN_CONFIGURATION, start) + PLUGIN_CONFIGURATION.length();
+            String top = pom.substring(0, start);
+            String bottom = pom.substring(start);
+            String graalVMMetadataRepository =
+            """
+             <metadataRepository>
+               <enabled>true</enabled>
+               <version>%s</version>
+             </metadataRepository>
+             """.formatted(graalVMRepositoryVersion);
+            return top + graalVMMetadataRepository + bottom;
+        }
+        start = pom.indexOf(PLUGINS_START);
+        if (start == -1) {
+            return pom;
+        }
+        int end = pom.indexOf(PLUGIN_START, start) + PLUGIN_START.length();
+
+        String top = pom.substring(0, start);
+        String bottom = pom.substring(end);
+
+        return top + """
+ <plugins>
+      <plugin>
+        <groupId>org.graalvm.buildtools</groupId>
+        <artifactId>native-maven-plugin</artifactId>
+        <configuration>
+         <metadataRepository>
+           <enabled>true</enabled>
+           <version>%s</version>
+         </metadataRepository>
+        </configuration>
+      </plugin>
+      <plugin>""".formatted(graalVMRepositoryVersion) + bottom;
+
     }
 
     @Override

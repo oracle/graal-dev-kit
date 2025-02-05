@@ -20,7 +20,6 @@ import cloud.graal.gdk.feature.replaced.template.k8sYaml;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
-import io.micronaut.starter.feature.FeatureContext;
 import io.micronaut.starter.feature.jib.Jib;
 import io.micronaut.starter.feature.k8s.Kubernetes;
 import io.micronaut.starter.feature.other.Management;
@@ -62,11 +61,6 @@ public class GdkKubernetes extends Kubernetes {
         for (GdkCloud cloud : generatorContext.getClouds()) {
             addYamlTemplate(generatorContext, cloud);
         }
-    }
-
-    @Override
-    public void processSelectedFeatures(FeatureContext featureContext) {
-        super.processSelectedFeatures(featureContext);
     }
 
     protected void addYamlTemplate(GdkGeneratorContext generatorContext,

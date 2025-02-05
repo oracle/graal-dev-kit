@@ -44,19 +44,6 @@ dependencies {
         exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
     }
     implementation(mnLibs.micronaut.http.client)
-    implementation(libs.boms.netty)
-    implementation(libs.netty.buffer)
-    implementation(libs.netty.codec.http)
-    implementation(libs.netty.codec.http2)
-    implementation(libs.netty.common)
-    implementation(libs.netty.incubator.codec.http3)
-    implementation(libs.netty.handler)
-    implementation(libs.netty.handler.proxy)
-    implementation(libs.netty.transport.native.epoll)
-    implementation(libs.netty.transport.native.kqueue)
-    implementation(libs.netty.transport.native.iouring)
-    implementation(libs.netty.transport.native.unix.common)
-    implementation(libs.netty.tcnative.boringssl.static)
 }
 
 def writeVersions = tasks.register('writeVersions', cloud.graal.gdk.util.WriteVersionsTask) {

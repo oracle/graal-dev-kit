@@ -35,20 +35,19 @@ public class GdkDefaultPomDependencyVersionResolver extends DefaultPomDependency
 
     private static final Map<String, Coordinate> COORDINATES;
 
-    public GdkDefaultPomDependencyVersionResolver() {
-    }
-
-    public @NonNull Optional<Coordinate> resolve(@NonNull String artifactId) {
+    @NonNull
+    public Optional<Coordinate> resolve(@NonNull String artifactId) {
         return Optional.ofNullable(COORDINATES.get(artifactId));
     }
 
-    public @NonNull Map<String, Coordinate> getCoordinates() {
+    @NonNull
+    public Map<String, Coordinate> getCoordinates() {
         return COORDINATES;
     }
 
     static {
-        Map<String, Coordinate> coordinateHashMap = new HashMap<>(StarterCoordinates.ALL_COORDINATES);
-        coordinateHashMap.putAll(ALL_DEPENDENCIES);
-        COORDINATES = Collections.unmodifiableMap(coordinateHashMap);
+        var coordinates = new HashMap<>(StarterCoordinates.ALL_COORDINATES);
+        coordinates.putAll(ALL_DEPENDENCIES);
+        COORDINATES = Collections.unmodifiableMap(coordinates);
     }
 }

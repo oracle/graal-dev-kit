@@ -85,6 +85,7 @@ abstract class DependenciesSourceGenerator extends DefaultTask {
             writer.println()
             writer.println('public class GdkDependencies {')
             writer.println('    public static final Map<String, Dependency> ALL_DEPENDENCIES;')
+            writer.println('    public static final String GRAALVM_METADATA_REPOSITORY_VERSION = ' + '"%s";'.formatted(versionCatalog.get().findVersion("graalvm-metadata-version").get()) )
             def dependenciesMap = [:]
             def versionCatalog = getVersionCatalog().get()
             writeDependencies(writer, dependenciesMap, versionCatalog, true)
@@ -111,14 +112,15 @@ abstract class DependenciesSourceGenerator extends DefaultTask {
                     String artifactId = lib.get().module.name
                     String groupId = lib.get().module.group
                     String version = lib.get().versionConstraint.requiredVersion
-                    String name = artifactId.toUpperCase().replaceAll('-', '_').replaceAll('\\.', '_')
+                    String groupIdArtifactId = groupId + '_' + artifactId
+                    String name = groupIdArtifactId.toUpperCase().replaceAll('-', '_').replaceAll('\\.', '_')
                     writer.println("    public static final Dependency $name = Dependency.builder()\n" +
                             "                .groupId(\"$groupId\")\n" +
                             "                .artifactId(\"$artifactId\")\n" +
                             "                .version(\"$version\")\n" +
                             "                .pom($bom)\n" +
                             "                .build();")
-                    dependenciesMap[artifactId] = name
+                    dependenciesMap[groupId + ':' + artifactId] = name
                 }
     }
 }

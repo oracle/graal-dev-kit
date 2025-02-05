@@ -59,6 +59,12 @@ public class GcpObjectStore extends AbstractObjectStore {
                 "micronaut.object-storage.gcp.default.bucket", "",
                 "micronaut.object-storage.gcp.default.enabled", "true"
         ));
+
+        // TODO remove it with micronaut 4.7.2
+        generatorContext.getConfiguration().addNested(Map.of(
+                "gcp.credentials.use-http-client", "false"
+        ));
+
         generatorContext.getTestConfiguration().addNested("micronaut.object-storage.gcp.default.enabled", "false");
     }
 

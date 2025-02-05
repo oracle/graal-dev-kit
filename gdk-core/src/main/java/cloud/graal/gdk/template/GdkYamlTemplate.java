@@ -44,11 +44,7 @@ public class GdkYamlTemplate extends DefaultTemplate {
     private final Map<String, Object> originalConfig;
 
     public GdkYamlTemplate(String path, Map<String, Object> config) {
-        this(LIB_MODULE, path, config);
-    }
-
-    public GdkYamlTemplate(String module, String path, Map<String, Object> config) {
-        super(module, path);
+        super(LIB_MODULE, path);
         this.originalConfig = config;
         this.config = transform(config);
     }

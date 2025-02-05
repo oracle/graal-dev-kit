@@ -22,7 +22,6 @@ plugins {
 dependencies {
     annotationProcessor mnLibs.picocli.codegen
 
-    // not in libs.versions.toml to keep Micronaut version in one place
     api(libs.micronaut.starter.cli) {
         exclude group: 'io.micronaut', module: 'micronaut-buffer-netty'
         exclude group: 'io.micronaut', module: 'micronaut-http-client'

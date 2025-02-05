@@ -19,6 +19,7 @@ import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryExporterOtlp;
@@ -67,7 +68,11 @@ public class AwsTracing extends AbstractTracingFeature {
 
     @Override
     protected void doApply(GdkGeneratorContext generatorContext) {
-        // no-op
+        // TODO added temporary because of Gradle dependency resolution bug
+        generatorContext.addDependency(Dependency.builder().groupId("org.jetbrains.kotlin").artifactId("kotlin-stdlib-jdk8").compile().build());
+
+        // Add fix to AWS tracing missing logs
+        generatorContext.getConfiguration().addNested("otel.logs.exporter", "otlp");
     }
 
     @NonNull
