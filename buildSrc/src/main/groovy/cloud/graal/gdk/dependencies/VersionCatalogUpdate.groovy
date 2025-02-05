@@ -119,6 +119,7 @@ abstract class VersionCatalogUpdate extends DefaultTask {
             detachedConfiguration.canBeResolved = true
             detachedConfiguration.transitive = false
             detachedConfiguration.resolutionStrategy.cacheDynamicVersionsFor(0, MINUTES)
+            lines = graalvmRepositoryMetadataVersion(lines)
             List<Pattern> rejectedQualifiers = getRejectedQualifiers().get()
                     .stream()
                     .map { qualifier -> Pattern.compile("(?i).*[.-]" + qualifier + "[.\\d-+]*") }
@@ -265,6 +266,30 @@ abstract class VersionCatalogUpdate extends DefaultTask {
             }
         }
         return ""
+    }
+
+    private static List<String> graalvmRepositoryMetadataVersion(List<String> lines) {
+        def reference_metadata = "graalvm-metadata-version"
+        int ln = 0
+        for (String x in lines) {
+            if (x.startsWith(reference_metadata)) {
+                break
+            }
+            ln++
+        }
+        if (ln < lines.size() - 1) {
+            URL url = new URL("https://github.com/oracle/graalvm-reachability-metadata/releases/latest")
+            HttpURLConnection con = (HttpURLConnection) url.openConnection()
+            con.setRequestMethod("GET")
+            con.setConnectTimeout(5000)
+            con.setInstanceFollowRedirects(false)
+            con.setReadTimeout(5000)
+            con.connect()
+            def graalvmRepoVersion = con.getHeaderField("Location").split("/").last()
+            con.disconnect()
+            lines.set(ln, '%s = "%s"'.formatted(reference_metadata, graalvmRepoVersion))
+        }
+        return lines
     }
 
     static Dependency requirePom(DependencyHandler dependencies, Library library) {

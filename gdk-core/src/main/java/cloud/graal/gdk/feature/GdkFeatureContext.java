@@ -15,8 +15,8 @@
  */
 package cloud.graal.gdk.feature;
 
-import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.GdkGeneratorContext;
+import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.application.OperatingSystem;
@@ -169,6 +169,15 @@ public class GdkFeatureContext extends FeatureContext {
         feature.processSelectedFeatures(this);
     }
 
+    // This is necessary because we have our own features attribute that have to be used instead of super one.
+    @Override
+    public boolean isPresent(Class<? extends Feature> feature) {
+        return features.stream()
+                .filter(f -> exclusions.stream().noneMatch(e -> e.test(f)))
+                .map(Feature::getClass)
+                .anyMatch(feature::isAssignableFrom);
+    }
+
     /**
      * Add the feature if it hasn't been added yet.
      *
@@ -177,14 +186,6 @@ public class GdkFeatureContext extends FeatureContext {
      */
     public void addFeature(Feature feature, Class<? extends Feature> featureClass) {
         addFeatureIfNotPresent(featureClass, feature);
-    }
-
-    @Override
-    public boolean isPresent(Class<? extends Feature> feature) {
-        return features.stream()
-                .filter(f -> exclusions.stream().noneMatch(e -> e.test(f)))
-                .map(Feature::getClass)
-                .anyMatch(feature::isAssignableFrom);
     }
 
     /**

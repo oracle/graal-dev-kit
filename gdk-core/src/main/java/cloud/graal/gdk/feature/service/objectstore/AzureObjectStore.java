@@ -52,11 +52,13 @@ public class AzureObjectStore extends AbstractObjectStore {
     protected void addConfig(GdkGeneratorContext generatorContext) {
 
         generatorContext.getCloudConfiguration().addNested(Map.of(
-                "micronaut.object-storage.azure.default.bucket", "true",
+                "micronaut.object-storage.azure.default.bucket", "",
                 "micronaut.object-storage.azure.default.container", "",
+                "micronaut.object-storage.azure.default.enabled", "true",
                 "micronaut.object-storage.azure.default.endpoint", ""
         ));
-        generatorContext.getTestConfiguration().addNested("micronaut.object-storage.azure.default.enabled", "false");
+        generatorContext.getTestConfiguration().addNested(
+                "micronaut.object-storage.azure.default.enabled", "false");
 
         addAzureNativeImageProperties(generatorContext);
     }

@@ -16,6 +16,7 @@
 package cloud.graal.gdk.template;
 
 import cloud.graal.gdk.GdkUtils;
+import cloud.graal.gdk.build.dependencies.GdkDependencies;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.application.ApplicationType;
@@ -92,6 +93,24 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
                     }
                     """;
 
+    private static final String GRAAL_VM_METADATA_REPOSITORY_GROOVY =
+    """
+    graalvmNative {
+        metadataRepository {
+            version = "%s"
+        }
+    }
+    """;
+
+    private static final String GRAAL_VM_METADATA_REPOSITORY_KOTLIN =
+            """
+            graalvmNative {
+                metadataRepository {
+                    version.set("%s")
+                }
+            }
+            """;
+
     private static final Pattern VERSION = Pattern.compile(" version \".+\"");
 
     private static final Pattern BOM_PLATFORM_REGEX = Pattern.compile(
@@ -138,6 +157,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = updateResolutionStrategyVersions(buildGradle);
         buildGradle = fixLibDependency(buildGradle);
         buildGradle = replaceMavenCentral(buildGradle);
+        buildGradle = configureGraalVMMetaDataRepository(buildGradle);
         if (forCloudModule) {
             buildGradle = fixNativeName(buildGradle);
         }
@@ -185,6 +205,18 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         } else {
             return buildGradle.contains(SHADOW_JAR_ZIP_64_KOTLIN) ? buildGradle : buildGradle + SHADOW_JAR_ZIP_64_KOTLIN;
         }
+    }
+
+    @NonNull
+    private String configureGraalVMMetaDataRepository(@NonNull String buildGradle) {
+        String graalVMRepositoryVersion = GdkDependencies.GRAALVM_METADATA_REPOSITORY_VERSION;
+        String graalVMMetadata;
+        if (dsl == GROOVY) {
+            graalVMMetadata = GRAAL_VM_METADATA_REPOSITORY_GROOVY.formatted(graalVMRepositoryVersion);
+        } else {
+            graalVMMetadata = GRAAL_VM_METADATA_REPOSITORY_KOTLIN.formatted(graalVMRepositoryVersion);
+        }
+        return buildGradle.contains(graalVMMetadata) ? buildGradle : buildGradle + graalVMMetadata;
     }
 
     @NonNull

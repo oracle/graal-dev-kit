@@ -19,10 +19,10 @@ import cloud.graal.gdk.build.dependencies.GdkDependencies;
 import cloud.graal.gdk.feature.GdkFeature;
 import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.feature.GdkFeatures;
+import cloud.graal.gdk.feature.replaced.GdkJTE;
 import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.template.GdkPropertiesTemplate;
 import cloud.graal.gdk.template.TemplatePostProcessor;
-import cloud.graal.gdk.feature.replaced.GdkJTE;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.StringUtils;
@@ -82,6 +82,7 @@ import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
+import static cloud.graal.gdk.GdkUtils.LIB_MODULE;
 import static cloud.graal.gdk.model.GdkCloud.AWS;
 import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static io.micronaut.context.env.Environment.DEVELOPMENT;
@@ -122,14 +123,14 @@ public class GdkGeneratorContext extends GeneratorContext {
 
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
             gavMapEntry("com.github.johnrengelman.shadow", "com.github.johnrengelman:shadow", StarterCoordinates.SHADOW),
-            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", GdkDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
             gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
             gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
             gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
             gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", StarterCoordinates.JIB_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", GdkDependencies.MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
             gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
             gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", StarterCoordinates.JTE_GRADLE_PLUGIN)
     );
@@ -723,7 +724,7 @@ public class GdkGeneratorContext extends GeneratorContext {
         }
 
         List<String> names = new ArrayList<>(cloudFeatures.size() + 1);
-        names.add(GdkUtils.LIB_MODULE);
+        names.add(LIB_MODULE);
 
         names.addAll(cloudFeatures.keySet().stream()
                 .filter(Objects::nonNull)
@@ -770,7 +771,7 @@ public class GdkGeneratorContext extends GeneratorContext {
 
         if (!template.getModule().equals(ROOT)) {
             if (template instanceof GdkPropertiesTemplate) {
-                if (isPlatformIndependent() && (template.getModule().equals(GdkUtils.LIB_MODULE) || template.getModule().equals(GdkUtils.APP_MODULE))) {
+                if (isPlatformIndependent() && (template.getModule().equals(LIB_MODULE) || template.getModule().equals(GdkUtils.APP_MODULE))) {
                     // for platform independent, re-route non-root templates to root
                     template = new GdkPropertiesTemplate(ROOT, template.getPath(), ((GdkPropertiesTemplate) template).getOriginalConfig());
                 }
@@ -783,12 +784,12 @@ public class GdkGeneratorContext extends GeneratorContext {
                     // re-route non-root templates added by features that were added by a cloud service feature to the cloud module
                     newModule = cloud.getModuleName();
                     name += '-' + newModule;
-                } else if (isPlatformIndependent() && (template.getModule().equals(GdkUtils.LIB_MODULE) || template.getModule().equals(DEFAULT_MODULE))) {
+                } else if (isPlatformIndependent() && (template.getModule().equals(LIB_MODULE) || template.getModule().equals(DEFAULT_MODULE))) {
                     // for platform independent, re-route non-root templates to root
                     newModule = ROOT;
                 } else if (template.getModule().equals(DEFAULT_MODULE)) {
                     // re-route to lib
-                    newModule = GdkUtils.LIB_MODULE;
+                    newModule = LIB_MODULE;
                 }
 
                 if (newModule != null) {
@@ -798,7 +799,7 @@ public class GdkGeneratorContext extends GeneratorContext {
             } else if (template instanceof URLTemplate urlTemplate) {
                 if (name.endsWith(".html")) {
                     // re-route to lib
-                    template = new URLTemplate(GdkUtils.LIB_MODULE, urlTemplate.getPath(), urlTemplate.getUrl(), urlTemplate.isExecutable());
+                    template = new URLTemplate(LIB_MODULE, urlTemplate.getPath(), urlTemplate.getUrl(), urlTemplate.isExecutable());
                 }
             }
         }
@@ -807,7 +808,7 @@ public class GdkGeneratorContext extends GeneratorContext {
     }
 
     /**
-     * Internal function for adding templates. The GDK feature templates are added first,
+     * Internal method for adding templates. The GDK feature templates are added first,
      * so we want to avoid overwriting those with micronaut feature templates.
      * Therefore, all added templates are stored in a set and a template is not added if
      * one exists with the same path already.
@@ -844,17 +845,15 @@ public class GdkGeneratorContext extends GeneratorContext {
         }
 
         if (template instanceof PropertiesTemplate &&
-                template.getModule().equals("lib") &&
+                template.getModule().equals(LIB_MODULE) &&
                 "application-config".equals(name)) {
 
             return true; // application.properties
         }
 
-        if (!(template instanceof RockerTemplate)) {
+        if (!(template instanceof RockerTemplate rockerTemplate)) {
             return false;
         }
-
-        RockerTemplate rockerTemplate = (RockerTemplate) template;
 
         if (!rockerTemplate.getModule().equals(DEFAULT_MODULE)) {
             return false;
@@ -880,7 +879,6 @@ public class GdkGeneratorContext extends GeneratorContext {
         if (!isPlatformIndependent()) {
             allConfigurations.remove(super.getConfiguration());
             allConfigurations.remove(super.getBootstrapConfiguration());
-            allConfigurations.remove(super.getBootstrapConfiguration());
         }
 
         return allConfigurations;
@@ -890,7 +888,7 @@ public class GdkGeneratorContext extends GeneratorContext {
     public void addTemplate(String name,
                             String path,
                             TestRockerModelProvider testRockerModelProvider) {
-        String moduleName = cloud == NONE ? GdkUtils.LIB_MODULE : cloud.getModuleName();
+        String moduleName = cloud == NONE ? LIB_MODULE : cloud.getModuleName();
 
         if (isPlatformIndependent()) {
             moduleName = "";
@@ -909,7 +907,7 @@ public class GdkGeneratorContext extends GeneratorContext {
                             RockerModel kotlinTemplate,
                             RockerModel groovyTemplate) {
         addTemplateInternal(templateKey, new RockerTemplate(
-                cloud == NONE ? isPlatformIndependent() ? "" : GdkUtils.LIB_MODULE : cloud.getModuleName(),
+                cloud == NONE ? isPlatformIndependent() ? "" : LIB_MODULE : cloud.getModuleName(),
                 path,
                 parseModel(javaTemplate, kotlinTemplate, groovyTemplate)));
     }

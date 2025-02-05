@@ -82,6 +82,8 @@ abstract class GdkParentPlugin implements Plugin<Project> {
 
         Configuration api = project.configurations.named(API_CONFIGURATION_NAME).get()
 
+        Map<String, String> pomProperties = new HashMap<>()
+
         Map<String, String> mapAliasToVersion = new HashMap<>()
         publishing.publications.named("maven", MavenPublication, pub -> {
             pub.artifactId = "gdk-parent"
@@ -98,7 +100,7 @@ abstract class GdkParentPlugin implements Plugin<Project> {
                         String bomPropertyName = bomPropertyName(library.alias, alias)
                         def version = modelProvider.versionsTable.find(x -> x.reference == library.version.reference).version
                         mapAliasToVersion[library.alias] = '\${' + bomPropertyName + '}'
-                        pom.properties.put(bomPropertyName, version.require)
+                        pomProperties.put(bomPropertyName, version.require)
                     }
                 })
 
@@ -114,19 +116,31 @@ abstract class GdkParentPlugin implements Plugin<Project> {
                 }
 
                 pom.packaging = "pom"
-                pom.properties.put("micronaut.version", platformVersion.require)
+                pomProperties.put("micronaut.version", platformVersion.require)
+
 
                 modelProvider.librariesTable.forEach(library -> {
                     if (!library.alias.startsWith("exclude-") || pluginsMap.containsKey(library.alias) ) {
                         String alias = Optional.ofNullable(library.version.reference).map(a -> a.replace('-', '.')).orElse("")
                         String bomPropertyName = pluginsMap.containsKey(library.alias) ? pluginsMap.get(library.alias) : bomPropertyName(library.alias, alias)
                         def version = modelProvider.versionsTable.find(x -> x.reference == library.version.reference).version
-                        pom.properties.put(bomPropertyName, version.require)
+                        pomProperties.put(bomPropertyName, version.require)
                     }
                 })
 
                 pom.withXml { xml ->
-                    Node dependencies = childOf(childOf(xml.asNode(), "dependencyManagement"), "dependencies")
+                    Node properties = new Node(xml.asNode(), "properties")
+
+                    for(String key: pomProperties.keySet().sort()) {
+                        new Node(properties, key, pomProperties.get(key))
+                    }
+
+
+                    Node dependencyManagement =  childOf(xml.asNode(), "dependencyManagement")
+                    xml.asNode().remove(dependencyManagement)
+                    xml.asNode().append(dependencyManagement)
+
+                    Node dependencies = childOf(dependencyManagement, "dependencies")
                     Node dependency = new Node(dependencies, "dependency", "")
                     new Node(dependency, "groupId", "cloud.graal.gdk")
                     new Node(dependency, "artifactId", "gdk-bom")
@@ -146,8 +160,8 @@ abstract class GdkParentPlugin implements Plugin<Project> {
                     MavenArtifactRepository repository = (MavenArtifactRepository) maven
                     repository.name = "External"
                     repository.url = externalRepoUri
-                    Provider<String> externalRepoUsername = project.providers.environmentVariable("PUBLISH_USERNAME")
-                    Provider<String> externalRepoPassword = project.providers.environmentVariable("PUBLISH_PASSWORD")
+                    Provider<String> externalRepoUsername = project.providers.environmentVariable("ARTIFACTHUB_ACCESS_TOKEN_USERNAME")
+                    Provider<String> externalRepoPassword = project.providers.environmentVariable("ARTIFACTHUB_ACCESS_TOKEN")
                     if (externalRepoUsername.isPresent() && externalRepoPassword.isPresent()) {
                         repository.credentials(credentials -> {
                             credentials.username = externalRepoUsername.get()

@@ -88,7 +88,8 @@ public class GdkContextFactory extends ContextFactory {
 
         available.getAllFeatures()
                 .filter(DefaultFeature.class::isInstance)
-                .filter(f -> ((DefaultFeature) f).shouldApply(type, options, selectedAndDefaultFeatures))
+                .map(DefaultFeature.class::cast)
+                .filter(f -> f.shouldApply(type, options, selectedAndDefaultFeatures))
                 .forEach(selectedAndDefaultFeatures::add);
 
         return new GdkFeatureContext(options, type, os, selectedAndDefaultFeatures, selectedNames, clouds);

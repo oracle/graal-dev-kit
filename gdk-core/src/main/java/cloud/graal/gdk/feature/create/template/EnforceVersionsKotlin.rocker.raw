@@ -5,17 +5,49 @@ dependencies {
 }
 
 open class EnforceBomDependencies : ComponentMetadataRule {
+    private val gdkBomConstraints: MutableMap<String, String> = mutableMapOf()
+
     override fun execute(ctx: ComponentMetadataContext) {
-        if (ctx.details.id.group == "cloud.graal.gdk" && ctx.details.id.name == "gdk-bom") {
+        val isGdkBom = ctx.details.id.group == "cloud.graal.gdk" && ctx.details.id.name == "gdk-bom"
+
+        if (isGdkBom) {
             ctx.details.allVariants {
                 withDependencyConstraints {
-                    for (md in this) {
-                        md.version {
-                            strictly(md.versionConstraint.requiredVersion)
+                    forEach { constraint ->
+                        val key = "${constraint.group}:${constraint.module}"
+                        val version = constraint.versionConstraint.requiredVersion
+
+                        if (version.matches(Regex(".*-oracle-\\d+")) == true) {
+                            gdkBomConstraints[key] = version
+                        }
+
+                        constraint.version {
+                            strictly(version)
                         }
                     }
                 }
             }
         }
+
+        ctx.details.allVariants {
+            withDependencyConstraints {
+                forEach { constraint ->
+                    val key = "${constraint.group}:${constraint.module}"
+                    if (gdkBomConstraints.containsKey(key)) {
+                        val version = constraint.versionConstraint.requiredVersion
+                        val gdkVersionWithoutSuffix = gdkBomConstraints[key]?.replace(Regex("-oracle-\\d+$"), "")
+
+                        if (version == gdkVersionWithoutSuffix) {
+                            constraint.version {
+                                gdkBomConstraints[key]?.let { newVersion ->
+                                    strictly(newVersion)
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
     }
 }

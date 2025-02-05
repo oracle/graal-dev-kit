@@ -59,6 +59,7 @@ import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import io.micronaut.starter.template.RockerTemplate;
 
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
 
 import static cloud.graal.gdk.model.GdkService.DATABASE;
@@ -112,19 +113,26 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
         // H2 is @Primary, so it will be auto-selected if no other driver was explicitly requested
         boolean h2WasSelected = featureContext.getSelectedNames().contains("h2");
 
-        driverFeature = (DatabaseDriverFeature) featureContext.getSelectedAndDefaultFeatures().stream()
+        List<DatabaseDriverFeature> drivers = featureContext.getSelectedAndDefaultFeatures().stream()
                 .filter(f -> f instanceof DatabaseDriverFeature)
-                .findFirst()
-                .orElse(null);
+                .map(DatabaseDriverFeature.class::cast)
+                .toList();
+        if (drivers.size() > 1) {
+            // let OneOfFeatureValidator fail the build
+            return;
+        }
+
+        driverFeature = drivers.isEmpty() ? null : drivers.get(0);
         if (driverFeature == null || (driverFeature instanceof H2 && !h2WasSelected)) {
             driverFeature = defaultDriverFeature;
             applyDriverFeature = true;
             featureContext.addFeature(defaultDriverFeature);
-            if (!h2WasSelected) {
-                featureContext.exclude(f -> f instanceof H2);
-            }
         } else {
             applyDriverFeature = false;
+        }
+
+        if (!h2WasSelected) {
+            featureContext.exclude(H2.class::isInstance);
         }
 
         featureContext.addFeature(flyway, Flyway.class);

@@ -1,6 +1,6 @@
 # Graal Development Kit for Micronaut (GDK)
 
-Graal Development Kit for Micronaut (GDK) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
+[Graal Development Kit for Micronaut (GDK)](https://graal.cloud/gdk/) is a curated set of open source Micronaut® framework modules designed from the ground up to be compiled ahead-of-time with GraalVM Native Image resulting in native executables ideal for microservices.
 With GDK, you can build portable cloud-native Java microservices that start instantly and use fewer resources to reduce compute costs.
 
 ## Installation

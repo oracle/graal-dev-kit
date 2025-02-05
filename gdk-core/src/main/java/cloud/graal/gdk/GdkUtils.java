@@ -80,7 +80,7 @@ public final class GdkUtils {
     }
 
     private static String getBomVersionSuffix() {
-        Matcher m = Pattern.compile("(-oracle-\\d+)").matcher(GdkDependencies.MICRONAUT_CORE.getVersion());
+        Matcher m = Pattern.compile("(-oracle-\\d+)").matcher(GdkDependencies.IO_MICRONAUT_MICRONAUT_CORE.getVersion());
         m.find();
         return m.group();
     }
@@ -96,7 +96,7 @@ public final class GdkUtils {
      * @return the version of Micronaut Platform
      */
     public static String getMicronautVersion() {
-        return GdkDependencies.MICRONAUT_PARENT.getVersion().replaceAll("-oracle-\\d+", "");
+        return GdkDependencies.IO_MICRONAUT_PLATFORM_MICRONAUT_PARENT.getVersion().replaceAll("-oracle-\\d+", "");
     }
 
     /**

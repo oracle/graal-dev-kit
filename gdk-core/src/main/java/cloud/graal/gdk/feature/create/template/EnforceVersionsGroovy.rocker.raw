@@ -5,13 +5,42 @@ dependencies {
 }
 
 abstract class EnforceBomDependencies implements ComponentMetadataRule {
+    private static final Map<String, String> gdkBomConstraints = [:]
     void execute(ComponentMetadataContext ctx) {
-        if (ctx.details.id.group == "cloud.graal.gdk" && ctx.details.id.name == "gdk-bom") {
-            ctx.details.allVariants {
-                withDependencyConstraints {
-                    it.each { md ->
-                        md.version {
-                            strictly(md.versionConstraint.requiredVersion)
+
+        boolean isGdkBom = ctx.details.id.group == "cloud.graal.gdk" && ctx.details.id.name == "gdk-bom"
+
+        if (isGdkBom) {
+            ctx.details.allVariants { variant ->
+                variant.withDependencyConstraints { constraints ->
+                    constraints.each { constraint ->
+                        String key = "${constraint.group}:${constraint.module}"
+                        String version = constraint.versionConstraint.requiredVersion
+
+                        if (version && version ==~ /.*-oracle-\d+/) {
+                            gdkBomConstraints[key] = version
+                        }
+
+                        constraint.version {
+                            strictly(version)
+                        }
+                    }
+                }
+            }
+        }
+
+
+        ctx.details.allVariants { variant ->
+            variant.withDependencyConstraints { constraints ->
+                constraints.each { constraint ->
+                    String key = "${constraint.group}:${constraint.module}"
+                    if (gdkBomConstraints.containsKey(key)) {
+                        String version = constraint.versionConstraint.requiredVersion
+                        String gdkVersionWithoutSuffix = gdkBomConstraints.get(key).replaceAll(/-oracle-\d+$/, '')
+                        if (version == gdkVersionWithoutSuffix) {
+                            constraint.version {
+                                strictly(gdkBomConstraints[key])
+                            }
                         }
                     }
                 }

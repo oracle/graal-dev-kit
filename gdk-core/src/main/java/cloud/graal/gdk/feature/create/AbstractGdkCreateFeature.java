@@ -59,9 +59,9 @@ public abstract class AbstractGdkCreateFeature extends AbstractGdkFeature {
         Features features = generatorContext.getFeatures(getCloud());
 
         generatorContext.addTemplate(getModuleName(), "application-" + getModuleName(), path,
-                io.micronaut.starter.feature.lang.java.application.template(project, features, generatorContext.getApplicationRenderingContext(JAVA)),
-                io.micronaut.starter.feature.lang.kotlin.application.template(project, features, generatorContext.getApplicationRenderingContext(KOTLIN)),
-                io.micronaut.starter.feature.lang.groovy.application.template(project, features, generatorContext.getApplicationRenderingContext(GROOVY)));
+                io.micronaut.starter.feature.lang.java.application.template(project, features, generatorContext.getApplicationRenderingContext(JAVA), false),
+                io.micronaut.starter.feature.lang.kotlin.application.template(project, features, generatorContext.getApplicationRenderingContext(KOTLIN), false),
+                io.micronaut.starter.feature.lang.groovy.application.template(project, features, generatorContext.getApplicationRenderingContext(GROOVY), false));
 
         String testSourcePath = generatorContext.getTestSourcePath("/{packagePath}/{className}");
         boolean transactional = !generatorContext.getFeatures().hasFeature(TransactionalNotSupported.class);

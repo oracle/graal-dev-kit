@@ -22,6 +22,10 @@ import io.micronaut.starter.options.BuildTool;
 public class GraalvmQuickBuildPostProcessor implements TemplatePostProcessor {
 
     private static final String PLUGIN_START = "<plugin>";
+
+    private static final String ARTIFACT_ID_NATIVE_MAVEN_PLUGIN_ARTIFACT_ID = "<artifactId>native-maven-plugin</artifactId>";
+
+    private static final String PLUGIN_CONFIGURATION = "<configuration>";
     private static final String GRAAL_VM_NATIVE_CONFIG = """
         
         graalvmNative.binaries.main.buildArgs.add("-Ob")
@@ -44,16 +48,24 @@ public class GraalvmQuickBuildPostProcessor implements TemplatePostProcessor {
     }
 
     private String addNativeArgs(@NonNull String pom) {
-        int start = pom.indexOf("<plugins>");
-        if (start == -1) {
-            return pom;
-        }
-        int end = pom.indexOf(PLUGIN_START, start) + PLUGIN_START.length();
+        int start = pom.indexOf(ARTIFACT_ID_NATIVE_MAVEN_PLUGIN_ARTIFACT_ID);
+        if (start > 0) {
+            start = pom.indexOf(PLUGIN_CONFIGURATION, start) + PLUGIN_CONFIGURATION.length();
+            String top = pom.substring(0, start);
+            String bottom = pom.substring(start);
+            String buildArgs = "\n        <buildArgs combine.children=\"append\"><buildArg>-Ob</buildArg></buildArgs>";
+            return top + buildArgs + bottom;
+       }
+       start = pom.indexOf("<plugins>");
+       if (start == -1) {
+           return pom;
+       }
+       int end = pom.indexOf(PLUGIN_START, start) + PLUGIN_START.length();
 
-        String top = pom.substring(0, start);
-        String bottom = pom.substring(end);
+       String top = pom.substring(0, start);
+       String bottom = pom.substring(end);
 
-        return top + """
+       return top + """
  <plugins>
       <plugin>
         <groupId>org.graalvm.buildtools</groupId>
