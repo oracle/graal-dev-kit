@@ -22,12 +22,7 @@ plugins {
 group = 'gdk'
 
 repositories {
-    maven {
-        url 'https://s01.oss.sonatype.org/content/repositories/snapshots'
-    }
-    maven {
-        url 'https://artifacthub-phx.oci.oraclecorp.com/artifactory/micronaut-gcn-stage/'
-    }
+    maven { url 'https://maven.oracle.com/public' }
     mavenCentral()
 }
 
@@ -55,8 +50,8 @@ publishing {
     }
     repositories {
         maven {
-            name = "build"
-            url = rootProject.layout.buildDirectory.dir("repo")
+            name = 'build'
+            url = rootProject.layout.buildDirectory.dir('repo')
         }
     }
 }
