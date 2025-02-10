@@ -24,14 +24,12 @@ file('.').eachDir {
 
 enableFeaturePreview 'TYPESAFE_PROJECT_ACCESSORS'
 
-String[] fileLines = new File(rootProject.projectDir.absoluteFile, "gradle/templates.versions.toml").text.split("\n")
-String micronautPlatformVersion = fileLines.find { it.contains("micronaut-platform") }.split("=")[1].replace('"', '').strip()
+String[] fileLines = new File(rootProject.projectDir.absoluteFile, 'gradle/templates.versions.toml').text.split('\n')
+String micronautPlatformVersion = fileLines.find { it.contains('micronaut-platform') }.split('=')[1].replace('"', '').strip()
 
 dependencyResolutionManagement {
     repositories {
-        maven {
-            url 'https://artifacthub-phx.oci.oraclecorp.com/artifactory/micronaut-gcn-stage/'
-        }
+        maven { url 'https://maven.oracle.com/public' }
         mavenCentral()
         gradlePluginPortal()
     }
@@ -40,7 +38,7 @@ dependencyResolutionManagement {
             from "io.micronaut.platform:micronaut-platform:$micronautPlatformVersion"
         }
         templateLibs {
-            from(files("gradle/templates.versions.toml"))
+            from(files('gradle/templates.versions.toml'))
         }
     }
 }
