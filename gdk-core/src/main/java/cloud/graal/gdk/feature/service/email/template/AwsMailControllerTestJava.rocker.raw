@@ -26,14 +26,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-@@Property(name = "spec.name", value = "MailControllerTest")
+@@Property(name = "spec.name", value = "MailControllerTest") // <1>
 @@Property(name = "micronaut.email.from.email", value = "mo@@gdk.example")
-@@MicronautTest
+@@MicronautTest // <2>
 class MailControllerTest {
 
     @@Inject
     @@Client("/")
-    HttpClient httpClient;
+    HttpClient httpClient; // <3>
 
     @@Inject
     BeanContext beanContext;

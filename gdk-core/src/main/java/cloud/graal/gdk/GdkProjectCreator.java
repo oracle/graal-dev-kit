@@ -144,7 +144,7 @@ public class GdkProjectCreator {
         return JdkVersion.valueOf(majorVersion);
     }
 
-    private List<String> derivedFeatures(List<GdkCloud> clouds,
+    public List<String> derivedFeatures(List<GdkCloud> clouds,
                                          List<GdkService> services,
                                          List<String> features,
                                          GdkProjectType projectType) {

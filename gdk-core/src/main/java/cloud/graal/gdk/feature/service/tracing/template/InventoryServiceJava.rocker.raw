@@ -79,7 +79,7 @@ public class InventoryService {
                 "amount", count,
                 "upc", getUPC(item)));
 
-        span.end();
+        span.end(); // <6>
     }
 
     private int getUPC(String item) {

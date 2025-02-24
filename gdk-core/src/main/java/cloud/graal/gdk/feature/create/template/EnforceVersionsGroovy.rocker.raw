@@ -35,12 +35,8 @@ abstract class EnforceBomDependencies implements ComponentMetadataRule {
                 constraints.each { constraint ->
                     String key = "${constraint.group}:${constraint.module}"
                     if (gdkBomConstraints.containsKey(key)) {
-                        String version = constraint.versionConstraint.requiredVersion
-                        String gdkVersionWithoutSuffix = gdkBomConstraints.get(key).replaceAll(/-oracle-\d+$/, '')
-                        if (version == gdkVersionWithoutSuffix) {
-                            constraint.version {
-                                strictly(gdkBomConstraints[key])
-                            }
+                        constraint.version {
+                            strictly(gdkBomConstraints[key])
                         }
                     }
                 }

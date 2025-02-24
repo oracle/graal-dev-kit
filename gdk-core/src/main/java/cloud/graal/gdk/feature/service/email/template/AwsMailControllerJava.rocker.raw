@@ -24,19 +24,19 @@ import software.amazon.awssdk.services.ses.model.SesResponse;
 import static io.micronaut.email.BodyType.HTML;
 import static io.micronaut.http.HttpStatus.UNPROCESSABLE_ENTITY;
 
-@@Controller("/mail")
+@@Controller("/mail") // <1>
 class MailController {
 
     private static final Logger LOG = LoggerFactory.getLogger(MailController.class);
 
     private final AsyncEmailSender<SesRequest, SesResponse> emailSender;
 
-    MailController(AsyncEmailSender<SesRequest, SesResponse> emailSender) {
+    MailController(AsyncEmailSender<SesRequest, SesResponse> emailSender) { // <2>
         this.emailSender = emailSender;
     }
 
-    @@Post("/send")
-    public Publisher<HttpResponse<?>> send(@@Body("to") String to) {
+    @@Post("/send") // <3>
+    public Publisher<HttpResponse<?>> send(@@Body("to") String to) { // <4>
         return Mono.from(emailSender.sendAsync(Email.builder()
                         .to(to)
                         .subject("Sending email with Amazon SES is Fun")
@@ -46,6 +46,6 @@ class MailController {
                         LOG.info("message id: {}", ((SendEmailResponse) rsp).messageId());
                     }
                 }).onErrorMap(EmailException.class, t -> new HttpStatusException(UNPROCESSABLE_ENTITY, "Email could not be sent"))
-                .map(rsp -> HttpResponse.accepted());
+                .map(rsp -> HttpResponse.accepted()); // <5>
     }
 }

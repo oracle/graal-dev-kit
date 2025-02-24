@@ -19,13 +19,13 @@ import java.util.Map;
 import static io.micronaut.security.rules.SecurityRule.IS_ANONYMOUS;
 import static io.micronaut.security.rules.SecurityRule.IS_AUTHENTICATED;
 
-@@Controller
+@@Controller // <1>
 class AuthController {
 
-    @@Secured(IS_ANONYMOUS)
-    @@View("auth")
-    @@Get
-    Map<String, Object> index(@@Nullable Authentication authentication) {
+    @@Secured(IS_ANONYMOUS) // <2>
+    @@View("auth") // <3>
+    @@Get // <4>
+    Map<String, Object> index(@@Nullable Authentication authentication) { // <5>
         Map<String, Object> model = new HashMap<>();
         if (authentication != null) {
             model.put("username", authentication.getAttributes().get("@(nameAttr)"));
@@ -35,9 +35,9 @@ class AuthController {
         return model;
     }
 
-    @@Secured(IS_AUTHENTICATED)
-    @@Get("/secure")
+    @@Secured(IS_AUTHENTICATED) // <6>
+    @@Get("/secure") // <7>
     Map<String, Object> secured() {
-        return Collections.singletonMap("secured", true);
+        return Collections.singletonMap("secured", true); // <8>
     }
 }

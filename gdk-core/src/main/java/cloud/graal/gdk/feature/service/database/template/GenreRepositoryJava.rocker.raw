@@ -15,8 +15,8 @@ import jakarta.validation.constraints.NotBlank;
 
 import static io.micronaut.data.model.query.builder.sql.Dialect.@(dialect);
 
-@@JdbcRepository(dialect = @(dialect))
-public interface GenreRepository extends PageableRepository<Genre, Long> {
+@@JdbcRepository(dialect = @(dialect)) // <1>
+public interface GenreRepository extends PageableRepository<Genre, Long> { // <2>
 
     Genre save(@@NonNull @@NotBlank String name);
 

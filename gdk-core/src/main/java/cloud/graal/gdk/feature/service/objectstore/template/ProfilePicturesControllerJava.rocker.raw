@@ -26,14 +26,14 @@ import java.util.Optional;
 import static io.micronaut.http.HttpHeaders.ETAG;
 import static io.micronaut.http.MediaType.IMAGE_JPEG_TYPE;
 
-@@Controller(ProfilePicturesController.PREFIX)
-@@ExecuteOn(TaskExecutors.IO)
+@@Controller(ProfilePicturesController.PREFIX) // <1>
+@@ExecuteOn(TaskExecutors.IO) // <2>
 class ProfilePicturesController implements ProfilePicturesApi {
 
     static final String PREFIX = "/pictures";
 
-    private final ObjectStorageOperations<?, ?, ?> objectStorage;
-    private final HttpHostResolver httpHostResolver;
+    private final ObjectStorageOperations<?, ?, ?> objectStorage; // <3>
+    private final HttpHostResolver httpHostResolver; // <4>
 
     ProfilePicturesController(ObjectStorageOperations<?, ?, ?> objectStorage,
                               HttpHostResolver httpHostResolver) {
@@ -45,13 +45,13 @@ class ProfilePicturesController implements ProfilePicturesApi {
     public HttpResponse<?> upload(CompletedFileUpload fileUpload,
                                   String userId,
                                   HttpRequest<?> request) {
-        String key = buildKey(userId);
-        UploadRequest objectStorageUpload = UploadRequest.fromCompletedFileUpload(fileUpload, key);
-        UploadResponse<?> response = objectStorage.upload(objectStorageUpload);
+        String key = buildKey(userId); // <1>
+        UploadRequest objectStorageUpload = UploadRequest.fromCompletedFileUpload(fileUpload, key); // <2>
+        UploadResponse<?> response = objectStorage.upload(objectStorageUpload); // <3>
 
         return HttpResponse
-                .created(location(request, userId))
-                .header(ETAG, response.getETag());
+                .created(location(request, userId)) // <4>
+                .header(ETAG, response.getETag()); // <5>
     }
 
     private static String buildKey(String userId) {
@@ -68,8 +68,8 @@ class ProfilePicturesController implements ProfilePicturesApi {
     @@Override
     public Optional<HttpResponse<StreamedFile>> download(String userId) {
         String key = buildKey(userId);
-        return objectStorage.retrieve(key)
-                .map(ProfilePicturesController::buildStreamedFile);
+        return objectStorage.retrieve(key) // <1>
+                .map(ProfilePicturesController::buildStreamedFile); // <2>
     }
 
     private static HttpResponse<StreamedFile> buildStreamedFile(ObjectStorageEntry<?> entry) {

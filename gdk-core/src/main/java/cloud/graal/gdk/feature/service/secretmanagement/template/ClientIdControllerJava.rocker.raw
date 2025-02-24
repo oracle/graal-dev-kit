@@ -19,12 +19,12 @@ class ClientIdController {
 
     private final OauthClientConfiguration oauthClientConfiguration;
 
-    ClientIdController(@@Named("demo-oauth") OauthClientConfiguration oauthClientConfiguration) {
+    ClientIdController(@@Named("demo-oauth") OauthClientConfiguration oauthClientConfiguration) { // <1>
         this.oauthClientConfiguration = oauthClientConfiguration;
     }
 
     @@Secured(IS_ANONYMOUS)
-    @@Get(uri = "/oauth-client-id", produces = TEXT_PLAIN)
+    @@Get(uri = "/oauth-client-id", produces = TEXT_PLAIN) // <2>
     public String index() {
         return oauthClientConfiguration.getClientId();
     }

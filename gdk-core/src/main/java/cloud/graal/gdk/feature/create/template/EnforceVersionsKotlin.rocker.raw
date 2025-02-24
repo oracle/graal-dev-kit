@@ -34,14 +34,9 @@ open class EnforceBomDependencies : ComponentMetadataRule {
                 forEach { constraint ->
                     val key = "${constraint.group}:${constraint.module}"
                     if (gdkBomConstraints.containsKey(key)) {
-                        val version = constraint.versionConstraint.requiredVersion
-                        val gdkVersionWithoutSuffix = gdkBomConstraints[key]?.replace(Regex("-oracle-\\d+$"), "")
-
-                        if (version == gdkVersionWithoutSuffix) {
-                            constraint.version {
-                                gdkBomConstraints[key]?.let { newVersion ->
-                                    strictly(newVersion)
-                                }
+                        constraint.version {
+                            gdkBomConstraints[key]?.let { newVersion ->
+                                strictly(newVersion)
                             }
                         }
                     }

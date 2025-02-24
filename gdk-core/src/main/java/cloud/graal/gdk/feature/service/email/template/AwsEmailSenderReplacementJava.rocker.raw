@@ -25,7 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Consumer;
 
-@@Requires(property = "spec.name", value = "MailControllerTest")
+@@Requires(property = "spec.name", value = "MailControllerTest") // <1>
 @@Singleton
 @@Replaces(AsyncSesEmailSender.class)
 @@Named(AsyncSesEmailSender.NAME)

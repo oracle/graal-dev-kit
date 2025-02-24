@@ -27,14 +27,14 @@ import static io.micronaut.http.HttpStatus.ACCEPTED;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-@@Property(name = "FROM_EMAIL", value = "bob@@gdk.example")
+@@Property(name = "FROM_EMAIL", value = "bob@@gdk.example") // <1>
 @@Property(name = "FROM_PASSWORD", value = "example-password")
-@@MicronautTest
+@@MicronautTest // <2>
 public class EmailControllerTest {
 
     @@Inject
     @@Client("/")
-    HttpClient client;
+    HttpClient client; // <3>
 
     Email sentEmail;
 
@@ -42,7 +42,7 @@ public class EmailControllerTest {
     void testSend() {
         var response = client.toBlocking().exchange(
                 HttpRequest.POST("/email/send",
-                        Map.of("to", "alice@@gdk.example")));
+                        Map.of("to", "alice@@gdk.example"))); // <4>
 
         assertEquals(ACCEPTED, response.status());
 
@@ -57,7 +57,7 @@ public class EmailControllerTest {
 
     }
 
-    @@MockBean(TransactionalEmailSender.class)
+    @@MockBean(TransactionalEmailSender.class) // <5>
     @@Named("mock")
     TransactionalEmailSender<Message, Void> mockSender() {
         return new TransactionalEmailSender<>() {
