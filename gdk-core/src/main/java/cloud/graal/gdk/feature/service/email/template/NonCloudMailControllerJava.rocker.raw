@@ -17,28 +17,28 @@ import io.micronaut.scheduling.annotation.ExecuteOn;
 
 import static io.micronaut.email.BodyType.HTML;
 
-@@ExecuteOn(TaskExecutors.IO)
-@@Controller("/email")
+@@ExecuteOn(TaskExecutors.IO) // <1>
+@@Controller("/email") // <2>
 public class EmailController {
 
     private final EmailSender<?, ?> emailSender;
 
-    EmailController(EmailSender<?, ?> emailSender) {
+    EmailController(EmailSender<?, ?> emailSender) { // <3>
         this.emailSender = emailSender;
     }
 
-    @@Post("/send")
-    public HttpResponse<?> send(@@Body("to") String to) {
+    @@Post("/send") // <4>
+    public HttpResponse<?> send(@@Body("to") String to) { // <5>
 
         try {
             emailSender.send(Email.builder()
                     .to(to)
                     .subject("Sending email with JavaMail is Fun")
-                    .body("and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>", HTML));
+                    .body("and <em>easy</em> to do anywhere with <strong>Micronaut Email</strong>", HTML)); // <6>
         } catch (EmailException ignored) {
-            return HttpResponse.unprocessableEntity();
+            return HttpResponse.unprocessableEntity(); // <7>
         }
 
-        return HttpResponse.accepted();
+        return HttpResponse.accepted(); // <8>
     }
 }

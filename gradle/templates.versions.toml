@@ -36,7 +36,6 @@ dev-jna-jna = '5.14.0-oracle-00001'
 eclipse-angus-angus-activation = '2.0.2-oracle-00001'
 eclipse-angus-angus-mail = '2.0.3-oracle-00001'
 flipkart-zjsonpatch-zjsonpatch = '0.4.14-oracle-00002'
-flyway = "10.22.0"
 gax = "2.59.0"
 gax-grpc = "2.59.0"
 gg-jte = '3.1.13-oracle-00001'
@@ -93,7 +92,7 @@ micronaut-micrometer = "5.9.3-oracle-00001"
 micronaut-mongo = "5.5.0-oracle-00001"
 micronaut-object-storage = "2.7.0-oracle-00001"
 micronaut-openapi = "6.13.2-oracle-00001"
-micronaut-oracle-cloud = "4.3.6-oracle-00004"
+micronaut-oracle-cloud = "4.3.8-oracle-00002"
 micronaut-picocli = "5.6.0-oracle-00001"
 micronaut-platform = "4.7.3-oracle-00001"
 micronaut-reactor = "3.6.0-oracle-00001"
@@ -104,7 +103,7 @@ micronaut-sql = "5.8.2-oracle-00001"
 micronaut-tracing = "6.9.0-oracle-00001"
 micronaut-validation = "4.8.0-oracle-00001"
 micronaut-views = "5.6.0-oracle-00001"
-netty = "4.1.116.Final-oracle-00001"
+netty = "4.1.118.Final-oracle-00001"
 okhttp = "4.12.0-oracle-00001"
 opentelemetry-instrumentation = '1.33.6-oracle-00001'
 opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = '1.33.5-alpha-oracle-00001'
@@ -149,6 +148,7 @@ io-micronaut-discovery-micronaut-discovery-client = { module = 'io.micronaut.dis
 io-micronaut-email-micronaut-email = { module = 'io.micronaut.email:micronaut-email', version.ref = 'micronaut-email'}
 io-micronaut-email-micronaut-email-javamail = { module = 'io.micronaut.email:micronaut-email-javamail', version.ref = 'micronaut-email'}
 io-micronaut-email-micronaut-email-javamail-composer = { module = 'io.micronaut.email:micronaut-email-javamail-composer', version.ref = 'micronaut-email'}
+io-micronaut-email-micronaut-email-template = { module = 'io.micronaut.email:micronaut-email-template', version.ref = 'micronaut-email'}
 io-micronaut-flyway-micronaut-flyway-bom = { module = 'io.micronaut.flyway:micronaut-flyway-bom', version.ref = 'micronaut-flyway'}
 io-micronaut-jaxrs-micronaut-jaxrs-bom = { module = 'io.micronaut.jaxrs:micronaut-jaxrs-bom', version.ref = 'micronaut-jaxrs'}
 io-micronaut-kafka-micronaut-kafka-bom = { module = 'io.micronaut.kafka:micronaut-kafka-bom', version.ref = 'micronaut-kafka'}
@@ -289,10 +289,8 @@ io-netty-netty-common = { module = "io.netty:netty-common", version.ref = "netty
 io-netty-netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
 io-netty-netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
 io-netty-netty-resolver = { module = "io.netty:netty-resolver", version.ref = "netty" }
-io-netty-netty-transport-native-epoll = { module = "io.netty:netty-transport-native-epoll", version.ref = "netty" }
-io-netty-netty-transport-native-kqueue = { module = "io.netty:netty-transport-native-kqueue", version.ref = "netty" }
-io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
 io-netty-netty-transport= { module = "io.netty:netty-transport", version.ref = "netty" }
+io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-annotations = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv', version.ref = 'opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv' }
@@ -344,6 +342,7 @@ org-eclipse-angus-angus-activation = { module = 'org.eclipse.angus:angus-activat
 org-eclipse-angus-angus-mail = { module = 'org.eclipse.angus:angus-mail', version.ref = 'eclipse-angus-angus-mail' }
 org-flywaydb-flyway-core = { module = 'org.flywaydb:flyway-core', version.ref = 'org-flywaydb' }
 org-flywaydb-flyway-database-oracle = { module = 'org.flywaydb:flyway-database-oracle', version.ref = 'org-flywaydb' }
+org-flywaydb-flyway-mysql = { module = 'org.flywaydb:flyway-mysql', version.ref = 'org-flywaydb' }
 org-hdrhistogram-HdrHistogram = { module = 'org.hdrhistogram:HdrHistogram', version.ref = 'org-hdrhistogram-HdrHistogram' }
 org-jetbrains-annotations = { module = 'org.jetbrains:annotations', version.ref = 'org-jetbrains-annotations' }
 org-jetbrains-intellij-deps-trove4j = { module = 'org.jetbrains.intellij.deps:trove4j', version.ref = 'intellij-deps-trove4j' }

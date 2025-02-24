@@ -23,6 +23,7 @@ jline = '3.28.0'
 logback = '1.5.15'
 micronaut-plugins = '4.4.4'
 micronaut-starter = '4.7.4'
+netty = "4.1.118.Final"
 reflections = '0.10.2'
 rocker = '1.4.0'
 shadow = '8.1.1'
@@ -31,6 +32,9 @@ spotless = '6.25.0'
 test-logger = '4.0.0'
 tomlj = '1.1.1'
 micronaut-internal-build = '7.3.0'
+micronaut-guides = '0.0.11'
+micronaut-serde = '2.13.1'
+micronaut-json = '1.4.0'
 
 [libraries]
 bouncycastle-bcpkix = { module = 'org.bouncycastle:bcpkix-jdk18on', version.ref = 'bouncycastle' }
@@ -48,6 +52,17 @@ micronaut-application = { module = 'io.micronaut.gradle:micronaut-gradle-plugin'
 micronaut-library = { module = 'io.micronaut.gradle:micronaut-gradle-plugin', version.ref = 'micronaut-plugins' }
 micronaut-starter-api = { module = 'io.micronaut.starter:micronaut-starter-api', version.ref = 'micronaut-starter' }
 micronaut-starter-cli = { module = 'io.micronaut.starter:micronaut-cli', version.ref = 'micronaut-starter' }
+netty-buffer = { module = "io.netty:netty-buffer", version.ref = "netty" }
+netty-codec = { module = "io.netty:netty-codec", version.ref = "netty" }
+netty-codec-http = { module = "io.netty:netty-codec-http", version.ref = "netty" }
+netty-codec-http2 = { module = "io.netty:netty-codec-http2", version.ref = "netty" }
+netty-codec-socks = { module = "io.netty:netty-codec-socks", version.ref = "netty" }
+netty-common = { module = "io.netty:netty-common", version.ref = "netty" }
+netty-handler = { module = "io.netty:netty-handler", version.ref = "netty" }
+netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
+netty-resolver = { module = "io.netty:netty-resolver", version.ref = "netty" }
+netty-transport = { module = "io.netty:netty-transport", version.ref = "netty" }
+netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
 reflections = { module = 'org.reflections:reflections', version.ref = 'reflections' }
 rocker = { module = 'com.fizzed:rocker-compiler', version.ref = 'rocker' }
 shadow = { module = 'com.github.johnrengelman:shadow', version.ref = 'shadow' }
@@ -55,4 +70,9 @@ slf4j-nop = { module = 'org.slf4j:slf4j-nop', version.ref = 'slf4j' }
 spotless = { module = 'com.diffplug.spotless:spotless-plugin-gradle', version.ref = 'spotless' }
 test-logger = { module = 'com.adarshr:gradle-test-logger-plugin', version.ref = 'test-logger' }
 tomlj = { module = 'org.tomlj:tomlj', version.ref = 'tomlj' }
+micronaut-guides = { module = 'io.micronaut.guides:micronaut-guides', version.ref = 'micronaut-guides' }
+micronaut-serde-processor = { module = 'io.micronaut.serde:micronaut-serde-processor', version.ref = 'micronaut-serde' }
+micronaut-serde-jackson = { module = 'io.micronaut.serde:micronaut-serde-jackson', version.ref = 'micronaut-serde' }
+micronaut-json-processor = { module = 'io.micronaut.jsonschema:micronaut-json-schema-processor', version.ref = 'micronaut-json' }
+micronaut-json-annotations = { module = 'io.micronaut.jsonschema:micronaut-json-schema-annotations', version.ref = 'micronaut-json' }
 micronaut-internal-build-bom = { module = 'io.micronaut.build.internal.bom:io.micronaut.build.internal.bom.gradle.plugin', version.ref = 'micronaut-internal-build' }

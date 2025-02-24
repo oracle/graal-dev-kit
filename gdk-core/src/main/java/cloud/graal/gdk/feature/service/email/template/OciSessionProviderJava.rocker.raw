@@ -16,7 +16,7 @@ import jakarta.mail.PasswordAuthentication;
 import jakarta.mail.Session;
 import java.util.Properties;
 
-@@Singleton
+@@Singleton // <1>
 class OciSessionProvider implements SessionProvider {
 
     private final Properties properties;
@@ -24,8 +24,8 @@ class OciSessionProvider implements SessionProvider {
     private final String password;
 
     OciSessionProvider(MailPropertiesProvider provider,
-                       @@Property(name = "smtp.user") String user,
-                       @@Property(name = "smtp.password") String password) {
+                       @@Property(name = "smtp.user") String user, // <2>
+                       @@Property(name = "smtp.password") String password) { // <2>
         this.properties = provider.mailProperties();
         this.user = user;
         this.password = password;
@@ -37,7 +37,7 @@ class OciSessionProvider implements SessionProvider {
         return Session.getInstance(properties, new Authenticator() {
             @@Override
             protected PasswordAuthentication getPasswordAuthentication() {
-                return new PasswordAuthentication(user, password);
+                return new PasswordAuthentication(user, password); // <3>
             }
         });
     }
