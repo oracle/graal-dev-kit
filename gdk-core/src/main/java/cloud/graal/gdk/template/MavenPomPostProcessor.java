@@ -24,7 +24,7 @@ import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static cloud.graal.gdk.GdkUtils.BOM_VERSION_SUFFIX;
+import static cloud.graal.gdk.GdkUtils.MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX;
 import static cloud.graal.gdk.GdkUtils.LIB_MODULE;
 
 /**
@@ -179,10 +179,10 @@ public class MavenPomPostProcessor implements TemplatePostProcessor {
     @NonNull
     private String fixMicronautVersion(@NonNull String pom) {
 
-        if (!libModule && !pom.contains(BOM_VERSION_SUFFIX)) {
+        if (!libModule && !pom.contains(MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX)) {
             Matcher m = MICRONAUT_VERSION_PATTERN.matcher(pom);
             if (m.find() && m.groupCount() == 1) {
-                pom = m.replaceAll(MICRONAUT_VERSION_START + m.group(1) + BOM_VERSION_SUFFIX + MICRONAUT_VERSION_END);
+                pom = m.replaceAll(MICRONAUT_VERSION_START + m.group(1) + MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX + MICRONAUT_VERSION_END);
             }
         }
 

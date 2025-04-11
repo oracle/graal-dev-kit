@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Oracle and/or its affiliates
+ * Copyright 2025 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -131,8 +131,9 @@ abstract class VersionCatalogUpdate extends DefaultTask {
                         'io.micronaut.build',
                         'io.micronaut.build.internal.bom',
                         'io.micronaut.gradle',
-                        'io.micronaut.starter',
+                        'io.micronaut.guides',
                         'io.micronaut.maven',
+                        'io.micronaut.starter',
                         'io.micronaut.testresources'
                 ]
 
@@ -140,7 +141,13 @@ abstract class VersionCatalogUpdate extends DefaultTask {
                     rules.reject('Rejecting Micronaut module not build at Oracle')
                     log.println("Rejecting " + candidateModule.getModuleIdentifier() + " version " + candidateVersion)
                 }
-                Set<String> modulesToAllowAlpha = Set.of("google-cloud-logging-logback", "opentelemetry-semconv")
+                Set<String> modulesToAllowAlpha = Set.of(
+                        "google-cloud-logging-logback",
+                        "opentelemetry-semconv",
+                        "opentelemetry-api-events",
+                        "opentelemetry-instrumentation-api-semconv",
+                        "opentelemetry-api-incubator"
+                )
                 for (Pattern qualifier in rejectedQualifiers) {
                     if (qualifier.matcher(candidateVersion).find()) {
                         if (!modulesToAllowAlpha.contains(candidateModule.getModule()) || !candidateVersion.contains("alpha")) {

@@ -179,7 +179,7 @@ public class GdkGeneratorContext extends GeneratorContext {
         clouds.add(NONE); // for lib module
         buildProperties = new GdkBuildProperties(this, clouds);
         if (featureContext.getOptions().getBuildTool().isGradle()) {
-            buildProperties.put("micronautVersion", GdkUtils.getMicronautVersion() + GdkUtils.BOM_VERSION_SUFFIX);
+            buildProperties.put("micronautVersion", GdkUtils.getMicronautVersion() + GdkUtils.MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX);
         }
         INSTANCE.set(this);
     }

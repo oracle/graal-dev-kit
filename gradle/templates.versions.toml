@@ -22,7 +22,7 @@ apache-kafka-kafka-clients = '3.8.0-oracle-00001'
 asm = '9.7.1-oracle-00001'
 aws-msk-iam-auth = "2.2.0"
 ben-manes-caffeine-caffeine = '3.1.8-oracle-00001'
-bitbucket-b_c-jose4j = '0.9.3-oracle-00001'
+bitbucket-b_c-jose4j = '0.9.6-oracle-00001'
 bouncycastle = "1.79"
 ch-randelshofer-fastdoubleparser = '1.0.0-oracle-00001'
 code-findbugs-jsr305 = '3.0.2-oracle-00001'
@@ -76,7 +76,7 @@ kotlin = "1.8.22-oracle-00001"
 logback = "1.5.15-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "5.1.0-oracle-00001"
-micronaut-core = "4.7.10-oracle-00001"
+micronaut-core = "4.7.10-oracle-00002"
 micronaut-data = "4.10.5-oracle-00001"
 micronaut-discovery = "4.5.0-oracle-00001"
 micronaut-email = "2.7.0-oracle-00001"
@@ -98,6 +98,7 @@ micronaut-platform = "4.7.3-oracle-00001"
 micronaut-reactor = "3.6.0-oracle-00001"
 micronaut-security = "4.11.2-oracle-00001"
 micronaut-serde = "2.13.0-oracle-00001"
+micronaut-servlet = "4.12.0-oracle-00001"
 micronaut-session = "4.5.0-oracle-00001"
 micronaut-sql = "5.8.2-oracle-00001"
 micronaut-tracing = "6.9.0-oracle-00001"
@@ -202,6 +203,7 @@ io-micronaut-picocli-micronaut-picocli-bom = { module = 'io.micronaut.picocli:mi
 io-micronaut-reactor-micronaut-reactor-bom = { module = 'io.micronaut.reactor:micronaut-reactor-bom', version.ref = 'micronaut-reactor'}
 io-micronaut-security-micronaut-security-bom = { module = 'io.micronaut.security:micronaut-security-bom', version.ref = 'micronaut-security'}
 io-micronaut-serde-micronaut-serde-bom = { module = 'io.micronaut.serde:micronaut-serde-bom', version.ref = 'micronaut-serde'}
+io-micronaut-servlet-bom = { module = 'io.micronaut.servlet:micronaut-servlet-bom', version.ref = 'micronaut-servlet'}
 io-micronaut-sql-micronaut-jdbc = { module = 'io.micronaut.sql:micronaut-jdbc', version.ref = 'micronaut-sql'}
 io-micronaut-sql-micronaut-jdbc-tomcat = { module = 'io.micronaut.sql:micronaut-jdbc-tomcat', version.ref = 'micronaut-sql'}
 io-micronaut-sql-micronaut-sql-bom = { module = 'io.micronaut.sql:micronaut-sql-bom', version.ref = 'micronaut-sql'}
