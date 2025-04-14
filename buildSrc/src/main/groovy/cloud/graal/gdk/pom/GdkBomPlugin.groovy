@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Oracle and/or its affiliates
+ * Copyright 2025 Oracle and/or its affiliates
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -133,7 +133,8 @@ abstract class GdkBomPlugin implements Plugin<Project> {
                         String alias = Optional.ofNullable(library.version.reference).map(a -> a.replace('-', '.')).orElse("")
                         String bomPropertyName = bomPropertyName(alias)
                         def version = modelProvider.versionsTable.find(x -> x.reference == library.version.reference).version
-                        mapAliasToVersion[library.alias] = '\${' + bomPropertyName + '}'
+                        String key = library.alias.replace("-",".").replace("_",".")
+                        mapAliasToVersion[key] = '\${' + bomPropertyName + '}'
                         pomProperties.put(bomPropertyName, version.require)
                     }
                 })
@@ -186,19 +187,19 @@ abstract class GdkBomPlugin implements Plugin<Project> {
             DefaultExternalModuleDependency existingDep = api.dependencies.find(x -> x.name == lib.name) as DefaultExternalModuleDependency
 
             if (existingDep != null) {
-                existingDep.version { it.strictly(mapAliasToVersion.get(alias.replace(".", "-"))) }
+                existingDep.version { it.strictly(mapAliasToVersion.get(alias)) }
             } else if (alias.endsWith(".bom")) {
                 DefaultMutableMinimalDependency bomDependency = project.dependencies.platform(versionCatalog.findLibrary(alias)
                         .map(Provider::get)
                         .orElseThrow(() -> new RuntimeException("Unexpected missing alias in catalog: " + alias))
                 ) as DefaultMutableMinimalDependency
-                bomDependency.version { it.strictly(mapAliasToVersion.get(alias.replace(".", "-"))) }
+                bomDependency.version { it.strictly(mapAliasToVersion.get(alias)) }
                 api.dependencies.add(bomDependency)
                 catalogs.dependencies.add(bomDependency)
 
             } else if (!alias.startsWith("exclude.")) {
                 DependencyConstraint dependencyConstraint = project.dependencies.constraints.create(lib)
-                dependencyConstraint.version { it.strictly(mapAliasToVersion.get(alias.replace(".", "-"))) }
+                dependencyConstraint.version { it.strictly(mapAliasToVersion.get(alias)) }
                 api.dependencyConstraints.add(dependencyConstraint)
             }
         })
