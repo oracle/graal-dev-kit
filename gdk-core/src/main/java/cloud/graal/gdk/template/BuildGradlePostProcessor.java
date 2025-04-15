@@ -25,7 +25,7 @@ import io.micronaut.starter.build.gradle.GradleDsl;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
-import static cloud.graal.gdk.GdkUtils.BOM_VERSION_SUFFIX;
+import static cloud.graal.gdk.GdkUtils.MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 
 /**
@@ -121,7 +121,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     private static final Pattern RESOLUTION_STRATEGY_REGEX = Pattern.compile(
             "(?s)(substitute\\(module\\(\"io\\.micronaut.+\"\\)\\).*\\.using\\(module\\(\"io\\.micronaut.+:[0-9.]+)(\"\\)\\))");
 
-    private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", BOM_VERSION_SUFFIX);
+    private static final String RESOLUTION_STRATEGY_REPLACEMENT = String.format("$1%s$2", MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX);
 
     private final GradleDsl dsl;
     private final boolean forCloudModule;
