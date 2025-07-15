@@ -16,15 +16,24 @@
 package cloud.graal.gdk.feature.replaced;
 
 import io.micronaut.context.annotation.Replaces;
+import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.application.ApplicationType;
+import io.micronaut.starter.application.generator.GeneratorContext;
+import io.micronaut.starter.build.dependencies.Dependency;
+import io.micronaut.starter.build.dependencies.MicronautDependencyUtils;
+import io.micronaut.starter.feature.CodeContributingFeature;
 import io.micronaut.starter.feature.architecture.X86;
 import io.micronaut.starter.feature.aws.AwsLambdaEventsSerde;
 import io.micronaut.starter.feature.aws.AwsLambdaSnapstart;
 import io.micronaut.starter.feature.awslambdacustomruntime.AwsLambdaCustomRuntime;
+import io.micronaut.starter.feature.crac.Crac;
 import io.micronaut.starter.feature.function.awslambda.AwsLambda;
 import io.micronaut.starter.feature.function.awslambda.DefaultAwsLambdaHandlerProvider;
 import io.micronaut.starter.feature.function.awslambda.FunctionAwsLambdaHandlerProvider;
+import io.micronaut.starter.feature.graalvm.GraalVM;
 import io.micronaut.starter.feature.httpclient.HttpClientJdk;
 import io.micronaut.starter.feature.other.ShadePlugin;
+import io.micronaut.starter.options.BuildTool;
 import jakarta.inject.Singleton;
 
 /**
@@ -36,6 +45,11 @@ import jakarta.inject.Singleton;
 @Replaces(AwsLambda.class)
 @Singleton
 public class GdkAwsLambda extends AwsLambda {
+
+    private static final Dependency AWS_LAMBDA_JAVA_EVENTS = Dependency.builder().groupId("com.amazonaws").artifactId("aws-lambda-java-events").compile().build();
+    private static final Dependency DEPENDENCY_MICRONAUT_FUNCTION_AWS = MicronautDependencyUtils.awsDependency().artifactId("micronaut-function-aws").compile().build();
+    private static final Dependency DEPENDENCY_MICRONAUT_FUNCTION_AWS_API_PROXY = MicronautDependencyUtils.awsDependency().artifactId("micronaut-function-aws-api-proxy").compile().build();
+    private static final Dependency DEPENDENCY_MICRONAUT_FUNCTION_AWS_API_PROXY_TEST = MicronautDependencyUtils.awsDependency().artifactId("micronaut-function-aws-api-proxy-test").test().build();
 
     /**
      * @param shadePlugin   ShadePlugin feature
@@ -50,4 +64,48 @@ public class GdkAwsLambda extends AwsLambda {
                         FunctionAwsLambdaHandlerProvider functionAwsLambdaHandlerProvider) {
         super(shadePlugin, customRuntime, x86, snapstart, httpClientJdk, awsLambdaEventsSerde, defaultAwsLambdaHandlerProvider, functionAwsLambdaHandlerProvider);
     }
+
+    @Override
+    public void apply(GeneratorContext generatorContext) {
+        if (generatorContext.isFeatureMissing(CodeContributingFeature.class)) {
+            ApplicationType applicationType = generatorContext.getApplicationType();
+            if (applicationType == ApplicationType.DEFAULT || applicationType == ApplicationType.FUNCTION) {
+                this.addCode(generatorContext);
+                if (applicationType == ApplicationType.FUNCTION) {
+                    generatorContext.addDependency(AWS_LAMBDA_JAVA_EVENTS);
+                }
+
+                this.addHelpTemplate(generatorContext);
+                this.disableSecurityFilterInTestConfiguration(generatorContext);
+            }
+        }
+
+        this.addMicronautRuntimeBuildProperty(generatorContext);
+        this.addDependencies(generatorContext);
+    }
+
+    private void addDependencies(@NonNull GeneratorContext generatorContext) {
+        if (generatorContext.getApplicationType() == ApplicationType.FUNCTION) {
+            generatorContext.addDependency(DEPENDENCY_MICRONAUT_FUNCTION_AWS);
+        }
+
+        if (generatorContext.getBuildTool() == BuildTool.MAVEN && generatorContext.getApplicationType() == ApplicationType.DEFAULT) {
+            generatorContext.addDependency(DEPENDENCY_MICRONAUT_FUNCTION_AWS_API_PROXY);
+            generatorContext.addDependency(DEPENDENCY_MICRONAUT_FUNCTION_AWS_API_PROXY_TEST);
+        }
+
+        if (generatorContext.getBuildTool() == BuildTool.MAVEN && generatorContext.hasFeature(GraalVM.class)) {
+            generatorContext.addDependency(AwsLambdaCustomRuntime.DEPENDENCY_AWS_FUNCTION_AWS_CUSTOM_RUNTIME);
+        }
+
+        if (generatorContext.hasFeature(AwsLambdaSnapstart.class)) {
+            generatorContext.addDependency(Crac.DEPENDENCY_MICRONAUT_CRAC);
+        }
+
+        if (generatorContext.getFeatures().testFramework().isSpock() && generatorContext.getBuildTool().isGradle()) {
+            generatorContext.addDependency(DEPENDENCY_MICRONAUT_FUNCTION_TEST);
+        }
+
+    }
+
 }
