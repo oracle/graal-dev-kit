@@ -38,7 +38,7 @@ eclipse-angus-angus-mail = '2.0.3-oracle-00001'
 flipkart-zjsonpatch-zjsonpatch = '0.4.14-oracle-00002'
 gax = "2.59.0"
 gax-grpc = "2.59.0"
-gg-jte = '3.1.13-oracle-00001'
+gg-jte = '3.1.16-oracle-00001'
 github-javaparser = '3.26.3-oracle-00001'
 github-resilience4j = '1.7.1-oracle-00002'
 github-vladimir-bukhtoyarov-bucket4j-core = '7.6.0-oracle-00001'
@@ -105,6 +105,7 @@ micronaut-sql = "5.8.2-oracle-00001"
 micronaut-tracing = "6.9.0-oracle-00001"
 micronaut-validation = "4.8.0-oracle-00001"
 micronaut-views = "5.6.0-oracle-00001"
+micronaut-coherence = "5.0.5-oracle-00001"
 netty = "4.1.118.Final-oracle-00001"
 okhttp = "4.12.0-oracle-00001"
 opentelemetry-instrumentation = '1.33.6-oracle-00001'
@@ -129,7 +130,7 @@ test-containers-oracle-xe = "1.20.4"
 xerial-snappy-snappy-java = '1.1.10.5-oracle-00001'
 zipkin-reporter2 = '3.4.2-oracle-00001'
 zipkin-zipkin2-zipkin = '2.27.1-oracle-00001'
-zstd-jni='1.5.6-3-reduced-oracle-00001'
+zstd-jni = '1.5.6-3-reduced-oracle-00001'
 
 [libraries]
 ch-qos-logback-logback-classic = { module = 'ch.qos.logback:logback-classic', version.ref = 'logback'}
@@ -212,6 +213,7 @@ io-micronaut-tracing-micronaut-tracing-bom = { module = 'io.micronaut.tracing:mi
 io-micronaut-validation-micronaut-validation-bom = { module = 'io.micronaut.validation:micronaut-validation-bom', version.ref = 'micronaut-validation'}
 io-micronaut-views-micronaut-views-core = { module = 'io.micronaut.views:micronaut-views-core', version.ref = 'micronaut-views'}
 io-micronaut-views-micronaut-views-jte = { module = 'io.micronaut.views:micronaut-views-jte', version.ref = 'micronaut-views'}
+io-micronaut-coherence-micronaut-coherence-bom = { module = 'io.micronaut.coherence:micronaut-coherence-bom', version.ref = 'micronaut-coherence'}
 io-opentelemetry-opentelemetry-semconv = { module = 'io.opentelemetry:opentelemetry-semconv', version.ref = 'opentelemetry-semconv'}
 net-minidev-json-smart = { module = 'net.minidev:json-smart', version.ref = 'json-smart'}
 org-apache-commons-commons-compress = { module = 'org.apache.commons:commons-compress', version.ref = 'apache-commons-compress'}
@@ -336,6 +338,7 @@ jakarta-persistence-jakarta-persistence-api = { module = 'jakarta.persistence:ja
 jakarta-transaction-jakarta-transaction-api = { module = 'jakarta.transaction:jakarta.transaction-api', version.ref = 'jakarta-transaction-jakarta-transaction-api' }
 jakarta-validation-jakarta-validation-api = { module = 'jakarta.validation:jakarta.validation-api', version.ref = 'jakarta-validation-jakarta-validation-api' }
 javax-annotation-javax-annotation-api = { module = 'javax.annotation:javax.annotation-api', version.ref = 'javax-annotation-javax-annotation-api' }
+
 net-java-dev-jna-jna = { module = 'net.java.dev.jna:jna', version.ref = 'dev-jna-jna' }
 org-apache-commons-commons-collections4 = { module = 'org.apache.commons:commons-collections4', version.ref = 'apache-commons-commons-collections4' }
 org-apache-commons-commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'apache-commons-commons-lang3' }
@@ -344,6 +347,7 @@ org-bitbucket-b_c-jose4j = { module = 'org.bitbucket.b_c:jose4j', version.ref = 
 org-checkerframework-checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'org-checkerframework-checker-qual' }
 org-eclipse-angus-angus-activation = { module = 'org.eclipse.angus:angus-activation', version.ref = 'eclipse-angus-angus-activation' }
 org-eclipse-angus-angus-mail = { module = 'org.eclipse.angus:angus-mail', version.ref = 'eclipse-angus-angus-mail' }
+
 org-flywaydb-flyway-core = { module = 'org.flywaydb:flyway-core', version.ref = 'org-flywaydb' }
 org-flywaydb-flyway-database-oracle = { module = 'org.flywaydb:flyway-database-oracle', version.ref = 'org-flywaydb' }
 org-flywaydb-flyway-mysql = { module = 'org.flywaydb:flyway-mysql', version.ref = 'org-flywaydb' }
