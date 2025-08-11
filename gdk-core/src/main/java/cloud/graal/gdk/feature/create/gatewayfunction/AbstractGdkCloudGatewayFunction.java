@@ -27,7 +27,9 @@ import static cloud.graal.gdk.model.GdkProjectType.GATEWAY_FUNCTION;
  *
  * @since 1.0.0
  */
-public abstract class AbstractGdkCloudGatewayFunction extends AbstractGdkCreateFeature implements FunctionFeature {
+public abstract class AbstractGdkCloudGatewayFunction
+        extends AbstractGdkCreateFeature
+        implements FunctionFeature {
 
     @NonNull
     @Override

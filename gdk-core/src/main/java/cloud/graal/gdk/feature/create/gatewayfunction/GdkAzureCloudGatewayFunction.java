@@ -15,8 +15,10 @@
  */
 package cloud.graal.gdk.feature.create.gatewayfunction;
 
+import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.function.azure.AzureRawFunction;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.AZURE;
@@ -28,6 +30,20 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
  */
 @Singleton
 public class GdkAzureCloudGatewayFunction extends AbstractGdkCloudGatewayFunction {
+
+    private final AzureRawFunction azureRawFunction;
+
+    /**
+     * @param azureRawFunction AzureRawFunction feature
+     */
+    public GdkAzureCloudGatewayFunction(AzureRawFunction azureRawFunction) {
+        this.azureRawFunction = azureRawFunction;
+    }
+
+    @Override
+    public void processSelectedFeatures(GdkFeatureContext featureContext) {
+        featureContext.addFeature(azureRawFunction, AzureRawFunction.class);
+    }
 
     @NonNull
     @Override

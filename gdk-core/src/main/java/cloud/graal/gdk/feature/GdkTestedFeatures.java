@@ -55,7 +55,7 @@ public final class GdkTestedFeatures {
             "email-javamail",
             "email-template",
             // K8S
-            "kubernetes-client",
+            "kubernetes-client-openapi",
             // LOGGING
             "logback",
             // METRICS
@@ -100,6 +100,8 @@ public final class GdkTestedFeatures {
             // TRACING AWS
             "tracing-opentelemetry-exporter-otlp",
             "tracing-opentelemetry-xray",
+            // TRACING Azure
+            "azure-tracing",
             // TRACING GCP
             "tracing-opentelemetry-exporter-gcp",
             "tracing-opentelemetry-gcp"

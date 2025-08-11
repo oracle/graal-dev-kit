@@ -17,7 +17,7 @@
 plugins {
     id 'gdk-module'
     id 'io.micronaut.application'
-    id 'com.github.johnrengelman.shadow'
+    id 'com.gradleup.shadow'
 }
 
 dependencies {
@@ -31,7 +31,7 @@ dependencies {
     runtimeOnly libs.bouncycastle.bcprov
     runtimeOnly libs.jansi
     runtimeOnly libs.jline
-    runtimeOnly libs.slf4j.nop
+    runtimeOnly mnLibs.slf4j.nop
 }
 
 configurations.configureEach {
@@ -39,7 +39,7 @@ configurations.configureEach {
 }
 
 micronaut {
-    version libs.micronaut.starter.api.get().version
+    version libs.versions.micronaut.starter.get()
     processing {
         incremental true
         annotations 'cloud.graal.gdk.*'

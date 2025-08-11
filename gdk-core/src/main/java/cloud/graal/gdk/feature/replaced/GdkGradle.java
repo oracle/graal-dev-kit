@@ -45,6 +45,7 @@ import io.micronaut.starter.feature.build.gradle.Gradle;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
 import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
 import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
+import io.micronaut.starter.feature.function.azure.template.azurefunctions;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
 import jakarta.inject.Singleton;
@@ -87,6 +88,11 @@ public class GdkGradle extends Gradle {
      * The plugin id for the JTE plugin.
      */
     private static final String JTE_PLUGIN_ID = "gg.jte.gradle";
+
+    /**
+     * The plugin id for the AZURE functions plugin.
+     */
+    private static final String AZURE_FUNCTIONS_PLUGIN = "com.microsoft.azure.azurefunctions";
 
     private static final GradlePlugin GROOVY_PLUGIN = GradlePlugin.builder().id("groovy").build();
 
@@ -260,6 +266,8 @@ public class GdkGradle extends Gradle {
                     copiedPlugins.add(cloneMicronautPlugin(plugin, generatorContext));
                 } else if (JTE_PLUGIN_ID.equals(id)) {
                     copiedPlugins.add(cloneJtePlugin(plugin));
+                } else if (AZURE_FUNCTIONS_PLUGIN.equals(id)) {
+                    copiedPlugins.add(cloneAzureFunctionsPlugin(plugin, generatorContext));
                 } else {
                     throw new IllegalStateException("Unknown build plugin '" + id + "'");
                 }
@@ -290,7 +298,6 @@ public class GdkGradle extends Gradle {
     }
 
     private GradlePlugin cloneJtePlugin(GradlePlugin plugin) {
-
         gdkGradlePluginJTE extensionModel = (gdkGradlePluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
 
         return new GradlePlugin(
@@ -337,6 +344,29 @@ public class GdkGradle extends Gradle {
                         extensionModel.aotKeys(),
                         extensionModel.lambdaRuntimeMainClass(),
                         extensionModel.ignoredAutomaticDependencies())),
+                null,
+                plugin.getPluginsManagementRepositories(),
+                false,
+                plugin.getOrder(),
+                plugin.getBuildImports(),
+                plugin.getSettingsImports());
+    }
+
+    private GradlePlugin cloneAzureFunctionsPlugin(GradlePlugin plugin, GeneratorContext generatorContext) {
+
+
+        azurefunctions extensionModel = (azurefunctions) ((RockerWritable) plugin.getExtension()).getModel();
+
+        return new GradlePlugin(
+                plugin.getGradleFile(),
+                plugin.getId(),
+                plugin.getVersion(),
+                null,
+                new RockerWritable(azurefunctions.template(
+                        generatorContext.getProject(),
+                        extensionModel.dsl(),
+                        generatorContext.getJdkVersion().asString())
+                ),
                 null,
                 plugin.getPluginsManagementRepositories(),
                 false,

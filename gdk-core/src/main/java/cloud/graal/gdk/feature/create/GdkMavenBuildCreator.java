@@ -30,6 +30,8 @@ import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.build.maven.templates.mavenPlugin;
+import io.micronaut.starter.feature.function.azure.AbstractAzureFunction;
+import io.micronaut.starter.feature.function.azure.template.azureFunctionMavenPlugin;
 import io.micronaut.starter.feature.testresources.TestResourcesAdditionalModulesProvider;
 import io.micronaut.starter.template.RockerWritable;
 import jakarta.inject.Singleton;
@@ -45,6 +47,8 @@ import java.util.List;
  */
 @Singleton
 public class GdkMavenBuildCreator extends MavenBuildCreator {
+
+    private static final String AZURE_FUNCTIONS_MAVEN_PLUGIN = "azure-functions-maven-plugin";
 
     @NonNull
     @Override
@@ -91,6 +95,12 @@ public class GdkMavenBuildCreator extends MavenBuildCreator {
                             GdkJTE.JTE_NATIVE_RESOURCES,
                             extensionModel.version(),
                             extensionModel.templateDirectory())), 0);
+        }
+
+        if (AZURE_FUNCTIONS_MAVEN_PLUGIN.equals(plugin.getArtifactId())) {
+            return new MavenPlugin(
+                    plugin.getArtifactId(),
+                    new RockerWritable(azureFunctionMavenPlugin.template(AbstractAzureFunction.AZURE_FUNCTIONS_EXTENSION_VERSION)), 0);
         }
 
         mavenPlugin extensionModel = (mavenPlugin) ((RockerWritable) plugin.getExtension()).getModel();

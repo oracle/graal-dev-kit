@@ -15,8 +15,10 @@
  */
 package cloud.graal.gdk.feature.create.function;
 
+import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.feature.function.azure.AzureRawFunction;
 import jakarta.inject.Singleton;
 
 import static cloud.graal.gdk.model.GdkCloud.AZURE;
@@ -28,6 +30,17 @@ import static cloud.graal.gdk.model.GdkCloud.AZURE;
  */
 @Singleton
 public class GdkAzureCloudFunction extends AbstractGdkCloudFunction {
+
+    private final AzureRawFunction azureRawFunction;
+
+    public GdkAzureCloudFunction(AzureRawFunction azureRawFunction) {
+        this.azureRawFunction = azureRawFunction;
+    }
+
+    @Override
+    public void processSelectedFeatures(GdkFeatureContext featureContext) {
+        featureContext.addFeature(azureRawFunction, AzureRawFunction.class);
+    }
 
     @NonNull
     @Override

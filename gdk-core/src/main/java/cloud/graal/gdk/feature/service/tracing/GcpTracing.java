@@ -38,7 +38,7 @@ import static cloud.graal.gdk.model.GdkCloud.GCP;
 public class GcpTracing extends AbstractTracingFeature {
 
     private static final Dependency OPENTELEMETRY_SEMCONV = Dependency.builder()
-            .groupId("io.opentelemetry")
+            .groupId("io.opentelemetry.semconv")
             .artifactId("opentelemetry-semconv")
             .compile()
             .build();
