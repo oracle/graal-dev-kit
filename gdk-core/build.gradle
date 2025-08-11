@@ -44,17 +44,6 @@ dependencies {
         exclude group: 'org.eclipse.jgit', module: 'org.eclipse.jgit'
     }
     implementation(mnLibs.micronaut.http.client)
-    implementation(libs.netty.buffer)
-    implementation(libs.netty.codec)
-    implementation(libs.netty.codec.http)
-    implementation(libs.netty.codec.http2)
-    implementation(libs.netty.codec.socks)
-    implementation(libs.netty.common)
-    implementation(libs.netty.handler)
-    implementation(libs.netty.handler.proxy)
-    implementation(libs.netty.resolver)
-    implementation(libs.netty.transport)
-    implementation(libs.netty.transport.native.unix.common)
 }
 
 def writeVersions = tasks.register('writeVersions', cloud.graal.gdk.util.WriteVersionsTask) {
@@ -74,7 +63,7 @@ sourceSets {
 }
 
 micronaut {
-    version libs.micronaut.starter.api.get().version
+    version libs.versions.micronaut.starter.get()
     processing {
         incremental true
         annotations 'cloud.graal.gdk.*'

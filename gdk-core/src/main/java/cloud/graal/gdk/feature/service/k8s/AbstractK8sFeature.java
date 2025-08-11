@@ -22,11 +22,10 @@ import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.k8s.Kubernetes;
-import io.micronaut.starter.feature.k8s.KubernetesClient;
 import io.micronaut.starter.feature.other.Management;
 
 import static cloud.graal.gdk.model.GdkService.K8S;
-import static io.micronaut.starter.feature.k8s.KubernetesClient.MICRONAUT_KUBERNETES_GROUP_ID;
+import static cloud.graal.gdk.feature.service.k8s.KubernetesClientOpenApi.MICRONAUT_KUBERNETES_GROUP_ID;
 
 /**
  * Base class for Kubernetes service features.
@@ -37,18 +36,18 @@ public abstract class AbstractK8sFeature extends AbstractGdkServiceFeature {
 
     private static final Dependency DISCOVERY_CLIENT = Dependency.builder()
             .groupId(MICRONAUT_KUBERNETES_GROUP_ID)
-            .artifactId("micronaut-kubernetes-discovery-client")
+            .artifactId("micronaut-kubernetes-client-openapi-discovery")
             .compile()
             .build();
 
-    private final KubernetesClient kubernetesClient;
+    private final KubernetesClientOpenApi kubernetesClient;
     private final Management management;
     private final Kubernetes kubernetes;
 
     /**
      * @param kubernetesClient KubernetesClient feature
      */
-    protected AbstractK8sFeature(KubernetesClient kubernetesClient,
+    protected AbstractK8sFeature(KubernetesClientOpenApi kubernetesClient,
                                  Management management,
                                  Kubernetes kubernetes) {
         this.kubernetesClient = kubernetesClient;
@@ -58,7 +57,7 @@ public abstract class AbstractK8sFeature extends AbstractGdkServiceFeature {
 
     @Override
     public final void processSelectedFeatures(GdkFeatureContext featureContext) {
-        featureContext.addFeature(kubernetesClient, KubernetesClient.class);
+        featureContext.addFeature(kubernetesClient, KubernetesClientOpenApi.class);
         featureContext.addFeature(management, Management.class);
         featureContext.addFeature(kubernetes, Kubernetes.class);
     }

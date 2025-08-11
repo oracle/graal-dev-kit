@@ -109,7 +109,7 @@ public class GdkGeneratorContext extends GeneratorContext {
     /**
      * The id of the Gradle Shadow plugin.
      */
-    public static final String PLUGIN_SHADOW = "com.github.johnrengelman.shadow";
+    public static final String PLUGIN_SHADOW = "com.gradleup.shadow";
 
     private static final String PLUGIN_GRADLE_AZUREFUNCTIONS = "com.microsoft.azure.azurefunctions";
     private static final String PLUGIN_MAVEN_AZUREFUNCTIONS = "azure-functions-maven-plugin";
@@ -122,7 +122,7 @@ public class GdkGeneratorContext extends GeneratorContext {
     );
 
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
-            gavMapEntry("com.github.johnrengelman.shadow", "com.github.johnrengelman:shadow", StarterCoordinates.SHADOW),
+            gavMapEntry("com.gradleup.shadow", "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", StarterCoordinates.COM_GRADLEUP_SHADOW_GRADLE_PLUGIN),
             gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
             gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
             gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
@@ -132,7 +132,8 @@ public class GdkGeneratorContext extends GeneratorContext {
             gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", StarterCoordinates.JIB_GRADLE_PLUGIN),
             gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
             gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
-            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", StarterCoordinates.JTE_GRADLE_PLUGIN)
+            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", StarterCoordinates.JTE_GRADLE_PLUGIN),
+            gavMapEntry("com.microsoft.azure.azurefunctions", "com.microsoft.azure:azure-functions-gradle-plugin", StarterCoordinates.AZURE_FUNCTIONS_GRADLE_PLUGIN)
     );
 
     private static final ThreadLocal<GdkGeneratorContext> INSTANCE = new ThreadLocal<>();
@@ -896,7 +897,7 @@ public class GdkGeneratorContext extends GeneratorContext {
 
         RockerModel rockerModel = testRockerModelProvider.findModel(getLanguage(), getTestFramework());
         if (rockerModel != null) {
-            addTemplateInternal(name, new RockerTemplate(moduleName, path, rockerModel));
+            addTemplateInternal(name + "-" + cloud.getModuleName(), new RockerTemplate(moduleName, path, rockerModel));
         }
     }
 

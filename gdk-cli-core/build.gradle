@@ -51,7 +51,7 @@ dependencies {
 }
 
 micronaut {
-    version libs.micronaut.starter.api.get().version
+    version libs.versions.micronaut.starter.get()
     processing {
         incremental true
         annotations 'cloud.graal.gdk.*'

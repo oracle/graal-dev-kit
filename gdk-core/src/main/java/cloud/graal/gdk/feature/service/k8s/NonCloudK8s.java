@@ -18,7 +18,6 @@ package cloud.graal.gdk.feature.service.k8s;
 import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.k8s.Kubernetes;
-import io.micronaut.starter.feature.k8s.KubernetesClient;
 import io.micronaut.starter.feature.other.Management;
 import jakarta.inject.Singleton;
 
@@ -35,7 +34,7 @@ public class NonCloudK8s extends AbstractK8sFeature {
     /**
      * @param kubernetesClient KubernetesClient feature
      */
-    public NonCloudK8s(KubernetesClient kubernetesClient,
+    public NonCloudK8s(KubernetesClientOpenApi kubernetesClient,
                        Management management,
                        Kubernetes kubernetes) {
         super(kubernetesClient, management, kubernetes);
