@@ -1,0 +1,37 @@
+[
+  {
+    "name": "org.apache.kafka.common.security.authenticator.SaslClientAuthenticator",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.kafka.common.internals.CompositeStrategy",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.kafka.common.internals.ModernStrategy",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.kafka.common.internals.LegacyStrategy",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "org.apache.kafka.common.internals.SecurityManagerCompatibility",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "java.security.AccessController",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  },
+  {
+    "name": "javax.security.auth.Subject",
+    "allDeclaredMethods": true,
+    "allDeclaredConstructors": true
+  }
+]

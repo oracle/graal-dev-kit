@@ -55,6 +55,8 @@ public class AzureStreaming extends AbstractStreamingFeature {
                 "kafka.sasl.mechanism", "PLAIN",
                 "kafka.security.protocol", "SASL_SSL"
         ));
+
+        addStreamingReflectConfig(generatorContext);
     }
 
     @NonNull
