@@ -16,7 +16,7 @@
 
 [versions]
 apache-commons-commons-collections4 = '4.4-oracle-00001'
-apache-commons-commons-lang3 = '3.13.0-oracle-00001'
+apache-commons-commons-lang3 = '3.18.0-oracle-00001'
 apache-commons-compress = "1.27.1-oracle-00001"
 apache-kafka-kafka-clients = '3.8.0-oracle-00001'
 asm = '9.7.1-oracle-00001'
@@ -57,6 +57,7 @@ io-opentelemetry-opentelemetry-api-incubator = '1.40.0-alpha-oracle-00001'
 io-projectreactor = '3.6.6-oracle-00002'
 io-projectreactor-reactor-core = '3.6.10-oracle-00001'
 io-projectreactor-reactor-core-micrometer = '1.1.6-oracle-00002'
+io-projectreactor-reactor-netty = '1.2.8'
 io-prometheus = '0.16.0-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-swagger-swagger-annotations = '1.6.11-oracle-00001'
@@ -106,7 +107,7 @@ micronaut-tracing = "6.9.0-oracle-00001"
 micronaut-validation = "4.8.0-oracle-00001"
 micronaut-views = "5.6.0-oracle-00001"
 micronaut-coherence = "5.0.5-oracle-00001"
-netty = "4.1.118.Final-oracle-00001"
+netty = "4.1.124.Final-oracle-00001"
 okhttp = "4.12.0-oracle-00001"
 opentelemetry-instrumentation = '1.33.6-oracle-00001'
 opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = '1.33.5-alpha-oracle-00001'
@@ -316,6 +317,8 @@ io-opentelemetry-opentelemetry-sdk-trace = { module = 'io.opentelemetry:opentele
 io-opentelemetry-semconv-opentelemetry-semconv = { module = 'io.opentelemetry.semconv:opentelemetry-semconv', version.ref = 'opentelemetry-semconv-opentelemetry-semconv' }
 io-projectreactor-reactor-core = { module = 'io.projectreactor:reactor-core', version.ref = 'io-projectreactor-reactor-core' }
 io-projectreactor-reactor-core-micrometer = { module = 'io.projectreactor:reactor-core-micrometer', version.ref = 'io-projectreactor-reactor-core-micrometer' }
+io-projectreactor-reactor-netty-reactor-netty-core = { module = 'io.projectreactor.netty:reactor-netty-core', version.ref = 'io-projectreactor-reactor-netty' }
+io-projectreactor-reactor-netty-reactor-netty-http = { module = 'io.projectreactor.netty:reactor-netty-http', version.ref = 'io-projectreactor-reactor-netty' }
 io-projectreactor-reactor-test = { module = 'io.projectreactor:reactor-test', version.ref = 'io-projectreactor' }
 io-projectreactor-reactor-tools = { module = 'io.projectreactor:reactor-tools', version.ref = 'io-projectreactor' }
 io-prometheus-simpleclient = { module = 'io.prometheus:simpleclient', version.ref = 'io-prometheus' }
