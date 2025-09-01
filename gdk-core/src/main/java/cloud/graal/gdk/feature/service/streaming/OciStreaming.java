@@ -84,6 +84,8 @@ public class OciStreaming extends AbstractStreamingFeature {
                 "kafka.sasl.jaas.config", "org.apache.kafka.common.security.plain.PlainLoginModule required username=\"${OCI_TENANCY_NAME}/${OCI_USERNAME}/${OCI_STREAM_POOL_OCID}\" password=\"${OCI_AUTH_TOKEN}\";",
                 "kafka.security.protocol", "SASL_SSL"
         ));
+
+        addStreamingReflectConfig(generatorContext);
     }
 
     @NonNull
