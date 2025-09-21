@@ -94,6 +94,8 @@ public class AwsStreaming extends AbstractStreamingFeature {
                 "kafka.sasl.mechanism", "AWS_MSK_IAM",
                 "kafka.security.protocol", "SASL_SSL"
         ));
+
+        addStreamingReflectConfig(generatorContext);
     }
 
     @NonNull

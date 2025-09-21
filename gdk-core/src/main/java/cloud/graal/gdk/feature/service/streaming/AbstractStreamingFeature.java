@@ -18,9 +18,11 @@ package cloud.graal.gdk.feature.service.streaming;
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.feature.service.AbstractGdkServiceFeature;
+import cloud.graal.gdk.feature.service.template.StreamingReflectConfig;
 import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.feature.messaging.kafka.Kafka;
+import io.micronaut.starter.template.RockerTemplate;
 
 import static cloud.graal.gdk.model.GdkService.STREAMING;
 
@@ -66,5 +68,14 @@ public abstract class AbstractStreamingFeature extends AbstractGdkServiceFeature
     @Override
     public final GdkService getService() {
         return STREAMING;
+    }
+
+    protected void addStreamingReflectConfig(GdkGeneratorContext generatorContext) {
+        generatorContext.addTemplate("streaming-reflect-config-" + getCloud().getTitle(),
+                new RockerTemplate(
+                        getModuleName(),
+                        "src/main/resources/META-INF/native-image/" + generatorContext.getProject().getPackagePath() + "/reflect-config.json",
+                        StreamingReflectConfig.template())
+        );
     }
 }
