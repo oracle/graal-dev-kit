@@ -18,7 +18,7 @@
 apache-commons-commons-collections4 = '4.4-oracle-00001'
 apache-commons-commons-lang3 = '3.18.0-oracle-00001'
 apache-commons-compress = "1.27.1-oracle-00001"
-apache-kafka-kafka-clients = '3.8.0-oracle-00001'
+apache-kafka-kafka-clients = '3.9.1-oracle-00001'
 asm = '9.7.1-oracle-00001'
 aws-msk-iam-auth = "2.2.0"
 ben-manes-caffeine-caffeine = '3.1.8-oracle-00001'
@@ -28,7 +28,7 @@ ch-randelshofer-fastdoubleparser = '1.0.0-oracle-00001'
 code-findbugs-jsr305 = '3.0.2-oracle-00001'
 code-gson-gson = '2.10.1-oracle-00001'
 com-nimbusds-nimbus-jose-jwt = '9.41.2-oracle-00001'
-com-zaxxer-HikariCP = '5.1.0-oracle-00001'
+com-zaxxer-HikariCP = '6.0.0-oracle-00001'
 commons-codec-commons-codec = '1.16.0-oracle-00001'
 commons-io-commons-io = '2.14.0-oracle-00002'
 context-propagation = '1.1.2-oracle-00001'
@@ -36,6 +36,7 @@ dev-jna-jna = '5.14.0-oracle-00001'
 eclipse-angus-angus-activation = '2.0.2-oracle-00001'
 eclipse-angus-angus-mail = '2.0.3-oracle-00001'
 flipkart-zjsonpatch-zjsonpatch = '0.4.14-oracle-00002'
+fn = "1.0.196-oracle-00001"
 gax = "2.59.0"
 gax-grpc = "2.59.0"
 gg-jte = '3.1.16-oracle-00001'
@@ -47,6 +48,7 @@ google-cloud-logging = "0.132.0-alpha"
 google-errorprone-error_prone_annotations = '2.21.0-oracle-00001'
 graalvm-metadata-version = "0.3.15"
 guava = "33.4.0-jre"
+httpcore = "4.4.14-oracle-00001"
 intellij-deps-trove4j = '1.0.20200330-oracle-00001'
 io-gsonfire-gson-fire = '1.8.5-oracle-00001'
 io-kubernetes = '19.0.1-oracle-00003'
@@ -78,7 +80,7 @@ kotlin = "1.8.22-oracle-00001"
 logback = "1.5.15-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "5.1.0-oracle-00001"
-micronaut-core = "4.7.10-oracle-00002"
+micronaut-core = "4.7.27-oracle-00001"
 micronaut-data = "4.10.5-oracle-00001"
 micronaut-discovery = "4.5.0-oracle-00001"
 micronaut-email = "2.7.0-oracle-00001"
@@ -102,12 +104,12 @@ micronaut-security = "4.11.2-oracle-00001"
 micronaut-serde = "2.13.0-oracle-00001"
 micronaut-servlet = "4.12.0-oracle-00001"
 micronaut-session = "4.5.0-oracle-00001"
-micronaut-sql = "5.8.2-oracle-00001"
+micronaut-sql = "6.0.2-oracle-00001"
 micronaut-tracing = "6.9.0-oracle-00001"
 micronaut-validation = "4.8.0-oracle-00001"
 micronaut-views = "5.6.0-oracle-00001"
 micronaut-coherence = "5.0.5-oracle-00001"
-netty = "4.1.124.Final-oracle-00001"
+netty = "4.1.127.Final-oracle-00001"
 okhttp = "4.12.0-oracle-00001"
 opentelemetry-instrumentation = '1.33.6-oracle-00001'
 opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = '1.33.5-alpha-oracle-00001'
@@ -120,14 +122,15 @@ org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
 org-lz4-lz4-java = '1.8.0-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
-org-slf4j-jcl-over-slf4j = '2.0.16-oracle-00001'
-org-slf4j-slf4j-api = '2.0.16-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.4.0"
+postgres = "42.7.7"
 protobuf = "3.25.5-oracle-00001"
+slf4j = '2.0.16-oracle-00001'
 snakeyaml = '2.2-oracle-00002'
 spring-boot-gradle-plugin = "3.4.0"
 squareup-okio = '3.6.0-oracle-00001'
 test-containers-oracle-xe = "1.20.4"
+typetools = "0.6.3-oracle-00001"
 xerial-snappy-snappy-java = '1.1.10.5-oracle-00001'
 zipkin-reporter2 = '3.4.2-oracle-00001'
 zipkin-zipkin2-zipkin = '2.27.1-oracle-00001'
@@ -216,6 +219,7 @@ io-micronaut-views-micronaut-views-core = { module = 'io.micronaut.views:microna
 io-micronaut-views-micronaut-views-jte = { module = 'io.micronaut.views:micronaut-views-jte', version.ref = 'micronaut-views'}
 io-micronaut-coherence-micronaut-coherence-bom = { module = 'io.micronaut.coherence:micronaut-coherence-bom', version.ref = 'micronaut-coherence'}
 io-opentelemetry-opentelemetry-semconv = { module = 'io.opentelemetry:opentelemetry-semconv', version.ref = 'opentelemetry-semconv'}
+net-jodah-typetools = { module = 'net.jodah:typetools', version.ref = 'typetools'}
 net-minidev-json-smart = { module = 'net.minidev:json-smart', version.ref = 'json-smart'}
 org-apache-commons-commons-compress = { module = 'org.apache.commons:commons-compress', version.ref = 'apache-commons-compress'}
 org-bouncycastle-bcpkix-jdk15to18 = { module = 'org.bouncycastle:bcpkix-jdk15to18', version.ref = 'bouncycastle'}
@@ -256,6 +260,8 @@ com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.faste
 com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
 com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
 com-flipkart-zjsonpatch-zjsonpatch = { module = 'com.flipkart.zjsonpatch:zjsonpatch', version.ref = 'flipkart-zjsonpatch-zjsonpatch' }
+com-fnproject-fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
+com-fnproject-fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 com-github-ben-manes-caffeine-caffeine = { module = 'com.github.ben-manes.caffeine:caffeine', version.ref = 'ben-manes-caffeine-caffeine' }
 com-github-javaparser-javaparser-core = { module = 'com.github.javaparser:javaparser-core', version.ref = 'github-javaparser' }
 com-github-javaparser-javaparser-symbol-solver-core = { module = 'com.github.javaparser:javaparser-symbol-solver-core', version.ref = 'github-javaparser' }
@@ -345,6 +351,7 @@ javax-annotation-javax-annotation-api = { module = 'javax.annotation:javax.annot
 net-java-dev-jna-jna = { module = 'net.java.dev.jna:jna', version.ref = 'dev-jna-jna' }
 org-apache-commons-commons-collections4 = { module = 'org.apache.commons:commons-collections4', version.ref = 'apache-commons-commons-collections4' }
 org-apache-commons-commons-lang3 = { module = 'org.apache.commons:commons-lang3', version.ref = 'apache-commons-commons-lang3' }
+org-apache-httpcomponents-httpcomponents-core = { module = 'org.apache.httpcomponents:httpcore', version.ref = 'httpcore' }
 org-apache-kafka-kafka-clients = { module = 'org.apache.kafka:kafka-clients', version.ref = 'apache-kafka-kafka-clients' }
 org-bitbucket-b_c-jose4j = { module = 'org.bitbucket.b_c:jose4j', version.ref = 'bitbucket-b_c-jose4j' }
 org-checkerframework-checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'org-checkerframework-checker-qual' }
@@ -362,8 +369,10 @@ org-lz4-lz4-java = { module = 'org.lz4:lz4-java', version.ref = 'org-lz4-lz4-jav
 org-ow2-asm-asm = { module = 'org.ow2.asm:asm', version.ref = 'asm' }
 org-ow2-asm-asm-commons = { module = 'org.ow2.asm:asm-commons', version.ref = 'asm' }
 org-ow2-asm-asm-tree = { module = 'org.ow2.asm:asm-tree', version.ref = 'asm' }
+org-postgresql-postgresql = { module = "org.postgresql:postgresql", version.ref = "postgres" }
 org-reactivestreams-reactive-streams = { module = 'org.reactivestreams:reactive-streams', version.ref = 'org-reactivestreams-reactive-streams' }
-org-slf4j-jcl-over-slf4j = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'org-slf4j-jcl-over-slf4j' }
-org-slf4j-slf4j-api = { module = 'org.slf4j:slf4j-api', version.ref = 'org-slf4j-slf4j-api' }
+org-slf4j-jcl-over-slf4j = { module = 'org.slf4j:jcl-over-slf4j', version.ref = 'slf4j' }
+org-slf4j-slf4j-api = { module = 'org.slf4j:slf4j-api', version.ref = 'slf4j' }
+org-slf4j-slf4j-simple = { module = 'org.slf4j:slf4j-simple', version.ref = 'slf4j' }
 org-xerial-snappy-snappy-java = { module = 'org.xerial.snappy:snappy-java', version.ref = 'xerial-snappy-snappy-java' }
 org-yaml-snakeyaml = { module = 'org.yaml:snakeyaml', version.ref = 'snakeyaml' }
