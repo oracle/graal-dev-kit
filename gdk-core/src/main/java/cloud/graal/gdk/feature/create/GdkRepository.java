@@ -15,7 +15,9 @@
  */
 package cloud.graal.gdk.feature.create;
 
+import cloud.graal.gdk.GdkUtils;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.build.Repository;
 
 /**
@@ -34,6 +36,9 @@ public class GdkRepository implements Repository {
     @NonNull
     @Override
     public String getUrl() {
+        if (!StringUtils.isEmpty(GdkUtils.getenv("LIB_RELEASE_CHECK"))) {
+            return "https://artifactory.oci.oraclecorp.com/libs-release";
+        }
         return "https://maven.oracle.com/public";
     }
 }
