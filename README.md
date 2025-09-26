@@ -23,10 +23,14 @@ Then install the GDK CLI tool:
 brew install gdk-<major-version>.<minor-version>
 ```
 
-Example :
+Examples :
 
 ```sh
 brew install gdk-4.9 
+```
+
+```sh
+brew install gdk-4.7 
 ```
 
 ##### SDKMAN
