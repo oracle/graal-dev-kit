@@ -234,7 +234,11 @@ abstract class GdkBomPlugin implements Plugin<Project> {
         TaskContainer tasks = project.tasks
         TaskProvider<GdkPomChecker> pomChecker = tasks.register(taskName, GdkPomChecker, task -> {
             task.repositories.add("https://repo.maven.apache.org/maven2/")
-            task.repositories.add("https://maven.oracle.com/public/")
+            if (System.getenv("LIB_RELEASE_CHECK")) {
+                task.repositories.add("https://artifactory.oci.oraclecorp.com/libs-release")
+            } else {
+                task.repositories.add("https://maven.oracle.com/public/")
+            }
 
             if (System.getenv("STAGE_URL")) {
                 task.repositories.add(System.getenv("STAGE_URL"))
