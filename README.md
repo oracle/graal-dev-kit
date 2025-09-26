@@ -20,7 +20,13 @@ brew tap oracle/graal-dev-kit https://github.com/oracle/graal-dev-kit
 Then install the GDK CLI tool:
 
 ```sh
-brew install gdk
+brew install gdk-<major-version>.<minor-version>
+```
+
+Example :
+
+```sh
+brew install gdk-4.9 
 ```
 
 ##### SDKMAN
