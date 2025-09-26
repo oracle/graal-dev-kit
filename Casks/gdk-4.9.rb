@@ -1,4 +1,4 @@
-cask 'gdk' do
+cask 'gdk-4.9' do
     arch arm: 'aarch64', intel: 'amd64'
 
     version '4.9.1.3'
