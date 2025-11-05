@@ -141,41 +141,12 @@ abstract class GdkParentPlugin implements Plugin<Project> {
                     xml.asNode().append(dependencyManagement)
 
                     Node dependencies = childOf(dependencyManagement, "dependencies")
-                    Node gdkBomDependency = new Node(dependencies, "dependency", "")
-                    new Node(gdkBomDependency, "groupId", "cloud.graal.gdk")
-                    new Node(gdkBomDependency, "artifactId", "gdk-bom")
-                    new Node(gdkBomDependency, "version", project.version)
-                    new Node(gdkBomDependency, "type", "pom")
-                    new Node(gdkBomDependency, "scope", "import")
-
-                    dependencyExclusion.exclusions.forEach {
-                        String[] exclusionDependencyStrings = it.name.split(':')
-                        it.from.forEach { parentDependency ->
-                            def dependencyStrings = parentDependency.split(":")
-                            def pomDep = dependencies.children()
-                                    .find {
-                                        n -> childOf(n as Node, "groupId").text() == dependencyStrings[0] && childOf(n as Node, "artifactId").text() == dependencyStrings[1]
-                                    }
-
-                            Node dependency = pomDep as Node
-                            if (dependency == null) {
-                                dependency = new Node(dependencies, "dependency")
-                                new Node(dependency, "groupId", dependencyStrings[0])
-                                new Node(dependency, "artifactId", dependencyStrings[1])
-                            }
-
-                            def pomExc = dependency.children().find { n -> childOf(n as Node, "exclusions") }
-
-                            def exclusions = pomExc as Node
-                            if (exclusions == null) {
-                                exclusions = new Node(dependency, "exclusions")
-                            }
-                            def exclusion = new Node(exclusions, "exclusion")
-                            new Node(exclusion, "groupId", exclusionDependencyStrings[0])
-                            new Node(exclusion, "artifactId", exclusionDependencyStrings[1])
-                        }
-                    }
-
+                    Node dependency = new Node(dependencies, "dependency", "")
+                    new Node(dependency, "groupId", "cloud.graal.gdk")
+                    new Node(dependency, "artifactId", "gdk-bom")
+                    new Node(dependency, "version", project.version)
+                    new Node(dependency, "type", "pom")
+                    new Node(dependency, "scope", "import")
                 }
             })
         })
