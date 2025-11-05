@@ -16,10 +16,12 @@
 
 [versions]
 bouncycastle = '1.81'
-gcp = '26.10.0'
+gcp = '26.48.0'
 jansi = '2.4.2'
 jline = '3.30.4'
 jsch = '0.2.26'
+micronaut-guides = '0.1.0'
+micronaut-internal-build = '7.5.0'
 micronaut-plugins = '4.5.4'
 micronaut-starter = '4.9.1'
 reflections = '0.10.2'
@@ -28,8 +30,6 @@ shadow = '8.3.7'
 spotless = '6.25.0'
 test-logger = '4.0.0'
 tomlj = '1.1.1'
-micronaut-internal-build = '7.5.0'
-micronaut-guides = '0.1.0'
 
 [libraries]
 bouncycastle-bcpkix = { module = 'org.bouncycastle:bcpkix-jdk18on', version.ref = 'bouncycastle' }
