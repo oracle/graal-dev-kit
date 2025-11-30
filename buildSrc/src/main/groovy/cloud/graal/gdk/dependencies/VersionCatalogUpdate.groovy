@@ -146,7 +146,8 @@ abstract class VersionCatalogUpdate extends DefaultTask {
                         "opentelemetry-semconv",
                         "opentelemetry-api-events",
                         "opentelemetry-instrumentation-api-semconv",
-                        "opentelemetry-api-incubator"
+                        "opentelemetry-api-incubator",
+                        "opentelemetry-instrumentation-api-incubator"
                 )
                 for (Pattern qualifier in rejectedQualifiers) {
                     if (qualifier.matcher(candidateVersion).find()) {

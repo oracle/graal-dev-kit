@@ -46,7 +46,7 @@ public class GdkLogback extends Logback {
         }
 
         generatorContext.addTemplate(key, new RockerTemplate("src/main/resources/logback.xml",
-                logback.template(useJansi(generatorContext), DEFAULT_COLORING, useJul)));
+                logback.template(useJansi(generatorContext), DEFAULT_COLORING, useJul, false)));
     }
 
     @Override
