@@ -40,9 +40,7 @@ httpcore = "4.4.16"
 io-micrometer = '1.15.4-oracle-00001'
 io-opentelemetry = '1.54.1-oracle-00001'
 io-opentelemetry-opentelemetry-api-incubator = '1.54.1-alpha-oracle-00001'
-#io-projectreactor = '3.7.12'
 io-projectreactor-reactor-core = '3.7.12-oracle-00001'
-#io-projectreactor-reactor-core-micrometer = '1.2.12'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-vavr = '0.10.2-oracle-00001'
 jackson-core = '2.19.2-oracle-00001'
@@ -55,7 +53,6 @@ jakarta-mail-jakarta-mail-api = '2.1.5-oracle-00001'
 jakarta-persistence-jakarta-persistence-api = '3.1.0-oracle-00001'
 jakarta-transaction-jakarta-transaction-api = '2.0.1-oracle-00001'
 jakarta-validation-jakarta-validation-api = '3.1.1-oracle-00001'
-#json-smart = "2.6.0"
 org-checkerframework-checker-qual = '3.49.4-oracle-00001'
 apache-commons-commons-lang3 = '3.19.0-oracle-00001'
 google-errorprone-error_prone_annotations = '2.41.0-oracle-00001'
@@ -104,7 +101,6 @@ org-flywaydb = '10.22.0-oracle-00001'
 org-hdrhistogram-HdrHistogram = '2.2.2-oracle-00001'
 org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
-#org-lz4-lz4-java = '1.8.0-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.5.6"
 protobuf = "4.31.1"
@@ -132,7 +128,6 @@ com-google-guava-guava = { module = 'com.google.guava:guava', version.ref = 'gua
 com-google-protobuf-protobuf-java = { module = 'com.google.protobuf:protobuf-java', version.ref = 'protobuf'}
 com-google-protobuf-protobuf-java-util = { module = 'com.google.protobuf:protobuf-java-util', version.ref = 'protobuf'}
 com-google-cloud-opentelemetry-exporter-auto = { module = 'com.google.cloud.opentelemetry:exporter-auto', version.ref = 'tracing-exporter-auto'}
-#com-squareup-okhttp3-logging-interceptor = { module = 'com.squareup.okhttp3:logging-interceptor', version.ref = 'okhttp'}
 com-squareup-okhttp3-okhttp = { module = 'com.squareup.okhttp3:okhttp', version.ref = 'okhttp'}
 io-micronaut-cache-micronaut-cache-core = { module = 'io.micronaut.cache:micronaut-cache-core', version.ref = 'micronaut-cache'}
 io-micronaut-data-micronaut-data-bom = { module = 'io.micronaut.data:micronaut-data-bom', version.ref = 'micronaut-data'}
@@ -205,10 +200,8 @@ io-micronaut-validation-micronaut-validation-bom = { module = 'io.micronaut.vali
 io-micronaut-views-micronaut-views-core = { module = 'io.micronaut.views:micronaut-views-core', version.ref = 'micronaut-views'}
 io-micronaut-views-micronaut-views-jte = { module = 'io.micronaut.views:micronaut-views-jte', version.ref = 'micronaut-views'}
 io-micronaut-coherence-micronaut-coherence-bom = { module = 'io.micronaut.coherence:micronaut-coherence-bom', version.ref = 'micronaut-coherence'}
-#io-opentelemetry-semconv-opentelemetry-semconv = { module = 'io.opentelemetry.semconv:opentelemetry-semconv', version.ref = 'opentelemetry-semconv'} duplicated
 io-projectreactor-netty-reactor-netty-http = { module = 'io.projectreactor.netty:reactor-netty-http', version.ref = 'reactor-netty-http'}
 net-jodah-typetools = { module = 'net.jodah:typetools', version.ref = 'typetools'}
-#net-minidev-json-smart = { module = 'net.minidev:json-smart', version.ref = 'json-smart'}
 org-jetbrains-kotlin-kotlin-annotation-processing-embeddable = { module = 'org.jetbrains.kotlin:kotlin-annotation-processing-embeddable', version.ref = 'kotlin'}
 org-jetbrains-kotlin-kotlin-compiler-embeddable = { module = 'org.jetbrains.kotlin:kotlin-compiler-embeddable', version.ref = 'kotlin'}
 org-jetbrains-kotlin-kotlin-reflect = { module = 'org.jetbrains.kotlin:kotlin-reflect', version.ref = 'kotlin'}
@@ -224,7 +217,6 @@ org-apache-commons-commons-lang3 = { module = 'org.apache.commons:commons-lang3'
 org-checkerframework-checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'org-checkerframework-checker-qual' }
 com-google-code-gson-gson = { module = 'com.google.code.gson:gson', version.ref = 'code-gson-gson' }
 
-# plugins that will be exluded from bom file (exclude-) prefix means don't add it into gdk-bom
 exclude-io-micronaut-maven-plugin = { module = 'io.micronaut.maven:micronaut-maven-plugin', version.ref = 'micronaut-maven-plugin'}
 exclude-io-micronaut-maven-test-resources-plugin = { module = 'io.micronaut.testresources:micronaut-test-resources-core', version.ref = 'micronaut-maven-test-resources-plugin'}
 exclude-io-micronaut-platform-micronaut-parent = { module = 'io.micronaut.platform:micronaut-parent', version.ref = 'micronaut-platform'}
@@ -235,14 +227,12 @@ exclude-micronaut-test-resources-plugin = { module = 'io.micronaut.gradle:micron
 exclude-org-springframework-boot = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot-gradle-plugin'}
 exclude-org-springframework-boot-spring-boot-starter-parent = { module = 'org.springframework.boot:spring-boot-starter-parent', version.ref = 'org-springframework-boot-spring-boot-starter-parent'}
 exclude-org-testcontainers-oracle-xe = { module = 'org.testcontainers:oracle-xe', version.ref = 'test-containers-oracle-xe'}
-# New Added libs
 ch-qos-logback-contrib-logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-contrib' }
 ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:logback-json-core', version.ref = 'logback-contrib' }
 com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-core' }
 com-fasterxml-jackson-core-jackson-core = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson-core' }
 com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-core' }
 com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
-#com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
 com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
 com-fnproject-fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 com-fnproject-fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -281,7 +271,6 @@ io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transpo
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-annotations = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-incubator = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator', version.ref = 'opentelemetry-api-incubator' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api', version.ref = 'opentelemetry-instrumentation' }
-#io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-semconv', version.ref = 'opentelemetry-instrumentation-opentelemetry-instrumentation-api-semconv' }
 io-opentelemetry-opentelemetry-api = { module = 'io.opentelemetry:opentelemetry-api', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-api-incubator = { module = 'io.opentelemetry:opentelemetry-api-incubator', version.ref = 'io-opentelemetry-opentelemetry-api-incubator' }
 io-opentelemetry-opentelemetry-context = { module = 'io.opentelemetry:opentelemetry-context', version.ref = 'io-opentelemetry' }
@@ -296,9 +285,6 @@ io-opentelemetry-opentelemetry-sdk-metrics = { module = 'io.opentelemetry:opente
 io-opentelemetry-opentelemetry-sdk-trace = { module = 'io.opentelemetry:opentelemetry-sdk-trace', version.ref = 'io-opentelemetry' }
 io-opentelemetry-semconv-opentelemetry-semconv = { module = 'io.opentelemetry.semconv:opentelemetry-semconv', version.ref = 'opentelemetry-semconv-opentelemetry-semconv' }
 io-projectreactor-reactor-core = { module = 'io.projectreactor:reactor-core', version.ref = 'io-projectreactor-reactor-core' }
-#io-projectreactor-reactor-core-micrometer = { module = 'io.projectreactor:reactor-core-micrometer', version.ref = 'io-projectreactor-reactor-core-micrometer' }
-#io-projectreactor-reactor-test = { module = 'io.projectreactor:reactor-test', version.ref = 'io-projectreactor' }
-#io-projectreactor-reactor-tools = { module = 'io.projectreactor:reactor-tools', version.ref = 'io-projectreactor' }
 io-vavr-vavr = { module = 'io.vavr:vavr', version.ref = 'io-vavr' }
 io-vavr-vavr-match = { module = 'io.vavr:vavr-match', version.ref = 'io-vavr' }
 io-zipkin-reporter2-zipkin-reporter = { module = 'io.zipkin.reporter2:zipkin-reporter', version.ref = 'zipkin-reporter2' }
@@ -322,7 +308,6 @@ org-flywaydb-flyway-mysql = { module = 'org.flywaydb:flyway-mysql', version.ref 
 org-hdrhistogram-HdrHistogram = { module = 'org.hdrhistogram:HdrHistogram', version.ref = 'org-hdrhistogram-HdrHistogram' }
 org-jetbrains-annotations = { module = 'org.jetbrains:annotations', version.ref = 'org-jetbrains-annotations' }
 org-latencyutils-LatencyUtils = { module = 'org.latencyutils:LatencyUtils', version.ref = 'org-latencyutils-LatencyUtils' }
-#org-lz4-lz4-java = { module = 'org.lz4:lz4-java', version.ref = 'org-lz4-lz4-java' }
 org-ow2-asm-asm = { module = 'org.ow2.asm:asm', version.ref = 'asm' }
 org-ow2-asm-asm-analysis = { module = 'org.ow2.asm:asm-analysis', version.ref = 'asm' }
 org-ow2-asm-asm-commons = { module = 'org.ow2.asm:asm-commons', version.ref = 'asm' }
