@@ -36,7 +36,7 @@ google-auth-library = "1.40.0"
 google-cloud-logging = "0.132.18-alpha"
 graalvm-metadata-version = "0.3.28"
 guava = "33.5.0-jre"
-httpcore = "4.4.16"
+httpcore = "4.4.16-oracle-00001"
 io-micrometer = '1.15.4-oracle-00001'
 io-opentelemetry = '1.54.1-oracle-00001'
 io-opentelemetry-opentelemetry-api-incubator = '1.54.1-alpha-oracle-00001'
@@ -78,7 +78,7 @@ micronaut-micrometer = "5.13.1-oracle-00001"
 micronaut-mongo = "5.7.0-oracle-00001"
 micronaut-object-storage = "2.10.0-oracle-00001"
 micronaut-openapi = "6.19.2-oracle-00001"
-micronaut-oracle-cloud = "5.5.2-oracle-00001"
+micronaut-oracle-cloud = "5.6.1-oracle-00001"
 micronaut-picocli = "5.9.0-oracle-00001"
 micronaut-platform = "4.10.1-oracle-00001"
 micronaut-reactor = "3.9.1-oracle-00001"
@@ -103,7 +103,7 @@ org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.5.6"
-protobuf = "4.31.1"
+protobuf = "4.31.1-oracle-00001"
 reactor-netty-http = "1.2.11"
 slf4j = '2.0.17-oracle-00001'
 snakeyaml = '2.4-oracle-00001'
@@ -233,6 +233,7 @@ com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jacks
 com-fasterxml-jackson-core-jackson-core = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson-core' }
 com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-core' }
 com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
+com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
 com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
 com-fnproject-fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 com-fnproject-fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
@@ -273,6 +274,7 @@ io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-incubator = {
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-opentelemetry-api = { module = 'io.opentelemetry:opentelemetry-api', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-api-incubator = { module = 'io.opentelemetry:opentelemetry-api-incubator', version.ref = 'io-opentelemetry-opentelemetry-api-incubator' }
+io-opentelemetry-opentelemetry-common = { module = 'io.opentelemetry:opentelemetry-common', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-context = { module = 'io.opentelemetry:opentelemetry-context', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-exporter-common = { module = 'io.opentelemetry:opentelemetry-exporter-common', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-exporter-zipkin = { module = 'io.opentelemetry:opentelemetry-exporter-zipkin', version.ref = 'io-opentelemetry' }
