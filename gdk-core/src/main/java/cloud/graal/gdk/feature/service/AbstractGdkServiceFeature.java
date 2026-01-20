@@ -18,10 +18,12 @@ package cloud.graal.gdk.feature.service;
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.AbstractGdkFeature;
 import cloud.graal.gdk.feature.service.template.AzureNativeImageProperties;
+import cloud.graal.gdk.feature.service.template.JDK25AuthenticationModeInitializeAtBuildTimeClass;
+import cloud.graal.gdk.feature.service.template.JDK25AzureNativeImageProperties;
 import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
-import io.micronaut.starter.template.RockerTemplate;
+import io.micronaut.starter.template.RockerWritable;
 
 import static io.micronaut.starter.feature.FeaturePhase.DEFAULT;
 
@@ -98,11 +100,14 @@ public abstract class AbstractGdkServiceFeature extends AbstractGdkFeature {
      * @param generatorContext generator context
      */
     protected void addAzureNativeImageProperties(GdkGeneratorContext generatorContext) {
-        generatorContext.addTemplate("azure-native-image-properties",
-                new RockerTemplate(
-                        getCloud().getModuleName(),
-                        "src/main/resources/META-INF/native-image/native-image.properties",
-                        AzureNativeImageProperties.template())
-        );
+        generatorContext.addInitializeBuildTimeClasses(new RockerWritable(AzureNativeImageProperties.template()));
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25AzureNativeImageProperties.template()));
+        }
+    }
+
+    protected void addAuthenticationModeInitializeAtBuildTimeClass(GdkGeneratorContext generatorContext) {
+        generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25AuthenticationModeInitializeAtBuildTimeClass.template()));
     }
 }

@@ -31,7 +31,6 @@ import com.fizzed.rocker.RockerModel;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.core.order.OrderUtil;
 import io.micronaut.starter.application.generator.GeneratorContext;
-import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Repository;
 import io.micronaut.starter.build.RepositoryResolver;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
@@ -46,8 +45,11 @@ import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugi
 import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
 import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
 import io.micronaut.starter.feature.function.azure.template.azurefunctions;
+import io.micronaut.starter.template.BinaryTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
+import io.micronaut.starter.template.Template;
+import io.micronaut.starter.template.URLTemplate;
 import jakarta.inject.Singleton;
 
 import java.util.ArrayList;
@@ -75,6 +77,8 @@ public class GdkGradle extends Gradle {
 
     private static final String ARTIFACT_ID = "micronaut-gradle-plugin";
     private static final String PLUGIN_TEST_RESOURCES = "io.micronaut.test-resources";
+    private static final String WRAPPER_JAR = "gradle/wrapper/gradle-wrapper.jar";
+    private static final String WRAPPER_PROPS = "gradle/wrapper/gradle-wrapper.properties";
 
     /**
      * The plugin id for the Micronaut application plugin.
@@ -88,7 +92,6 @@ public class GdkGradle extends Gradle {
      * The plugin id for the JTE plugin.
      */
     private static final String JTE_PLUGIN_ID = "gg.jte.gradle";
-
     /**
      * The plugin id for the AZURE functions plugin.
      */
@@ -158,7 +161,9 @@ public class GdkGradle extends Gradle {
                 p = (GradlePlugin) GradlePlugin.builder()
                         .id(LIBRARY)
                         .lookupArtifactId(ARTIFACT_ID)
-                        .extension(new RockerWritable(LibMicronautGradle.template(generatorContext.getProject().getPackageName(), resolveTestRuntime(generatorContext).orElse(null))))
+                        .extension(new RockerWritable(LibMicronautGradle.template(
+                                generatorContext.getProject().getPackageName(),
+                                resolveTestRuntime(generatorContext).orElse(null))))
                         .build()
                         .resolved(coordinateResolver);
             }
@@ -173,7 +178,11 @@ public class GdkGradle extends Gradle {
     // don't delete - this is needed for web image generation
     @Override
     protected void addGradleInitFiles(GeneratorContext generatorContext) {
-        super.addGradleInitFiles(generatorContext);
+        ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
+        generatorContext.addTemplate("gradleWrapperJar", new BinaryTemplate(Template.ROOT, WRAPPER_JAR, classLoader.getResource(WRAPPER_JAR)));
+        generatorContext.addTemplate("gradleWrapperProperties", new URLTemplate(Template.ROOT, WRAPPER_PROPS, classLoader.getResource(WRAPPER_PROPS)));
+        generatorContext.addTemplate("gradleWrapper", new URLTemplate(Template.ROOT, "gradlew", classLoader.getResource("gradle/gradlew"), true));
+        generatorContext.addTemplate("gradleWrapperBat", new URLTemplate(Template.ROOT, "gradlew.bat", classLoader.getResource("gradle/gradlew.bat"), false));
     }
 
     private void addBuildSrc(GdkGeneratorContext generatorContext) {
@@ -220,12 +229,17 @@ public class GdkGradle extends Gradle {
 
         GdkCloud reset = generatorContext.getCloud();
 
-        generatorContext.getClouds().forEach(x -> addCloudGradleBuild(generatorContext, dsl, x));
+        for (GdkCloud cloud : generatorContext.getClouds()) {
+            addCloudGradleBuild(generatorContext, dsl, cloud);
+        }
 
         generatorContext.setCloud(reset);
 
         // for lib/build.gradle
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
+        generatorContext.addPostProcessor("build",
+                new BuildGradlePostProcessor(dsl, false,
+                        generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).isPresent(),
+                        generatorContext.getApplicationType(), generatorContext.getJdkVersion()));
     }
 
     private void addCloudGradleBuild(GdkGeneratorContext generatorContext, GradleDsl dsl,
@@ -255,8 +269,7 @@ public class GdkGradle extends Gradle {
                 .sorted(OrderUtil.COMPARATOR)
                 .toList();
 
-        for (BuildPlugin p : plugins) {
-            GradlePlugin plugin = (GradlePlugin) p;
+        for (GradlePlugin plugin : plugins) {
             if (plugin.getExtension() == null && plugin.getSettingsExtension() == null) {
                 // ok to reuse since it has no Rocker templates
                 copiedPlugins.add(plugin);
@@ -285,7 +298,9 @@ public class GdkGradle extends Gradle {
                 GradleRepository.listOf(dsl, repositories));
 
         String templateKey = "build-" + cloud.getModuleName();
-        generatorContext.addTemplate(templateKey, new RockerTemplate(cloud.getModuleName(), generatorContext.getBuildTool().getBuildFileName(),
+        generatorContext.addTemplate(templateKey, new RockerTemplate(
+                cloud.getModuleName(),
+                generatorContext.getBuildTool().getBuildFileName(),
                 buildGradle.template(
                         generatorContext.getApplicationType(),
                         generatorContext.getProject(),
@@ -293,12 +308,13 @@ public class GdkGradle extends Gradle {
                         build)
         ));
 
-        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true, generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
-
+        generatorContext.addPostProcessor(templateKey, new BuildGradlePostProcessor(dsl, true,
+                generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).isPresent(),
+                generatorContext.getApplicationType(), generatorContext.getJdkVersion()));
     }
 
     private GradlePlugin cloneJtePlugin(GradlePlugin plugin) {
-        gdkGradlePluginJTE extensionModel = (gdkGradlePluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
+        var extensionModel = (gdkGradlePluginJTE) ((RockerWritable) plugin.getExtension()).getModel();
 
         return new GradlePlugin(
                 plugin.getGradleFile(),
@@ -320,7 +336,7 @@ public class GdkGradle extends Gradle {
     private GradlePlugin cloneMicronautPlugin(GradlePlugin plugin,
                                               GdkGeneratorContext generatorContext) {
 
-        micronautGradle extensionModel = (micronautGradle) ((RockerWritable) plugin.getExtension()).getModel();
+        var extensionModel = (micronautGradle) ((RockerWritable) plugin.getExtension()).getModel();
         return new GradlePlugin(
                 plugin.getGradleFile(),
                 plugin.getId(),
@@ -354,8 +370,7 @@ public class GdkGradle extends Gradle {
 
     private GradlePlugin cloneAzureFunctionsPlugin(GradlePlugin plugin, GeneratorContext generatorContext) {
 
-
-        azurefunctions extensionModel = (azurefunctions) ((RockerWritable) plugin.getExtension()).getModel();
+        var extensionModel = (azurefunctions) ((RockerWritable) plugin.getExtension()).getModel();
 
         return new GradlePlugin(
                 plugin.getGradleFile(),

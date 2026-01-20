@@ -48,7 +48,7 @@ import static io.micronaut.starter.template.Template.ROOT;
 public class License implements DefaultFeature {
 
     private static final List<String> HEADER_LINES = List.of(
-            "Copyright 2025 Oracle and/or its affiliates",
+            "Copyright 2026 Oracle and/or its affiliates",
             "",
             "Licensed under the Apache License, Version 2.0 (the \"License\");",
             "you may not use this file except in compliance with the License.",

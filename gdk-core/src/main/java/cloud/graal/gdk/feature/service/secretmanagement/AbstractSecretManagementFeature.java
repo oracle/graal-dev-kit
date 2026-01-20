@@ -15,9 +15,12 @@
  */
 package cloud.graal.gdk.feature.service.secretmanagement;
 
+import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.service.AbstractGdkServiceFeature;
+import cloud.graal.gdk.feature.service.template.JDK25SecretManagementInitializeAtBuildTimeClasses;
 import cloud.graal.gdk.model.GdkService;
 import io.micronaut.core.annotation.NonNull;
+import io.micronaut.starter.template.RockerWritable;
 
 import static cloud.graal.gdk.model.GdkService.SECRETMANAGEMENT;
 
@@ -33,4 +36,20 @@ public abstract class AbstractSecretManagementFeature extends AbstractGdkService
     public final GdkService getService() {
         return SECRETMANAGEMENT;
     }
+
+    @Override
+    public void apply(GdkGeneratorContext generatorContext) {
+        doApply(generatorContext);
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25SecretManagementInitializeAtBuildTimeClasses.template()));
+        }
+    }
+
+    /**
+     * Implemented in subclasses to apply cloud-specific changes.
+     *
+     * @param generatorContext the generator context
+     */
+    protected abstract void doApply(GdkGeneratorContext generatorContext);
 }

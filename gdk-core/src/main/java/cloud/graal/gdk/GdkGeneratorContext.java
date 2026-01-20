@@ -15,11 +15,11 @@
  */
 package cloud.graal.gdk;
 
-import cloud.graal.gdk.build.dependencies.GdkDependencies;
 import cloud.graal.gdk.feature.GdkFeature;
 import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.feature.GdkFeatures;
 import cloud.graal.gdk.feature.replaced.GdkJTE;
+import cloud.graal.gdk.feature.replaced.GdkJib;
 import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.template.GdkPropertiesTemplate;
 import cloud.graal.gdk.template.TemplatePostProcessor;
@@ -36,7 +36,6 @@ import io.micronaut.starter.build.dependencies.Coordinate;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.dependencies.DependencyContext;
-import io.micronaut.starter.build.dependencies.StarterCoordinates;
 import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.feature.ApplicationFeature;
@@ -59,12 +58,14 @@ import io.micronaut.starter.feature.lang.java.JavaApplicationRenderingContext;
 import io.micronaut.starter.feature.lang.kotlin.KotlinApplicationRenderingContext;
 import io.micronaut.starter.feature.testresources.TestResources;
 import io.micronaut.starter.options.DefaultTestRockerModelProvider;
+import io.micronaut.starter.options.JdkVersion;
 import io.micronaut.starter.options.Language;
 import io.micronaut.starter.options.TestRockerModelProvider;
 import io.micronaut.starter.template.PropertiesTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.Template;
 import io.micronaut.starter.template.URLTemplate;
+import io.micronaut.starter.template.Writable;
 import io.micronaut.starter.util.NameUtils;
 
 import java.util.ArrayList;
@@ -83,11 +84,17 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static cloud.graal.gdk.GdkUtils.LIB_MODULE;
+import static cloud.graal.gdk.build.dependencies.GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN;
 import static cloud.graal.gdk.model.GdkCloud.AWS;
 import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static io.micronaut.context.env.Environment.DEVELOPMENT;
 import static io.micronaut.context.env.Environment.FUNCTION;
 import static io.micronaut.context.env.Environment.TEST;
+import static io.micronaut.starter.build.dependencies.StarterCoordinates.AZURE_FUNCTIONS_GRADLE_PLUGIN;
+import static io.micronaut.starter.build.dependencies.StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN;
+import static io.micronaut.starter.build.dependencies.StarterCoordinates.COM_GRADLEUP_SHADOW_GRADLE_PLUGIN;
+import static io.micronaut.starter.build.dependencies.StarterCoordinates.JTE_GRADLE_PLUGIN;
+import static io.micronaut.starter.build.dependencies.StarterCoordinates.KOTLIN_GRADLE_PLUGIN;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.APPLICATION;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.LIBRARY;
 import static io.micronaut.starter.template.Template.DEFAULT_MODULE;
@@ -122,18 +129,18 @@ public class GdkGeneratorContext extends GeneratorContext {
     );
 
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
-            gavMapEntry("com.gradleup.shadow", "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", StarterCoordinates.COM_GRADLEUP_SHADOW_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen", StarterCoordinates.KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", StarterCoordinates.JIB_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
-            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", StarterCoordinates.JTE_GRADLE_PLUGIN),
-            gavMapEntry("com.microsoft.azure.azurefunctions", "com.microsoft.azure:azure-functions-gradle-plugin", StarterCoordinates.AZURE_FUNCTIONS_GRADLE_PLUGIN)
+            gavMapEntry("com.gradleup.shadow", "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", COM_GRADLEUP_SHADOW_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin", KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin", KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen", KOTLIN_GRADLE_PLUGIN),
+            gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", GdkJib.COORDINATE),
+            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
+            gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
+            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", JTE_GRADLE_PLUGIN),
+            gavMapEntry("com.microsoft.azure.azurefunctions", "com.microsoft.azure:azure-functions-gradle-plugin", AZURE_FUNCTIONS_GRADLE_PLUGIN)
     );
 
     private static final ThreadLocal<GdkGeneratorContext> INSTANCE = new ThreadLocal<>();
@@ -150,6 +157,7 @@ public class GdkGeneratorContext extends GeneratorContext {
     private final Map<GdkCloud, Map<String, ApplicationConfiguration>> cloudApplicationEnvConfigurations = new HashMap<>(GdkCloud.supportedValues().length);
     private final Map<GdkCloud, Map<String, BootstrapConfiguration>> cloudBootstrapEnvConfigurations = new HashMap<>(GdkCloud.supportedValues().length);
     private final Map<GdkCloud, Set<BuildPlugin>> buildPlugins = new HashMap<>();
+    private final Map<GdkCloud, Set<Writable>> initializeAtBuildTimeClasses = new HashMap<>();
     private final Map<String, Set<TemplatePostProcessor>> postProcessors = new HashMap<>();
     private final Map<Pattern, Set<TemplatePostProcessor>> regexPostProcessors = new HashMap<>();
     private final Set<String> presentTemplatePaths = new HashSet<>();
@@ -643,10 +651,13 @@ public class GdkGeneratorContext extends GeneratorContext {
         }
     }
 
+    public void addInitializeBuildTimeClasses(Writable classes) {
+        initializeAtBuildTimeClasses.computeIfAbsent(cloud, k -> new HashSet<>()).add(classes);
+    }
+
     private boolean shouldIncludePluginInLib(BuildPlugin buildPlugin) {
 
-        if (buildPlugin instanceof MavenPlugin) {
-            MavenPlugin plugin = (MavenPlugin) buildPlugin;
+        if (buildPlugin instanceof MavenPlugin plugin) {
             // cloud-specific
             return !PLUGIN_MAVEN_AZUREFUNCTIONS.equals(plugin.getArtifactId());
         }
@@ -678,6 +689,10 @@ public class GdkGeneratorContext extends GeneratorContext {
         }
 
         return buildPlugins.getOrDefault(cloud, Collections.emptySet());
+    }
+
+    public Set<Writable> getInitializeAtBuildTimeClasses() {
+        return initializeAtBuildTimeClasses.getOrDefault(cloud, Collections.emptySet());
     }
 
     @Override
@@ -908,7 +923,7 @@ public class GdkGeneratorContext extends GeneratorContext {
                             RockerModel kotlinTemplate,
                             RockerModel groovyTemplate) {
         addTemplateInternal(templateKey, new RockerTemplate(
-                cloud == NONE ? isPlatformIndependent() ? "" : LIB_MODULE : cloud.getModuleName(),
+                GdkUtils.currentModule(this),
                 path,
                 parseModel(javaTemplate, kotlinTemplate, groovyTemplate)));
     }
@@ -1077,6 +1092,16 @@ public class GdkGeneratorContext extends GeneratorContext {
         return gavs;
     }
 
+    /**
+     * Check if JDK version is equal to or greater than the specified version.
+     *
+     * @param majorVersion the minimum version
+     * @return true if greater or equal
+     */
+    public boolean isJdkVersionAtLeast(int majorVersion) {
+        return getJdkVersion().greaterThanEqual(JdkVersion.valueOf(majorVersion));
+    }
+
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder("GdkGeneratorContext:\n");
@@ -1145,7 +1170,7 @@ public class GdkGeneratorContext extends GeneratorContext {
         for (String key : keys) {
             Template t = templates.get(key);
             String className = t.getClass().getSimpleName();
-            if (className.equals("")) { // anonymous inner class
+            if (className.isEmpty()) { // anonymous inner class
                 className = t.getClass().getName().substring(t.getClass().getName().lastIndexOf('.') + 1);
             }
             sb.append("\n      ").append(className).append("(").append(key).append(" -> ").append(t.getPath()).append(")");

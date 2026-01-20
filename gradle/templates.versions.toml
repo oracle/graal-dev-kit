@@ -15,7 +15,7 @@
 #
 
 [versions]
-apache-kafka-kafka-clients = '3.9.1-oracle-00001'
+apache-kafka-kafka-clients = '3.9.1-oracle-00002'
 asm = '9.8-oracle-00001'
 aws-msk-iam-auth = "2.3.4"
 tracing-exporter-auto = '0.36.0-alpha'
@@ -74,7 +74,7 @@ micronaut-kubernetes = "7.1.1-oracle-00001"
 micronaut-liquibase = "6.9.0-oracle-00001"
 micronaut-maven-plugin = "4.11.1"
 micronaut-maven-test-resources-plugin = "2.10.1"
-micronaut-micrometer = "5.13.1-oracle-00001"
+micronaut-micrometer = "5.13.2-oracle-00001"
 micronaut-mongo = "5.7.0-oracle-00001"
 micronaut-object-storage = "2.10.0-oracle-00001"
 micronaut-openapi = "6.19.2-oracle-00001"
@@ -91,8 +91,8 @@ micronaut-sql = "6.3.1-oracle-00001"
 micronaut-tracing = "7.2.0-oracle-00001"
 micronaut-validation = "4.12.0-oracle-00001"
 micronaut-views = "5.9.0-oracle-00001"
-micronaut-coherence = "5.0.6-oracle-00001"
-netty = "4.2.7.Final-oracle-00001"
+micronaut-coherence = "5.1.0-oracle-00001"
+netty = "4.2.9.Final-oracle-00001"
 okhttp = "5.1.0-oracle-00001"
 opentelemetry-api-incubator = "2.20.1-alpha-oracle-00001"
 opentelemetry-instrumentation = '2.20.1-oracle-00001'
@@ -101,6 +101,7 @@ org-flywaydb = '10.22.0-oracle-00001'
 org-hdrhistogram-HdrHistogram = '2.2.2-oracle-00001'
 org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
+at-yawk-lz4-java = '1.10.1-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.5.6"
 protobuf = "4.31.1-oracle-00001"
@@ -310,6 +311,7 @@ org-flywaydb-flyway-mysql = { module = 'org.flywaydb:flyway-mysql', version.ref 
 org-hdrhistogram-HdrHistogram = { module = 'org.hdrhistogram:HdrHistogram', version.ref = 'org-hdrhistogram-HdrHistogram' }
 org-jetbrains-annotations = { module = 'org.jetbrains:annotations', version.ref = 'org-jetbrains-annotations' }
 org-latencyutils-LatencyUtils = { module = 'org.latencyutils:LatencyUtils', version.ref = 'org-latencyutils-LatencyUtils' }
+at-yawk-lz-lz4-java = { module = 'at.yawk.lz4:lz4-java', version.ref = 'at-yawk-lz4-java' }
 org-ow2-asm-asm = { module = 'org.ow2.asm:asm', version.ref = 'asm' }
 org-ow2-asm-asm-analysis = { module = 'org.ow2.asm:asm-analysis', version.ref = 'asm' }
 org-ow2-asm-asm-commons = { module = 'org.ow2.asm:asm-commons', version.ref = 'asm' }

@@ -27,8 +27,11 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static io.micronaut.starter.options.JdkVersion.JDK_17;
 import static io.micronaut.starter.options.JdkVersion.JDK_21;
+import static io.micronaut.starter.options.JdkVersion.JDK_25;
+import static io.micronaut.starter.template.Template.ROOT;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
@@ -57,7 +60,10 @@ public final class GdkUtils {
     /**
      * All supported JDK versions.
      */
-    public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_17.majorVersion(), JDK_21.majorVersion());
+    public static final List<Integer> SUPPORTED_JDKS = List.of(
+            JDK_17.majorVersion(),
+            JDK_21.majorVersion(),
+            JDK_25.majorVersion());
 
     /**
      * The version suffix appended to the Micronaut version in the BOM.
@@ -110,7 +116,8 @@ public final class GdkUtils {
      * Add any supported JDK versions that aren't supported in Micronaut.
      */
     public static void configureJdkVersions() {
-        new JdkVersion(22);
+        new JdkVersion(24);
+        new JdkVersion(25);
     }
 
     /**
@@ -126,5 +133,15 @@ public final class GdkUtils {
         } catch (Throwable t) {
             return null;
         }
+    }
+
+    /**
+     * Determine the module for a template.
+     *
+     * @param gc generator context
+     * @return "" if platform independent, "lib" if cloud is NONE, otherwise the cloud module name
+     */
+    public static String currentModule(GdkGeneratorContext gc) {
+        return gc.getCloud() == NONE ? gc.isPlatformIndependent() ? ROOT : LIB_MODULE : gc.getCloud().getModuleName();
     }
 }
