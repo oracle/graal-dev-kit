@@ -47,7 +47,7 @@ public class OciSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
-    public void apply(GdkGeneratorContext generatorContext) {
+    public void doApply(GdkGeneratorContext generatorContext) {
         // no-op
     }
 

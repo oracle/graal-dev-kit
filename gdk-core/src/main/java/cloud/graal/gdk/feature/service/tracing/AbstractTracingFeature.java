@@ -17,6 +17,7 @@ package cloud.graal.gdk.feature.service.tracing;
 
 import cloud.graal.gdk.GdkGeneratorContext;
 import cloud.graal.gdk.feature.service.AbstractGdkServiceFeature;
+import cloud.graal.gdk.feature.service.template.JDK25TracingInitializeAtBuildTimeClasses;
 import cloud.graal.gdk.feature.service.tracing.template.InventoryServiceGroovy;
 import cloud.graal.gdk.feature.service.tracing.template.InventoryServiceJava;
 import cloud.graal.gdk.feature.service.tracing.template.InventoryServiceKotlin;
@@ -41,6 +42,7 @@ import io.micronaut.starter.feature.opentelemetry.OpenTelemetry;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryAnnotations;
 import io.micronaut.starter.feature.opentelemetry.OpenTelemetryHttp;
 import io.micronaut.starter.feature.other.HttpClient;
+import io.micronaut.starter.template.RockerWritable;
 
 import static cloud.graal.gdk.model.GdkService.TRACING;
 import static io.micronaut.starter.application.ApplicationType.DEFAULT;
@@ -122,6 +124,10 @@ public abstract class AbstractTracingFeature extends AbstractGdkServiceFeature {
                         WarehouseControllerGroovy.template(project));
             }
         });
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25TracingInitializeAtBuildTimeClasses.template()));
+        }
     }
 
     @NonNull

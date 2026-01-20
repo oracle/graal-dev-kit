@@ -41,6 +41,7 @@ import cloud.graal.gdk.feature.service.database.template.GenreRepositoryKotlin;
 import cloud.graal.gdk.feature.service.database.template.GenreServiceGroovy;
 import cloud.graal.gdk.feature.service.database.template.GenreServiceJava;
 import cloud.graal.gdk.feature.service.database.template.GenreServiceKotlin;
+import cloud.graal.gdk.feature.service.template.JDK25FlywayInitializeAtBuildTimeClasses;
 import cloud.graal.gdk.model.GdkService;
 import com.fizzed.rocker.RockerModel;
 import io.micronaut.core.annotation.NonNull;
@@ -57,6 +58,7 @@ import io.micronaut.starter.feature.migration.Flyway;
 import io.micronaut.starter.feature.oraclecloud.OracleCloudAutonomousDatabase;
 import io.micronaut.starter.feature.validator.MicronautValidationFeature;
 import io.micronaut.starter.template.RockerTemplate;
+import io.micronaut.starter.template.RockerWritable;
 
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -264,6 +266,10 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
                         GenreServiceKotlin.template(project, templateRootPackage),
                         GenreServiceGroovy.template(project, templateRootPackage));
             });
+        }
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25FlywayInitializeAtBuildTimeClasses.template()));
         }
     }
 

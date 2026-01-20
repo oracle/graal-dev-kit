@@ -24,8 +24,8 @@ import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.feature.k8s.Kubernetes;
 import io.micronaut.starter.feature.other.Management;
 
-import static cloud.graal.gdk.model.GdkService.K8S;
 import static cloud.graal.gdk.feature.service.k8s.KubernetesClientOpenApi.MICRONAUT_KUBERNETES_GROUP_ID;
+import static cloud.graal.gdk.model.GdkService.K8S;
 
 /**
  * Base class for Kubernetes service features.
@@ -71,6 +71,10 @@ public abstract class AbstractK8sFeature extends AbstractGdkServiceFeature {
             generatorContext.addDependency(DISCOVERY_CLIENT);
             kubernetesClient.apply(generatorContext);
         });
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            addAuthenticationModeInitializeAtBuildTimeClass(generatorContext);
+        }
     }
 
     @NonNull

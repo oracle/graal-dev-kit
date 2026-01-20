@@ -21,6 +21,7 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.application.ApplicationType;
 import io.micronaut.starter.build.gradle.GradleDsl;
+import io.micronaut.starter.options.JdkVersion;
 
 import java.util.Objects;
 import java.util.regex.Pattern;
@@ -127,6 +128,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     private final boolean forCloudModule;
     private final boolean isGatewayFunction;
     private final ApplicationType applicationType;
+    private final JdkVersion jdkVersion;
 
     /**
      * @param dsl               the Gradle DSL
@@ -135,12 +137,16 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
      * @param applicationType   the app type
      */
     public BuildGradlePostProcessor(@NonNull GradleDsl dsl,
-                                    boolean forCloudModule, boolean isGatewayFunction, ApplicationType applicationType) {
+                                    boolean forCloudModule,
+                                    boolean isGatewayFunction,
+                                    ApplicationType applicationType,
+                                    JdkVersion jdkVersion) {
+        Objects.requireNonNull(dsl, "Gradle DSL is required");
         this.isGatewayFunction = isGatewayFunction;
         this.applicationType = applicationType;
-        Objects.requireNonNull(dsl, "Gradle DSL is required");
         this.dsl = dsl;
         this.forCloudModule = forCloudModule;
+        this.jdkVersion = jdkVersion;
     }
 
     @NonNull
@@ -157,7 +163,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
         buildGradle = updateResolutionStrategyVersions(buildGradle);
         buildGradle = fixLibDependency(buildGradle);
         buildGradle = replaceMavenCentral(buildGradle);
-        buildGradle = configureGraalVMMetaDataRepository(buildGradle);
+        buildGradle = configureGraalVmMetadataRepository(buildGradle);
         if (forCloudModule) {
             buildGradle = fixNativeName(buildGradle);
         }
@@ -175,7 +181,8 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
 
     private String replaceMavenCentral(@NonNull String buildGradle) {
         if (!StringUtils.isEmpty(GdkUtils.getenv("MIRROR_URL"))) {
-            buildGradle = buildGradle.replace("mavenCentral()", "maven { url \"%s\" }".formatted(GdkUtils.getenv("MIRROR_URL")));
+            buildGradle = buildGradle.replace("mavenCentral()",
+                    "maven { url \"%s\" }".formatted(GdkUtils.getenv("MIRROR_URL")));
         }
         return buildGradle;
     }
@@ -208,7 +215,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
     }
 
     @NonNull
-    private String configureGraalVMMetaDataRepository(@NonNull String buildGradle) {
+    private String configureGraalVmMetadataRepository(@NonNull String buildGradle) {
         String graalVMRepositoryVersion = GdkDependencies.GRAALVM_METADATA_REPOSITORY_VERSION;
         String graalVMMetadata;
         if (dsl == GROOVY) {
@@ -236,6 +243,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
 
     @NonNull
     private String fixLibDependency(@NonNull String buildGradle) {
-        return buildGradle.replace("implementation(\":lib-reference\")", "implementation(project(\":lib\"))");
+        return buildGradle.replace("implementation(\":lib-reference\")",
+                "implementation(project(\":lib\"))");
     }
 }

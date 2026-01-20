@@ -47,7 +47,7 @@ public class AzureSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
-    public void apply(GdkGeneratorContext generatorContext) {
+    protected void doApply(GdkGeneratorContext generatorContext) {
 
         // write to bootstrap-azure.properties to avoid problem with invalid value in application.properties/bootstrap.properties
         generatorContext.getCloudBootstrapConfiguration().addNested("azure.key-vault.vault-url", "<key_vault_url>");

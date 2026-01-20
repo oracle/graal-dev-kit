@@ -45,7 +45,10 @@ public class PlatformIndependent extends AbstractGdkFeature {
     @Override
     public void apply(GdkGeneratorContext generatorContext) {
         GradleDsl dsl = generatorContext.getBuildTool().getGradleDsl().orElse(GROOVY);
-        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(dsl, false, generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).orElse(null) != null, generatorContext.getApplicationType()));
+        generatorContext.addPostProcessor("build", new BuildGradlePostProcessor(
+                dsl, false,
+                generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).isPresent(),
+                generatorContext.getApplicationType(), generatorContext.getJdkVersion()));
         generatorContext.addPostProcessor("loggingConfig", new LogbackXmlPostProcessor());
         generatorContext.addPostProcessor("mavenPom", new MavenPlatformPostProcessor());
     }

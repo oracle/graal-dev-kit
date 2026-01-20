@@ -31,7 +31,7 @@ import static cloud.graal.gdk.model.GdkCloud.NONE;
 public class NonCloudSecretManagement extends AbstractSecretManagementFeature {
 
     @Override
-    public void apply(GdkGeneratorContext generatorContext) {
+    public void doApply(GdkGeneratorContext generatorContext) {
         // no-op
     }
 

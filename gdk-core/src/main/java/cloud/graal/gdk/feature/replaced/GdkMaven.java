@@ -57,7 +57,8 @@ public class GdkMaven extends Maven {
 
     private final GdkMavenBuildCreator mavenBuildCreator;
 
-    public GdkMaven(GdkMavenBuildCreator mavenBuildCreator, RepositoryResolver repositoryResolver) {
+    public GdkMaven(GdkMavenBuildCreator mavenBuildCreator,
+                    RepositoryResolver repositoryResolver) {
         super(mavenBuildCreator, repositoryResolver);
         this.mavenBuildCreator = mavenBuildCreator;
     }
@@ -126,7 +127,7 @@ public class GdkMaven extends Maven {
                     generatorContext.getLibProject().getName(),
                     generatorContext.getLibProject().getPackageName(),
                     generatorContext.getApplicationType(),
-                    generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).orElse(null) != null,
+                    generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).isPresent(),
                     generatorContext.getCloud(),
                     true));
         }
@@ -142,7 +143,8 @@ public class GdkMaven extends Maven {
                 .compile()
                 .build());
 
-        MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext, repositoryResolver.resolveRepositories(generatorContext));
+        MavenBuild mavenBuild = mavenBuildCreator.create(generatorContext,
+                repositoryResolver.resolveRepositories(generatorContext));
 
         String templateKey = "mavenPom-" + cloud.getModuleName();
         if (templateKey.equals("mavenPom-")) {
@@ -161,7 +163,7 @@ public class GdkMaven extends Maven {
                 generatorContext.getLibProject().getName(),
                 generatorContext.getLibProject().getPackageName(),
                 generatorContext.getApplicationType(),
-                generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).orElse(null) != null,
+                generatorContext.getFeature(AbstractGdkCloudGatewayFunction.class).isPresent(),
                 generatorContext.getCloud(),
                 false));
     }

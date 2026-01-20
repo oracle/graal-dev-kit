@@ -77,7 +77,7 @@ public class AwsSecretManagement extends AbstractSecretManagementFeature {
     }
 
     @Override
-    public void apply(GdkGeneratorContext generatorContext) {
+    public void doApply(GdkGeneratorContext generatorContext) {
 
         if (generatorContext.generateExampleCode()) {
 
@@ -117,6 +117,10 @@ public class AwsSecretManagement extends AbstractSecretManagementFeature {
             config.remove("micronaut.security.oauth2.clients.default.client-secret");
             config.addNested("micronaut.security.oauth2.clients.demo-oauth.client-id", "${OAUTH_CLIENT_ID:XXX}");
             config.addNested("micronaut.security.oauth2.clients.demo-oauth.client-secret", "${OAUTH_CLIENT_SECRET:YYY}");
+        }
+
+        if (generatorContext.isJdkVersionAtLeast(25)) {
+            addAuthenticationModeInitializeAtBuildTimeClass(generatorContext);
         }
     }
 

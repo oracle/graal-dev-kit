@@ -29,7 +29,6 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import static io.micronaut.starter.feature.MicronautRuntimeFeature.PROPERTY_MICRONAUT_RUNTIME;
 
@@ -86,8 +85,15 @@ public class GdkBuildProperties extends BuildProperties {
      * @return properties for the specified cloud
      */
     public List<Property> getProperties(GdkCloud cloud) {
-        return new ArrayList<>(propertyMaps.get(cloud).values()).stream().sorted(Comparator.comparing(Property::getKey)).
-                collect(Collectors.toList());
+        List<Property> values = new ArrayList<>(propertyMaps.get(cloud).values());
+        if (values.stream().anyMatch(it -> it instanceof Comment)) {
+            // can't sort
+            return values;
+        }
+
+        return new ArrayList<>(values.stream()
+                .sorted(Comparator.comparing(Property::getKey))
+                .toList());
     }
 
     private void put(String key,

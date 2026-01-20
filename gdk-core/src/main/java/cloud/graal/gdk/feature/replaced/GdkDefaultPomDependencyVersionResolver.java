@@ -28,6 +28,7 @@ import java.util.Map;
 import java.util.Optional;
 
 import static cloud.graal.gdk.build.dependencies.GdkDependencies.ALL_DEPENDENCIES;
+import static cloud.graal.gdk.feature.replaced.GdkJib.JIB_ARTIFACT_ID;
 
 @Singleton
 @Replaces(DefaultPomDependencyVersionResolver.class)
@@ -48,6 +49,7 @@ public class GdkDefaultPomDependencyVersionResolver extends DefaultPomDependency
     static {
         var coordinates = new HashMap<>(StarterCoordinates.ALL_COORDINATES);
         coordinates.putAll(ALL_DEPENDENCIES);
+        coordinates.put(JIB_ARTIFACT_ID, GdkJib.COORDINATE); // to override the plugin version
         COORDINATES = Collections.unmodifiableMap(coordinates);
     }
 }
