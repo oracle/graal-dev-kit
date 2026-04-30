@@ -75,7 +75,8 @@ public class GdkMavenBuildCreator extends MavenBuildCreator {
                 build.getTestAnnotationProcessorCombineAttribute(),
                 build.getProfiles(),
                 generatorContext.getDependencies().stream().filter(dep -> dep.getScope() == Scope.AOT_PLUGIN).map(DependencyCoordinate::new).toList(),
-                testResourcesDependencies(generatorContext)
+                testResourcesDependencies(generatorContext),
+                build.getCompilerArgs()
         );
     }
 

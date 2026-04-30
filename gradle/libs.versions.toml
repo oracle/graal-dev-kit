@@ -15,15 +15,15 @@
 #
 
 [versions]
-bouncycastle = '1.82'
+bouncycastle = '1.83'
 gcp = '26.48.0'
 jansi = '2.4.2'
 jline = '3.30.6'
 jsch = '0.2.26'
-micronaut-guides = '0.1.0'
+micronaut-guides = '0.3.0'
 micronaut-internal-build = '7.6.6'
-micronaut-plugins = '4.6.1'
-micronaut-starter = '4.10.1'
+micronaut-plugins = '4.6.2'
+micronaut-starter = '4.10.8'
 reflections = '0.10.2'
 rocker = '1.4.0'
 shadow = '8.3.9'

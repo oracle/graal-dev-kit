@@ -49,7 +49,9 @@ public class GdkMavenBuild extends MavenBuild {
      * @param annotationProcessorCombineAttribute     MavenCombineAttribute for annotation processors
      * @param testAnnotationProcessorCombineAttribute MavenCombineAttribute for test annotation processors
      * @param profiles                                profiles
+     * @param compilerArgs                            compile args
      */
+    @SuppressWarnings("checkstyle:ParameterNumber")
     public GdkMavenBuild(String artifactId,
                          List<DependencyCoordinate> annotationProcessors,
                          List<DependencyCoordinate> testAnnotationProcessors,
@@ -61,9 +63,10 @@ public class GdkMavenBuild extends MavenBuild {
                          MavenCombineAttribute testAnnotationProcessorCombineAttribute,
                          Collection<Profile> profiles,
                          List<DependencyCoordinate> aotDependencies,
-                         List<MavenCoordinate> testResourcesDependencies) {
+                         List<MavenCoordinate> testResourcesDependencies,
+                         List<String> compilerArgs) {
         super(artifactId, annotationProcessors, testAnnotationProcessors, dependencies, properties, plugins,
-                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies, testResourcesDependencies);
+                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies, testResourcesDependencies, compilerArgs);
         this.repositories = repositories;
     }
 
