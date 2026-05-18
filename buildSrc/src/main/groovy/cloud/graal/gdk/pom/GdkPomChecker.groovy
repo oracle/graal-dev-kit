@@ -124,8 +124,10 @@ abstract class GdkPomChecker extends DefaultTask {
                         errorCollector.errors.add("$bomPrefix has dependencies outside of <dependencyManagement> block.".toString())
                     }
                 }
-                for (String invalid in validation.invalidDependencies) {
-                    errorCollector.error(bomPrefix + " declares a non-resolvable dependency: " + invalid)
+                if (validation.dependencyPath == pomCoordinates.get()) {
+                    for (String invalid in validation.invalidDependencies) {
+                        errorCollector.error(bomPrefix + " declares a non-resolvable dependency: " + invalid)
+                    }
                 }
             }
         }
