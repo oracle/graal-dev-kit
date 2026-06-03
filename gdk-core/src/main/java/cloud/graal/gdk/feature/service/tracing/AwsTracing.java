@@ -37,6 +37,11 @@ import static cloud.graal.gdk.model.GdkCloud.AWS;
  */
 @Singleton
 public class AwsTracing extends AbstractTracingFeature {
+    private static final Dependency OPENTELEMETRY_EXPORTER_SENDER_OKHTTP = Dependency.builder()
+            .groupId("io.opentelemetry")
+            .artifactId("opentelemetry-exporter-sender-okhttp")
+            .compile()
+            .build();
 
     private final OpenTelemetryXray openTelemetryXray;
     private final OpenTelemetryExporterOtlp openTelemetryExporterOtlp;
@@ -70,6 +75,7 @@ public class AwsTracing extends AbstractTracingFeature {
     protected void doApply(GdkGeneratorContext generatorContext) {
         // TODO added temporary because of Gradle dependency resolution bug
         generatorContext.addDependency(Dependency.builder().groupId("org.jetbrains.kotlin").artifactId("kotlin-stdlib-jdk8").compile().build());
+        generatorContext.addDependency(OPENTELEMETRY_EXPORTER_SENDER_OKHTTP);
 
         // Add fix to AWS tracing missing logs
         generatorContext.getConfiguration().addNested("otel.logs.exporter", "otlp");
