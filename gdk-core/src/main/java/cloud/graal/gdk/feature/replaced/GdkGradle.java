@@ -42,9 +42,9 @@ import io.micronaut.starter.build.gradle.GradlePlugin;
 import io.micronaut.starter.build.gradle.GradleRepository;
 import io.micronaut.starter.feature.build.gradle.Gradle;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
-import io.micronaut.starter.feature.build.gradle.templates.buildGradle;
-import io.micronaut.starter.feature.build.gradle.templates.micronautGradle;
-import io.micronaut.starter.feature.function.azure.template.azurefunctions;
+import io.micronaut.starter.rocker.feature.build.gradle.templates.buildGradle;
+import io.micronaut.starter.rocker.feature.build.gradle.templates.micronautGradle;
+import io.micronaut.starter.rocker.feature.function.azure.template.azurefunctions;
 import io.micronaut.starter.template.BinaryTemplate;
 import io.micronaut.starter.template.RockerTemplate;
 import io.micronaut.starter.template.RockerWritable;
@@ -359,7 +359,9 @@ public class GdkGradle extends Gradle {
                         extensionModel.sharedTestResources(),
                         extensionModel.aotKeys(),
                         extensionModel.lambdaRuntimeMainClass(),
-                        extensionModel.ignoredAutomaticDependencies())),
+                        extensionModel.ignoredAutomaticDependencies(),
+                        extensionModel.configurationValidation(),
+                        extensionModel.testResourcesVersion())),
                 null,
                 plugin.getPluginsManagementRepositories(),
                 false,

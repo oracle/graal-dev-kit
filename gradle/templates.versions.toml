@@ -15,106 +15,111 @@
 #
 
 [versions]
-apache-kafka-kafka-clients = '3.9.2-oracle-00001'
-asm = '9.8-oracle-00001'
+apache-kafka-kafka-clients = '4.2.0-oracle-00001'
+asm = '9.9.1-oracle-00001'
 aws-msk-iam-auth = "2.3.4"
 tracing-exporter-auto = '0.36.0-alpha'
-com-zaxxer-HikariCP = '6.3.3-oracle-00001'
+
+com-zaxxer-HikariCP = '7.0.2'
 commons-io-commons-io = '2.14.0-oracle-00002'
-context-propagation = '1.1.3-oracle-00001'
+context-propagation = '1.2.1-oracle-00001'
 dev-jna-jna = '5.18.1'
 eclipse-angus-angus-activation = '2.0.3-oracle-00001'
 eclipse-angus-angus-mail = '2.0.5-oracle-00001'
 fn = "1.0.212"
-gax = "2.71.0"
-gax-grpc = "2.71.0"
-gg-jte = '3.2.1-oracle-00001'
-github-javaparser = '3.27.0-oracle-00001'
+gax = "2.79.0"
+gax-grpc = "2.79.0"
+gg-jte = '3.2.4'
+github-javaparser = '3.28.0-oracle-00001'
 github-resilience4j = '1.7.1-oracle-00002'
-google-auth-library = "1.40.0"
+google-auth-library = "1.46.0"
 google-cloud-logging = "0.132.18-alpha"
-graalvm-metadata-version = "0.3.33"
-guava = "33.5.0-jre"
-httpcore = "4.4.16-oracle-00001"
-io-micrometer = '1.15.4-oracle-00001'
+graalvm-metadata-version = "1.0.1"
+#graalvm-metadata-gradle-version = "1.0.1"
+guava = "33.6.0-jre"
+httpcore = "4.4.16-oracle-00001" 
+io-micrometer = '1.16.5-oracle-00001'
 io-opentelemetry = '1.62.0-oracle-00001'
 io-opentelemetry-opentelemetry-api-incubator = '1.62.0-alpha-oracle-00001'
+###io-projectreactor = '3.7.12'
 io-projectreactor-reactor-core = '3.7.12-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-vavr = '0.10.2-oracle-00001'
-jackson-core = '2.21.2-oracle-00001'
+jackson-core = '3.1.3-oracle-00001'
 jackson-annotation = '2.21-oracle-00001'
-jackson-dataformat-jackson-dataformat-toml = '2.21.2-oracle-00001'
-jackson-datatype = '2.21.2-oracle-00001'
+jackson-dataformat-jackson-dataformat-toml = '3.1.3-oracle-00001'
+jackson-datatype-jdk8 = '2.21.2-oracle-00001'
+jackson-datatype-jsr310 = '3.0.0-rc1-oracle-00001'
 jakarta-activation-jakarta-activation-api = '2.1.4-oracle-00001'
 jakarta-annotation-jakarta-annotation-api = '2.1.1-oracle-00001'
 jakarta-inject-jakarta-inject-api = '2.0.1-oracle-00001'
 jakarta-mail-jakarta-mail-api = '2.1.5-oracle-00001'
-jakarta-persistence-jakarta-persistence-api = '3.1.0-oracle-00001'
+jakarta-persistence-jakarta-persistence-api = '3.2.0-oracle-00001'
 jakarta-transaction-jakarta-transaction-api = '2.0.1-oracle-00001'
 jakarta-validation-jakarta-validation-api = '3.1.1-oracle-00001'
-org-checkerframework-checker-qual = '3.49.4-oracle-00001'
+json-smart = "2.6.0"
+org-checkerframework-checker-qual = '3.51.1-oracle-00001'
 apache-commons-commons-lang3 = '3.20.0-oracle-00001'
 google-errorprone-error_prone_annotations = '2.41.0-oracle-00001'
-code-gson-gson = '2.13.2-oracle-00001'
-
-kotlin = "1.9.25-oracle-00001"
+code-gson-gson = '2.14.0-oracle-00001' 
+#
+kotlin = "2.3.21-oracle-00001" 
 logback = "1.5.32-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
-micronaut-cache = "5.3.0-oracle-00001"
-micronaut-core = "4.10.25-oracle-00001"
-micronaut-data = "4.14.4-oracle-00001"
-micronaut-discovery = "4.7.2-oracle-00001"
-micronaut-email = "2.10.1-oracle-00001"
-micronaut-flyway = "7.9.2-oracle-00001"
-micronaut-gradle-plugin = "4.6.1"
-micronaut-jaxrs = "4.10.0-oracle-00001"
-micronaut-kafka = "5.9.0-oracle-00001"
-micronaut-kubernetes = "7.1.1-oracle-00001"
-micronaut-liquibase = "6.9.0-oracle-00001"
-micronaut-maven-plugin = "4.11.6"
-micronaut-maven-test-resources-plugin = "2.10.1"
-micronaut-micrometer = "5.13.2-oracle-00001"
-micronaut-mongo = "5.7.0-oracle-00001"
-micronaut-object-storage = "2.10.0-oracle-00001"
-micronaut-openapi = "6.20.0-oracle-00001"
-micronaut-oracle-cloud = "5.6.1-oracle-00001"
-micronaut-picocli = "5.9.0-oracle-00001"
-micronaut-platform = "4.10.15-oracle-00001"
-micronaut-reactor = "3.9.1-oracle-00001"
-micronaut-security = "4.15.2-oracle-00001"
-micronaut-serde = "2.16.2-oracle-00001"
-micronaut-servlet = "5.6.1-oracle-00001"
-micronaut-session = "4.8.0-oracle-00001"
-micronaut-sourcegen = "1.8.5-oracle-00001"
-micronaut-sql = "6.3.4-oracle-00001"
-micronaut-tracing = "7.2.0-oracle-00001"
-micronaut-validation = "4.12.0-oracle-00001"
-micronaut-views = "5.9.0-oracle-00001"
-micronaut-coherence = "5.2.0-oracle-00001"
-netty = "4.2.15.Final-oracle-00001"
-okhttp = "5.1.0-oracle-00001"
-opentelemetry-api-incubator = "2.20.1-alpha-oracle-00001"
-opentelemetry-instrumentation = '2.20.1-oracle-00001'
-opentelemetry-semconv-opentelemetry-semconv = '1.37.0-oracle-00001'
-org-flywaydb = '10.22.0-oracle-00001'
+micronaut-cache = "6.0.0-oracle-00001"
+micronaut-core = "5.0.2-oracle-00001"
+micronaut-data = "5.0.4-oracle-00001"
+micronaut-discovery = "5.0.0-oracle-00001"
+micronaut-email = "3.0.0-oracle-00001"
+micronaut-flyway = "8.0.0-oracle-00001"
+micronaut-gradle-plugin = "5.0.0"
+micronaut-jaxrs = "5.0.0-oracle-00001"
+micronaut-kafka = "6.0.0-oracle-00001"
+micronaut-kubernetes = "8.0.0-oracle-00001"
+micronaut-liquibase = "7.0.0-oracle-00001"
+micronaut-maven-plugin = "5.0.0"
+micronaut-maven-test-resources-plugin = "4.0.0"
+micronaut-micrometer = "6.0.0-oracle-00001"
+micronaut-mongo = "6.0.1-oracle-00001"
+micronaut-object-storage = "3.0.0-oracle-00001"
+micronaut-openapi = "7.0.0-oracle-00001"
+micronaut-oracle-cloud = "6.0.0"
+micronaut-picocli = "6.0.0-oracle-00001"
+micronaut-platform = "5.0.2-oracle-00001"
+micronaut-reactor = "4.0.0-oracle-00001"
+micronaut-security = "5.0.0-oracle-00001"
+micronaut-serde = "3.0.0-oracle-00001"
+micronaut-servlet = "6.0.0"
+micronaut-session = "5.0.0"
+micronaut-sourcegen = "2.0.0-oracle-00001"
+micronaut-sql = "7.0.1-oracle-00001"
+micronaut-tracing = "8.0.0-oracle-00001"
+micronaut-validation = "5.0.0-oracle-00001"
+micronaut-views = "6.0.0-oracle-00001"
+micronaut-coherence = "6.0.0-oracle-00001"
+netty = "4.2.15.Final-oracle-00001" 
+okhttp = "5.1.0-oracle-00001" 
+opentelemetry-api-incubator = "2.27.0-alpha-oracle-00001" 
+opentelemetry-instrumentation = '2.27.0-oracle-00001'
+opentelemetry-semconv-opentelemetry-semconv = '1.40.0-oracle-00001'
+org-flywaydb = '12.6.1' #need bfs
 org-hdrhistogram-HdrHistogram = '2.2.2-oracle-00001'
 org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
 at-yawk-lz4-java = '1.10.1-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.5.6"
-protobuf = "4.31.1-oracle-00001"
+protobuf = "4.34.1-oracle-00001"
 reactor-netty-http = "1.2.11"
 slf4j = '2.0.17-oracle-00001'
 snakeyaml = '2.4-oracle-00001'
 spring-boot-gradle-plugin = "3.5.6"
 squareup-okio = '3.15.0-oracle-00001'
-test-containers-oracle-xe = "1.21.3"
+testcontainers-oracle-xe = "2.0.5"
 typetools = "0.6.3-oracle-00001"
 xerial-snappy-snappy-java = "1.1.10.8-oracle-00001" #'1.1.10.7'
-zipkin-reporter2 = '3.5.1-oracle-00001'
-zipkin-zipkin2-zipkin = '2.27.1-oracle-00001'
+zipkin-reporter2 = '3.5.3-oracle-00001'
+zipkin-zipkin2-zipkin = '3.5.1-oracle-00001' 
 zstd-jni = "1.5.6-4-reduced-oracle-00001" #'1.5.7-3'
 
 [libraries]
@@ -218,24 +223,26 @@ org-apache-commons-commons-lang3 = { module = 'org.apache.commons:commons-lang3'
 org-checkerframework-checker-qual = { module = 'org.checkerframework:checker-qual', version.ref = 'org-checkerframework-checker-qual' }
 com-google-code-gson-gson = { module = 'com.google.code.gson:gson', version.ref = 'code-gson-gson' }
 
+## plugins that will be exluded from bom file (exclude-) prefix means don't add it into gdk-bom
 exclude-io-micronaut-maven-plugin = { module = 'io.micronaut.maven:micronaut-maven-plugin', version.ref = 'micronaut-maven-plugin'}
 exclude-io-micronaut-maven-test-resources-plugin = { module = 'io.micronaut.testresources:micronaut-test-resources-core', version.ref = 'micronaut-maven-test-resources-plugin'}
 exclude-io-micronaut-platform-micronaut-parent = { module = 'io.micronaut.platform:micronaut-parent', version.ref = 'micronaut-platform'}
-exclude-io-spring-gradle-dependency-management-plugin = { module = 'io.spring.gradle:dependency-management-plugin', version.ref = 'io-spring-gradle-dependency-management-plugin'}
+#exclude-io-spring-gradle-dependency-management-plugin = { module = 'io.spring.gradle:dependency-management-plugin', version.ref = 'io-spring-gradle-dependency-management-plugin'}
 exclude-micronaut-crac-plugin = { module = 'io.micronaut.gradle:micronaut-crac-plugin', version.ref = 'micronaut-gradle-plugin' }
 exclude-micronaut-gradle-plugin = { module = 'io.micronaut.gradle:micronaut-gradle-plugin', version.ref = 'micronaut-gradle-plugin' }
 exclude-micronaut-test-resources-plugin = { module = 'io.micronaut.gradle:micronaut-test-resources-plugin', version.ref = 'micronaut-gradle-plugin' }
 exclude-org-springframework-boot = { module = 'org.springframework.boot:spring-boot-gradle-plugin', version.ref = 'spring-boot-gradle-plugin'}
 exclude-org-springframework-boot-spring-boot-starter-parent = { module = 'org.springframework.boot:spring-boot-starter-parent', version.ref = 'org-springframework-boot-spring-boot-starter-parent'}
-exclude-org-testcontainers-oracle-xe = { module = 'org.testcontainers:oracle-xe', version.ref = 'test-containers-oracle-xe'}
+exclude-org-testcontainers-testcontainers-oracle-xe = { module = 'org.testcontainers:testcontainers-oracle-xe', version.ref = 'testcontainers-oracle-xe'}
+## New Added libs
 ch-qos-logback-contrib-logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-contrib' }
 ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:logback-json-core', version.ref = 'logback-contrib' }
 com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-annotation' }
-com-fasterxml-jackson-core-jackson-core = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson-core' }
-com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-core' }
-com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
-com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
-com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
+com-fasterxml-jackson-core-jackson-core = { module = 'tools.jackson.core:jackson-core', version.ref = 'jackson-core' }
+com-fasterxml-jackson-core-jackson-databind = { module = 'tools.jackson.core:jackson-databind', version.ref = 'jackson-core' }
+com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'tools.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
+com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype-jdk8' }
+com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'tools.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype-jsr310' }
 com-fnproject-fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
 com-fnproject-fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
 com-github-javaparser-javaparser-core = { module = 'com.github.javaparser:javaparser-core', version.ref = 'github-javaparser' }
@@ -268,6 +275,8 @@ io-netty-netty-handler = { module = "io.netty:netty-handler", version.ref = "net
 io-netty-netty-handler-proxy = { module = "io.netty:netty-handler-proxy", version.ref = "netty" }
 io-netty-netty-resolver = { module = "io.netty:netty-resolver", version.ref = "netty" }
 io-netty-netty-transport= { module = "io.netty:netty-transport", version.ref = "netty" }
+io-netty-netty-codec-marshalling= { module = "io.netty:netty-codec-marshalling", version.ref = "netty" }
+io-netty-netty-codec-protobuf= { module = "io.netty:netty-codec-protobuf", version.ref = "netty" }
 io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-annotations = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-incubator = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator', version.ref = 'opentelemetry-api-incubator' }
@@ -277,8 +286,6 @@ io-opentelemetry-opentelemetry-api-incubator = { module = 'io.opentelemetry:open
 io-opentelemetry-opentelemetry-common = { module = 'io.opentelemetry:opentelemetry-common', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-context = { module = 'io.opentelemetry:opentelemetry-context', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-exporter-common = { module = 'io.opentelemetry:opentelemetry-exporter-common', version.ref = 'io-opentelemetry' }
-io-opentelemetry-opentelemetry-exporter-otlp = { module = 'io.opentelemetry:opentelemetry-exporter-otlp', version.ref = 'io-opentelemetry' }
-io-opentelemetry-opentelemetry-exporter-sender-okhttp = { module = 'io.opentelemetry:opentelemetry-exporter-sender-okhttp', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-exporter-zipkin = { module = 'io.opentelemetry:opentelemetry-exporter-zipkin', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-sdk = { module = 'io.opentelemetry:opentelemetry-sdk', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-sdk-common = { module = 'io.opentelemetry:opentelemetry-sdk-common', version.ref = 'io-opentelemetry' }

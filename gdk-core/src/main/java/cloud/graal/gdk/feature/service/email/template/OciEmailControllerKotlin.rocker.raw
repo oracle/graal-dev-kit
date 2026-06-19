@@ -59,7 +59,7 @@ class OciEmailController(private val emailSender: EmailSender<*, *>) {
                 .attachment(
                     Attachment.builder()
                         .filename(file.filename)
-                        .contentType(file.contentType.orElse(APPLICATION_OCTET_STREAM_TYPE).toString())
+                        .contentType(file.contentType.orElse(APPLICATION_OCTET_STREAM_TYPE).name)
                         .content(file.bytes)
                         .build())
         )

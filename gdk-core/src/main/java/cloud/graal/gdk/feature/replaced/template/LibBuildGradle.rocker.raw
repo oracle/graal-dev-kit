@@ -3,7 +3,7 @@
 @import io.micronaut.starter.build.gradle.GradleBuild
 @import io.micronaut.starter.build.gradle.GradleDsl
 @import io.micronaut.starter.build.gradle.GradlePlugin
-@import io.micronaut.starter.feature.build.gradle.templates.dependencies
+@import io.micronaut.starter.rocker.feature.build.gradle.templates.dependencies
 @import io.micronaut.starter.feature.Features
 @import io.micronaut.starter.feature.github.workflows.docker.AbstractDockerRegistryWorkflow
 @import io.micronaut.starter.options.TestFramework
@@ -37,6 +37,15 @@ repositories {
 }
 
 @dependencies.template(applicationType, project, features, gradleBuild)
+
+sourceSets {
+    main {
+        resources {
+            // Avoid publishing app/bootstrap config from the shared lib onto dependent module classpaths.
+            exclude("application*.properties", "bootstrap*.properties")
+        }
+    }
+}
 
 java {
     sourceCompatibility = JavaVersion.toVersion("@features.getTargetJdk()")

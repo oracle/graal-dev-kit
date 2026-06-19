@@ -23,6 +23,7 @@ import io.micronaut.starter.feature.build.MicronautBuildPlugin;
 import io.micronaut.starter.feature.build.gradle.Dockerfile;
 import io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin;
 import io.micronaut.starter.feature.function.awslambda.AwsLambda;
+import io.micronaut.starter.feature.validation.ConfigurationValidationProvider;
 import io.micronaut.starter.options.JdkVersion;
 import jakarta.inject.Singleton;
 
@@ -37,8 +38,9 @@ import static io.micronaut.starter.feature.graalvm.GraalVM.FEATURE_NAME_GRAALVM;
 @Singleton
 public class GdkMicronautBuildPlugin extends MicronautBuildPlugin {
 
-    public GdkMicronautBuildPlugin(CoordinateResolver coordinateResolver) {
-        super(coordinateResolver);
+    public GdkMicronautBuildPlugin(CoordinateResolver coordinateResolver,
+                                   ConfigurationValidationProvider configurationValidationProvider) {
+        super(coordinateResolver, configurationValidationProvider);
     }
 
     @Override

@@ -32,13 +32,18 @@ import java.util.Set;
 import static io.micronaut.starter.options.JdkVersion.JDK_11;
 import static io.micronaut.starter.options.JdkVersion.JDK_17;
 import static io.micronaut.starter.options.JdkVersion.JDK_21;
+import static io.micronaut.starter.options.JdkVersion.JDK_25;
 
 @Replaces(GoogleCloudFunctionFeatureValidator.class)
 @Singleton
 public class GdkGoogleCloudFunctionFeatureValidator implements FeatureValidator {
 
     private static boolean supports(JdkVersion jdkVersion) {
-        return jdkVersion == JDK_11 || jdkVersion == JDK_17 || jdkVersion == JDK_21;
+        int majorVersion = jdkVersion.majorVersion();
+        return majorVersion == JDK_11.majorVersion()
+                || majorVersion == JDK_17.majorVersion()
+                || majorVersion == JDK_21.majorVersion()
+                || majorVersion == JDK_25.majorVersion();
     }
 
     @Override
@@ -57,7 +62,7 @@ public class GdkGoogleCloudFunctionFeatureValidator implements FeatureValidator 
     public void validatePostProcessing(Options options, ApplicationType applicationType, Set<Feature> features) {
         if (features.stream().anyMatch(GoogleCloudFunction.class::isInstance) && !supports(options.getJavaVersion())) {
             throw new IllegalArgumentException("""
-                    Google Cloud Function currently only supports JDK 11, 17 and 21 -- \
+                    Google Cloud Function currently only supports JDK 11, 17, 21 and 25 -- \
                     https://cloud.google.com/functions/docs/concepts/java-runtime""");
         }
     }

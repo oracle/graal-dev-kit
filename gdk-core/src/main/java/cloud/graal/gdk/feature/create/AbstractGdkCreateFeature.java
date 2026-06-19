@@ -22,11 +22,11 @@ import io.micronaut.core.annotation.NonNull;
 import io.micronaut.starter.application.Project;
 import io.micronaut.starter.feature.Features;
 import io.micronaut.starter.feature.database.TransactionalNotSupported;
-import io.micronaut.starter.feature.test.template.groovyJunit;
-import io.micronaut.starter.feature.test.template.javaJunit;
-import io.micronaut.starter.feature.test.template.koTest;
-import io.micronaut.starter.feature.test.template.kotlinJunit;
-import io.micronaut.starter.feature.test.template.spock;
+import io.micronaut.starter.rocker.feature.test.template.groovyJunit;
+import io.micronaut.starter.rocker.feature.test.template.javaJunit;
+import io.micronaut.starter.rocker.feature.test.template.koTest;
+import io.micronaut.starter.rocker.feature.test.template.kotlinJunit;
+import io.micronaut.starter.rocker.feature.test.template.spock;
 
 import static io.micronaut.starter.application.ApplicationType.FUNCTION;
 import static io.micronaut.starter.feature.FeaturePhase.LOW;
@@ -59,9 +59,9 @@ public abstract class AbstractGdkCreateFeature extends AbstractGdkFeature {
         Features features = generatorContext.getFeatures(getCloud());
 
         generatorContext.addTemplate(getModuleName(), "application-" + getModuleName(), path,
-                io.micronaut.starter.feature.lang.java.application.template(project, features, generatorContext.getApplicationRenderingContext(JAVA), false, false),
-                io.micronaut.starter.feature.lang.kotlin.application.template(project, features, generatorContext.getApplicationRenderingContext(KOTLIN), false, false),
-                io.micronaut.starter.feature.lang.groovy.application.template(project, features, generatorContext.getApplicationRenderingContext(GROOVY), false, false));
+                io.micronaut.starter.rocker.feature.lang.java.application.template(project, features, generatorContext.getApplicationRenderingContext(JAVA), false, false),
+                io.micronaut.starter.rocker.feature.lang.kotlin.application.template(project, features, generatorContext.getApplicationRenderingContext(KOTLIN), false, false),
+                io.micronaut.starter.rocker.feature.lang.groovy.application.template(project, features, generatorContext.getApplicationRenderingContext(GROOVY), false, false));
 
         String testSourcePath = generatorContext.getTestSourcePath("/{packagePath}/{className}");
         boolean transactional = !generatorContext.getFeatures().hasFeature(TransactionalNotSupported.class);

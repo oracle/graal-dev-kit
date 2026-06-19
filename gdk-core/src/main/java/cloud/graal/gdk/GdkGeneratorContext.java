@@ -19,7 +19,6 @@ import cloud.graal.gdk.feature.GdkFeature;
 import cloud.graal.gdk.feature.GdkFeatureContext;
 import cloud.graal.gdk.feature.GdkFeatures;
 import cloud.graal.gdk.feature.replaced.GdkJTE;
-import cloud.graal.gdk.feature.replaced.GdkJib;
 import cloud.graal.gdk.model.GdkCloud;
 import cloud.graal.gdk.template.GdkPropertiesTemplate;
 import cloud.graal.gdk.template.TemplatePostProcessor;
@@ -32,7 +31,6 @@ import io.micronaut.starter.application.generator.DependencyContextImpl;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.build.BuildPlugin;
 import io.micronaut.starter.build.Property;
-import io.micronaut.starter.build.dependencies.Coordinate;
 import io.micronaut.starter.build.dependencies.CoordinateResolver;
 import io.micronaut.starter.build.dependencies.Dependency;
 import io.micronaut.starter.build.dependencies.DependencyContext;
@@ -84,17 +82,11 @@ import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
 import static cloud.graal.gdk.GdkUtils.LIB_MODULE;
-import static cloud.graal.gdk.build.dependencies.GdkDependencies.IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN;
 import static cloud.graal.gdk.model.GdkCloud.AWS;
 import static cloud.graal.gdk.model.GdkCloud.NONE;
 import static io.micronaut.context.env.Environment.DEVELOPMENT;
 import static io.micronaut.context.env.Environment.FUNCTION;
 import static io.micronaut.context.env.Environment.TEST;
-import static io.micronaut.starter.build.dependencies.StarterCoordinates.AZURE_FUNCTIONS_GRADLE_PLUGIN;
-import static io.micronaut.starter.build.dependencies.StarterCoordinates.COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN;
-import static io.micronaut.starter.build.dependencies.StarterCoordinates.COM_GRADLEUP_SHADOW_GRADLE_PLUGIN;
-import static io.micronaut.starter.build.dependencies.StarterCoordinates.JTE_GRADLE_PLUGIN;
-import static io.micronaut.starter.build.dependencies.StarterCoordinates.KOTLIN_GRADLE_PLUGIN;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.APPLICATION;
 import static io.micronaut.starter.feature.build.gradle.MicronautApplicationGradlePlugin.Builder.LIBRARY;
 import static io.micronaut.starter.template.Template.DEFAULT_MODULE;
@@ -129,18 +121,18 @@ public class GdkGeneratorContext extends GeneratorContext {
     );
 
     private static final Map<String, String> PLUGIN_GAVS = Map.ofEntries(
-            gavMapEntry("com.gradleup.shadow", "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin", COM_GRADLEUP_SHADOW_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin", KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin", KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen", KOTLIN_GRADLE_PLUGIN),
-            gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin", GdkJib.COORDINATE),
-            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin", IO_MICRONAUT_GRADLE_MICRONAUT_GRADLE_PLUGIN),
-            gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin", COM_GOOGLE_DEVTOOLS_KSP_GRADLE_PLUGIN),
-            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin", JTE_GRADLE_PLUGIN),
-            gavMapEntry("com.microsoft.azure.azurefunctions", "com.microsoft.azure:azure-functions-gradle-plugin", AZURE_FUNCTIONS_GRADLE_PLUGIN)
+            gavMapEntry("com.gradleup.shadow", "com.gradleup.shadow:com.gradleup.shadow.gradle.plugin"),
+            gavMapEntry("io.micronaut.application", "io.micronaut.gradle:micronaut-gradle-plugin"),
+            gavMapEntry("io.micronaut.library", "io.micronaut.gradle:micronaut-gradle-plugin"),
+            gavMapEntry("io.micronaut.test-resources", "io.micronaut.gradle:micronaut-test-resources-plugin"),
+            gavMapEntry("org.jetbrains.kotlin.jvm", "org.jetbrains.kotlin:kotlin-gradle-plugin"),
+            gavMapEntry("org.jetbrains.kotlin.kapt", "org.jetbrains.kotlin:kotlin-gradle-plugin"),
+            gavMapEntry("org.jetbrains.kotlin.plugin.allopen", "org.jetbrains.kotlin:kotlin-allopen"),
+            gavMapEntry("com.google.cloud.tools.jib", "com.google.cloud.tools.jib:com.google.cloud.tools.jib.gradle.plugin"),
+            gavMapEntry("io.micronaut.aot", "io.micronaut.gradle:micronaut-aot-plugin"),
+            gavMapEntry("com.google.devtools.ksp", "com.google.devtools.ksp:com.google.devtools.ksp.gradle.plugin"),
+            gavMapEntry("gg.jte.gradle", "gg.jte:jte-gradle-plugin"),
+            gavMapEntry("com.microsoft.azure.azurefunctions", "com.microsoft.azure:azure-functions-gradle-plugin")
     );
 
     private static final ThreadLocal<GdkGeneratorContext> INSTANCE = new ThreadLocal<>();
@@ -200,9 +192,8 @@ public class GdkGeneratorContext extends GeneratorContext {
         return INSTANCE.get();
     }
 
-    private static Map.Entry<String, String> gavMapEntry(String keyStart, String valueStart,
-                                                         Coordinate coordinate) {
-        return Map.entry(keyStart + ':' + coordinate.getVersion(), valueStart + ':' + coordinate.getVersion());
+    private static Map.Entry<String, String> gavMapEntry(String pluginId, String groupAndArtifact) {
+        return Map.entry(pluginId, groupAndArtifact);
     }
 
     private static Map<GdkCloud, GdkFeatures> splitFeatures(Set<Feature> allFeatures,
@@ -1076,11 +1067,12 @@ public class GdkGeneratorContext extends GeneratorContext {
                 continue;
             }
             String key = plugin.getId() + ':' + plugin.getVersion();
-            String gav = PLUGIN_GAVS.get(key);
+            String groupAndArtifact = PLUGIN_GAVS.get(plugin.getId());
 
-            if (gav == null) {
+            if (groupAndArtifact == null) {
                 throw new IllegalStateException("Unexpected Gradle build plugin or version mismatch for '" + key + "'");
             }
+            String gav = groupAndArtifact + ':' + plugin.getVersion();
 
             if (key.contains(GdkJTE.JTE_GROUP_ID)) {
                 gavs.add(GdkJTE.JTE_GROUP_ID + ":" + GdkJTE.JTE_NATIVE_RESOURCES + ":" + plugin.getVersion());

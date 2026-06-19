@@ -28,8 +28,6 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static cloud.graal.gdk.model.GdkCloud.NONE;
-import static io.micronaut.starter.options.JdkVersion.JDK_17;
-import static io.micronaut.starter.options.JdkVersion.JDK_21;
 import static io.micronaut.starter.options.JdkVersion.JDK_25;
 import static io.micronaut.starter.template.Template.ROOT;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -60,10 +58,7 @@ public final class GdkUtils {
     /**
      * All supported JDK versions.
      */
-    public static final List<Integer> SUPPORTED_JDKS = List.of(
-            JDK_17.majorVersion(),
-            JDK_21.majorVersion(),
-            JDK_25.majorVersion());
+    public static final List<Integer> SUPPORTED_JDKS = List.of(JDK_25.majorVersion());
 
     /**
      * The version suffix appended to the Micronaut version in the BOM.

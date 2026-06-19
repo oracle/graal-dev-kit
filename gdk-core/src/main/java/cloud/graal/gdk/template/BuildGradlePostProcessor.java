@@ -16,7 +16,6 @@
 package cloud.graal.gdk.template;
 
 import cloud.graal.gdk.GdkUtils;
-import cloud.graal.gdk.build.dependencies.GdkDependencies;
 import io.micronaut.core.annotation.NonNull;
 import io.micronaut.core.util.StringUtils;
 import io.micronaut.starter.application.ApplicationType;
@@ -26,6 +25,7 @@ import io.micronaut.starter.options.JdkVersion;
 import java.util.Objects;
 import java.util.regex.Pattern;
 
+import static cloud.graal.gdk.build.dependencies.GdkDependencies.GRAALVM_METADATA_REPOSITORY_VERSION;
 import static cloud.graal.gdk.GdkUtils.MICRONAUT_PLATFORM_BOM_VERSION_SUFFIX;
 import static io.micronaut.starter.build.gradle.GradleDsl.GROOVY;
 
@@ -216,7 +216,7 @@ public class BuildGradlePostProcessor implements TemplatePostProcessor {
 
     @NonNull
     private String configureGraalVmMetadataRepository(@NonNull String buildGradle) {
-        String graalVMRepositoryVersion = GdkDependencies.GRAALVM_METADATA_REPOSITORY_VERSION;
+        String graalVMRepositoryVersion = GRAALVM_METADATA_REPOSITORY_VERSION;
         String graalVMMetadata;
         if (dsl == GROOVY) {
             graalVMMetadata = GRAAL_VM_METADATA_REPOSITORY_GROOVY.formatted(graalVMRepositoryVersion);

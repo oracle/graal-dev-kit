@@ -64,6 +64,7 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import static cloud.graal.gdk.build.dependencies.GdkDependencies.ORG_TESTCONTAINERS_TESTCONTAINERS_ORACLE_XE;
 import static cloud.graal.gdk.model.GdkService.DATABASE;
 
 /**
@@ -73,11 +74,9 @@ import static cloud.graal.gdk.model.GdkService.DATABASE;
  */
 public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature {
 
-    private static final Dependency TESTCONTAINERS_ORACLE_XE = Dependency.builder()
-            .groupId("org.testcontainers")
-            .artifactId("oracle-xe")
-            .testRuntime()
-            .build();
+    private static final Dependency TESTCONTAINERS_ORACLE_XE = Dependency.of(
+            ORG_TESTCONTAINERS_TESTCONTAINERS_ORACLE_XE,
+            io.micronaut.starter.build.dependencies.Scope.TEST);
 
     private final Data data;
     private final DataJdbc dataJdbc;
@@ -162,12 +161,13 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
         ));
         jdbcFeature.applyDefaultConfig(generatorContext, driverFeature, jdbcConfig);
         if (driverFeature instanceof OracleCloudAutonomousDatabase) {
+            generatorContext.getConfiguration().addNested("datasources.default.driver-class-name", "oracle.jdbc.OracleDriver");
             generatorContext.getTestConfiguration().addNested(Map.of(
                     "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",
-                    "datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver",
+                    "datasources.default.driver-class-name", "org.testcontainers.jdbc.ContainerDatabaseDriver",
                     "datasources.default.username", "system",
                     "datasources.default.password", "oracle",
-                    "datasources.default.connectionTimeout", "60000",
+                    "datasources.default.connection-timeout", "60000",
                     "flyway.datasources.default.locations", "classpath:db/migration",
                     "flyway.datasources.default.baseline-version", "0",
                     "flyway.datasources.default.baseline-on-migrate", "true"));
@@ -175,10 +175,10 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
         } else if (driverFeature instanceof Oracle) {
             generatorContext.getTestConfiguration().addNested(Map.of(
                     "datasources.default.url", "jdbc:tc:oracle:thin:@/xe",
-                    "datasources.default.driverClassName", "org.testcontainers.jdbc.ContainerDatabaseDriver",
+                    "datasources.default.driver-class-name", "org.testcontainers.jdbc.ContainerDatabaseDriver",
                     "datasources.default.username", "system",
                     "datasources.default.password", "oracle",
-                    "datasources.default.connectionTimeout", "60000",
+                    "datasources.default.connection-timeout", "60000",
                     "flyway.datasources.default.locations", "classpath:db/migration",
                     "flyway.datasources.default.baseline-version", "0",
                     "flyway.datasources.default.baseline-on-migrate", "true",
@@ -197,6 +197,10 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
                 driverFeature.apply(generatorContext);
             }
         });
+
+        if (driverFeature instanceof OracleCloudAutonomousDatabase) {
+            generatorContext.getConfiguration().addNested("datasources.default.url", "");
+        }
 
         if (!generatorContext.isPlatformIndependent()) {
             applyForLib(generatorContext, () -> {
