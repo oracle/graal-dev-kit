@@ -20,7 +20,7 @@ import cloud.graal.gdk.model.GdkCloud;
 import io.micronaut.context.annotation.Replaces;
 import io.micronaut.starter.application.generator.GeneratorContext;
 import io.micronaut.starter.feature.logging.SimpleLogging;
-import io.micronaut.starter.feature.logging.template.slf4jSimple;
+import io.micronaut.starter.rocker.feature.logging.template.slf4jSimple;
 import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 

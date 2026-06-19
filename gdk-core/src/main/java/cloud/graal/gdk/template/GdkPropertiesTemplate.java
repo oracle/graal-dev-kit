@@ -42,7 +42,6 @@ public class GdkPropertiesTemplate extends DefaultTemplate {
 
     @Override
     public void write(OutputStream outputStream) throws IOException {
-
         final StringBuilder buffer = new StringBuilder();
 
         properties.store(new OutputStream() {
@@ -92,4 +91,5 @@ public class GdkPropertiesTemplate extends DefaultTemplate {
             finalConfig.put(prefix, value.toString());
         }
     }
+
 }

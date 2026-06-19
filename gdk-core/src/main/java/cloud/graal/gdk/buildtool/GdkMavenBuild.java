@@ -25,6 +25,7 @@ import io.micronaut.starter.build.maven.MavenDependency;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.build.maven.Profile;
+import io.micronaut.starter.feature.validation.ConfigurationValidationBlock;
 
 import java.util.Collection;
 import java.util.List;
@@ -50,6 +51,7 @@ public class GdkMavenBuild extends MavenBuild {
      * @param testAnnotationProcessorCombineAttribute MavenCombineAttribute for test annotation processors
      * @param profiles                                profiles
      * @param compilerArgs                            compile args
+     * @param configurationValidation                 configuration validation
      */
     @SuppressWarnings("checkstyle:ParameterNumber")
     public GdkMavenBuild(String artifactId,
@@ -64,9 +66,10 @@ public class GdkMavenBuild extends MavenBuild {
                          Collection<Profile> profiles,
                          List<DependencyCoordinate> aotDependencies,
                          List<MavenCoordinate> testResourcesDependencies,
-                         List<String> compilerArgs) {
+                         List<String> compilerArgs,
+                         ConfigurationValidationBlock configurationValidation) {
         super(artifactId, annotationProcessors, testAnnotationProcessors, dependencies, properties, plugins,
-                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies, testResourcesDependencies, compilerArgs);
+                repositories, annotationProcessorCombineAttribute, testAnnotationProcessorCombineAttribute, profiles, aotDependencies, testResourcesDependencies, compilerArgs, configurationValidation);
         this.repositories = repositories;
     }
 

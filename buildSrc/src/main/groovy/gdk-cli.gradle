@@ -23,7 +23,7 @@ plugins {
 dependencies {
     annotationProcessor mnLibs.picocli.codegen
 
-    compileOnly mnLibs.graal
+    compileOnly mnLibs.micronaut.graal
 
     implementation projects.gdkCliCore
 

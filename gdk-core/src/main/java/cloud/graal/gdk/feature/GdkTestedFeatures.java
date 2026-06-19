@@ -34,7 +34,7 @@ public final class GdkTestedFeatures {
             "reactor",
             "test-resources",
             // SECURITY
-            "security-annotations",
+            "security-processor",
             // SECURITY OCI
             "security-oauth2",
             "security-jwt",

@@ -105,7 +105,9 @@ public class OciEmail extends AbstractEmailFeature {
                 "micronaut.email.from.email", "${FROM_EMAIL:''}",
                 "micronaut.email.from.name", "${FROM_NAME:''}",
                 "smtp.password", "${SMTP_PASSWORD:''}",
-                "smtp.user", "${SMTP_USER:''}",
+                "smtp.user", "${SMTP_USER:''}"
+        ));
+        generatorContext.getConfiguration().putAll(Map.of(
                 "javamail.properties.mail.smtp.port", 587,
                 "javamail.properties.mail.smtp.auth", true,
                 "javamail.properties.mail.smtp.starttls.enable", true,
@@ -133,6 +135,11 @@ public class OciEmail extends AbstractEmailFeature {
                     "smtp.password", "example-password",
                     "smtp.user", "gdkdemo",
                     "javamail.properties.mail.smtp.host", "smtp.com"
+            ));
+            generatorContext.getTestConfiguration().putAll(Map.of(
+                    "javamail.properties.mail.smtp.port", 587,
+                    "javamail.properties.mail.smtp.auth", true,
+                    "javamail.properties.mail.smtp.starttls.enable", true 
             ));
 
             Project project = generatorContext.getProject();

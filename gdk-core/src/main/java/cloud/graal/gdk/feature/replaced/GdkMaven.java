@@ -32,8 +32,8 @@ import io.micronaut.starter.build.maven.JvmArgumentsFeature;
 import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenRepository;
 import io.micronaut.starter.feature.build.maven.Maven;
-import io.micronaut.starter.feature.build.maven.templates.multimodule;
-import io.micronaut.starter.feature.build.maven.templates.pom;
+import io.micronaut.starter.rocker.feature.build.maven.templates.multimodule;
+import io.micronaut.starter.rocker.feature.build.maven.templates.pom;
 import io.micronaut.starter.template.RockerTemplate;
 import jakarta.inject.Singleton;
 

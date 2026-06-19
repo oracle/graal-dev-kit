@@ -57,7 +57,7 @@ class OciEmailController {
     @@Post(uri = '/attachment', produces = TEXT_PLAIN, consumes = MULTIPART_FORM_DATA)
     String attachment(CompletedFileUpload file) throws IOException {
 
-        String contentType = file.contentType.orElse(APPLICATION_OCTET_STREAM_TYPE)
+        String contentType = file.contentType.map { it.name }.orElse(APPLICATION_OCTET_STREAM_TYPE.name)
 
         emailSender.send(Email.builder()
                 .to('attachment@@gdk.example')

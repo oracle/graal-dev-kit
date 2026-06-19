@@ -29,10 +29,11 @@ import io.micronaut.starter.build.maven.MavenBuild;
 import io.micronaut.starter.build.maven.MavenBuildCreator;
 import io.micronaut.starter.build.maven.MavenPlugin;
 import io.micronaut.starter.build.maven.MavenRepository;
-import io.micronaut.starter.feature.build.maven.templates.mavenPlugin;
+import io.micronaut.starter.rocker.feature.build.maven.templates.mavenPlugin;
 import io.micronaut.starter.feature.function.azure.AbstractAzureFunction;
-import io.micronaut.starter.feature.function.azure.template.azureFunctionMavenPlugin;
+import io.micronaut.starter.rocker.feature.function.azure.template.azureFunctionMavenPlugin;
 import io.micronaut.starter.feature.testresources.TestResourcesAdditionalModulesProvider;
+import io.micronaut.starter.feature.validation.ConfigurationValidationProvider;
 import io.micronaut.starter.template.RockerWritable;
 import jakarta.inject.Singleton;
 
@@ -49,6 +50,10 @@ import java.util.List;
 public class GdkMavenBuildCreator extends MavenBuildCreator {
 
     private static final String AZURE_FUNCTIONS_MAVEN_PLUGIN = "azure-functions-maven-plugin";
+
+    public GdkMavenBuildCreator(ConfigurationValidationProvider configurationValidationProvider) {
+        super(configurationValidationProvider);
+    }
 
     @NonNull
     @Override
@@ -76,7 +81,8 @@ public class GdkMavenBuildCreator extends MavenBuildCreator {
                 build.getProfiles(),
                 generatorContext.getDependencies().stream().filter(dep -> dep.getScope() == Scope.AOT_PLUGIN).map(DependencyCoordinate::new).toList(),
                 testResourcesDependencies(generatorContext),
-                build.getCompilerArgs()
+                build.getCompilerArgs(),
+                build.getConfigurationValidation()
         );
     }
 
