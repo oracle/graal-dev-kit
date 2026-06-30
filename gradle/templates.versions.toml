@@ -43,6 +43,7 @@ io-projectreactor-reactor-core = '3.7.12-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-vavr = '0.10.2-oracle-00001'
 jackson-core = '2.21.2-oracle-00001'
+jackson-databind = '2.21.5-oracle-00001'
 jackson-annotation = '2.21-oracle-00001'
 jackson-dataformat-jackson-dataformat-toml = '2.21.2-oracle-00001'
 jackson-datatype = '2.21.2-oracle-00001'
@@ -232,7 +233,7 @@ ch-qos-logback-contrib-logback-json-classic = { module = 'ch.qos.logback.contrib
 ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:logback-json-core', version.ref = 'logback-contrib' }
 com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-annotation' }
 com-fasterxml-jackson-core-jackson-core = { module = 'com.fasterxml.jackson.core:jackson-core', version.ref = 'jackson-core' }
-com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-core' }
+com-fasterxml-jackson-core-jackson-databind = { module = 'com.fasterxml.jackson.core:jackson-databind', version.ref = 'jackson-databind' }
 com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'com.fasterxml.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
 com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype' }
 com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype' }
