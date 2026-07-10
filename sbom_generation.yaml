@@ -30,22 +30,78 @@ steps:
             }
           }
           dependencies {
-            classpath "org.cyclonedx:cyclonedx-gradle-plugin:1.7.4"
+            classpath "org.cyclonedx.bom:org.cyclonedx.bom.gradle.plugin:3.2.4"
           }
+        }
+        def cyclonedxSchemaVersion = org.cyclonedx.Version.VERSION_16
+        def cyclonedxNormalizeBomJson = { File jsonFile ->
+          if (!jsonFile.exists()) {
+            return
+          }
+
+          def json = new groovy.json.JsonSlurper().parse(jsonFile)
+          def pomRefs = ((json.components ?: [])
+                  .findAll { (it.purl ?: "").contains("?type=pom") }
+                  .collect { it["bom-ref"] }
+                  .findAll { it != null }) as Set
+
+          def seenComponentRefs = [] as Set
+          json.components = (json.components ?: []).findAll { component ->
+            def ref = component["bom-ref"]
+            def isPomComponent = (component.purl ?: "").contains("?type=pom")
+            !isPomComponent && !(ref in pomRefs) && (ref == null || seenComponentRefs.add(ref))
+          }
+
+          if (json.dependencies) {
+            def dependenciesByRef = new LinkedHashMap()
+            def normalizedDependencies = []
+            json.dependencies.findAll { !(it.ref in pomRefs) }.each { dep ->
+              def ref = dep.ref
+              if (ref == null) {
+                normalizedDependencies << dep
+              } else if (dependenciesByRef.containsKey(ref)) {
+                dependenciesByRef[ref].dependsOn = (dependenciesByRef[ref].dependsOn ?: []) + (dep.dependsOn ?: [])
+              } else {
+                dependenciesByRef[ref] = dep
+                normalizedDependencies << dep
+              }
+            }
+            json.dependencies = normalizedDependencies.collect { dep ->
+              def seenDependsOn = [] as Set
+              dep.dependsOn = (dep.dependsOn ?: []).findAll { ref ->
+                !(ref in pomRefs) && seenDependsOn.add(ref)
+              }
+              dep
+            }
+          }
+          jsonFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json)) + System.lineSeparator()
         }
         gradle.rootProject {
          group= "gdk"
         }
         allprojects {
-          apply plugin:org.cyclonedx.gradle.CycloneDxPlugin
-          cyclonedxBom {
+          apply plugin: "org.cyclonedx.bom"
+          tasks.named("cyclonedxDirectBom") {
             includeConfigs = ["runtimeClasspath", "compileClasspath"]
-            skipConfigs = ["testCompileClasspath"]
+            skipConfigs = ["testCompileClasspath", "testRuntimeClasspath"]
             projectType = "application"
-            destination = file(".")
-            outputName = "artifactSBOM"
-            outputFormat = "json"
-            schemaVersion = "1.4"
+            schemaVersion = cyclonedxSchemaVersion
+            xmlOutput.unsetConvention()
+          }
+        }
+        gradle.rootProject {
+          tasks.named("cyclonedxBom") {
+            projectType = "application"
+            jsonOutput = file("artifactSBOM.json")
+            schemaVersion = cyclonedxSchemaVersion
+            xmlOutput.unsetConvention()
+            finalizedBy("cyclonedxNormalizeBom")
+          }
+          tasks.register("cyclonedxNormalizeBom") {
+            outputs.upToDateWhen { false }
+            doLast {
+              cyclonedxNormalizeBomJson(file("artifactSBOM.json"))
+            }
           }
         }
       EOF
