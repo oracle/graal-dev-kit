@@ -54,6 +54,7 @@ public class NativeImageProperties implements DefaultFeature {
 
     private static final char SPACE = ' ';
     private static final String INITIALIZE_AT_BUILD_TIME_OPTION = "--initialize-at-build-time=";
+    private static final String PASSWORD_CONSOLE_HOLDER_INITIALIZE_AT_RUN_TIME = "--initialize-at-run-time=sun.security.util.Password$ConsoleHolder";
 
     // Support for shared arenas (Arena.ofShared()) is still experimental, requires -H:+UnlockExperimentalVMOptions -H:+SharedArenaSupport in native image
     private static final String SHARED_ARENA_SUPPORT_FLAGS = "-H:+UnlockExperimentalVMOptions -H:+SharedArenaSupport";
@@ -85,27 +86,35 @@ public class NativeImageProperties implements DefaultFeature {
                         if (!nativeImageProperties.isEmpty()) {
                             writer.write(SPACE);
                             writer.write(INITIALIZE_AT_BUILD_TIME_OPTION);
+                            writeClasses(writer, nativeImageProperties);
+                        }
 
-                            Set<String> renderedClasses = new HashSet<>();
-
-                            for (Writable writable : nativeImageProperties) {
-                                renderedClasses.add(render(writable));
-                            }
-
-                            Iterator<String> it = renderedClasses.iterator();
-                            if (it.hasNext()) {
-                                writer.write(it.next());
-                            }
-
-                            while (it.hasNext()) {
-                                writer.write(',');
-                                writer.write(it.next());
-                            }
+                        if (generatorContext.isInitializePasswordConsoleHolderAtRunTime()) {
+                            writer.write(SPACE);
+                            writer.write(PASSWORD_CONSOLE_HOLDER_INITIALIZE_AT_RUN_TIME);
                         }
 
                         writer.flush();
                     }
                 });
+    }
+
+    private void writeClasses(Writer writer, Set<Writable> classes) throws IOException {
+        Set<String> renderedClasses = new HashSet<>();
+
+        for (Writable writable : classes) {
+            renderedClasses.add(render(writable));
+        }
+
+        Iterator<String> it = renderedClasses.iterator();
+        if (it.hasNext()) {
+            writer.write(it.next());
+        }
+
+        while (it.hasNext()) {
+            writer.write(',');
+            writer.write(it.next());
+        }
     }
 
     private String render(Writable writable) throws IOException {
