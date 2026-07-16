@@ -22,11 +22,63 @@ import io.micronaut.starter.options.BuildTool;
 public class CycloneDXPluginPostProcessor implements TemplatePostProcessor {
 
     private static final String PLUGIN_START = "plugins {";
-    private static final String CYCLONE_DX_PLUGIN = "\n\tid 'org.cyclonedx.bom' version '2.1.0'";
+    private static final String CYCLONE_DX_PLUGIN = "\n\tid 'org.cyclonedx.bom' version '3.2.4'";
 
     private static final String CYCLONE_DX_CONFIG = """
-            cyclonedxBom {
+
+            def cyclonedxStripPomComponentsFromJson = { File jsonFile ->
+                if (!jsonFile.exists()) {
+                    return
+                }
+
+                def json = new groovy.json.JsonSlurper().parse(jsonFile)
+                def pomRefs = ((json.components ?: [])
+                        .findAll { (it.purl ?: "").contains("?type=pom") }
+                        .collect { it["bom-ref"] }
+                        .findAll { it != null }) as Set
+
+                if (pomRefs.isEmpty()) {
+                    return
+                }
+
+                json.components = (json.components ?: []).findAll { !(it["bom-ref"] in pomRefs) }
+                if (json.dependencies) {
+                    json.dependencies = json.dependencies
+                            .findAll { !(it.ref in pomRefs) }
+                            .collect { dep ->
+                                dep.dependsOn = (dep.dependsOn ?: []).findAll { !(it in pomRefs) }
+                                dep
+                            }
+                }
+                jsonFile.text = groovy.json.JsonOutput.prettyPrint(groovy.json.JsonOutput.toJson(json)) + System.lineSeparator()
+            }
+
+            tasks.named("cyclonedxDirectBom") {
                 includeConfigs = ["compileClasspath", "runtimeClasspath"]
+                skipConfigs = ["testCompileClasspath", "testRuntimeClasspath"]
+                projectType = "application"
+                schemaVersion = org.cyclonedx.Version.VERSION_16
+                jsonOutput = file("build/reports/cyclonedx-direct/bom.json")
+                xmlOutput.unsetConvention()
+                finalizedBy("cyclonedxStripPomComponents")
+            }
+
+            tasks.named("cyclonedxBom") {
+                projectType = "application"
+                schemaVersion = org.cyclonedx.Version.VERSION_16
+                jsonOutput = file("build/reports/cyclonedx/bom.json")
+                xmlOutput.unsetConvention()
+                finalizedBy("cyclonedxStripPomComponents")
+            }
+
+            tasks.register("cyclonedxStripPomComponents") {
+                outputs.upToDateWhen { false }
+                doLast {
+                    [
+                            file("build/reports/cyclonedx-direct/bom.json"),
+                            file("build/reports/cyclonedx/bom.json")
+                    ].each { cyclonedxStripPomComponentsFromJson(it) }
+                }
             }
             """;
 

@@ -139,6 +139,7 @@ public class GdkGeneratorContext extends GeneratorContext {
 
     private GdkCloud cloud = NONE;
     private boolean hideLibFeatures;
+    private boolean initializePasswordConsoleHolderAtRunTime;
     private final Map<GdkCloud, ApplicationConfiguration> applicationConfigurations = new HashMap<>(GdkCloud.supportedValues().length);
     private final Map<GdkCloud, ApplicationConfiguration> cloudApplicationConfigurations = new HashMap<>(GdkCloud.supportedValues().length);
     private final Map<GdkCloud, BootstrapConfiguration> bootstrapConfigurations = new HashMap<>(GdkCloud.supportedValues().length);
@@ -646,6 +647,10 @@ public class GdkGeneratorContext extends GeneratorContext {
         initializeAtBuildTimeClasses.computeIfAbsent(cloud, k -> new HashSet<>()).add(classes);
     }
 
+    public void setInitializePasswordConsoleHolderAtRunTime() {
+        initializePasswordConsoleHolderAtRunTime = true;
+    }
+
     private boolean shouldIncludePluginInLib(BuildPlugin buildPlugin) {
 
         if (buildPlugin instanceof MavenPlugin plugin) {
@@ -684,6 +689,10 @@ public class GdkGeneratorContext extends GeneratorContext {
 
     public Set<Writable> getInitializeAtBuildTimeClasses() {
         return initializeAtBuildTimeClasses.getOrDefault(cloud, Collections.emptySet());
+    }
+
+    public boolean isInitializePasswordConsoleHolderAtRunTime() {
+        return initializePasswordConsoleHolderAtRunTime;
     }
 
     @Override

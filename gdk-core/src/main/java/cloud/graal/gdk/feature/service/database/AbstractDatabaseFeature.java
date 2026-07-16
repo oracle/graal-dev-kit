@@ -66,6 +66,7 @@ import java.util.Map;
 
 import static cloud.graal.gdk.build.dependencies.GdkDependencies.ORG_TESTCONTAINERS_TESTCONTAINERS_ORACLE_XE;
 import static cloud.graal.gdk.model.GdkService.DATABASE;
+import static cloud.graal.gdk.model.GdkCloud.OCI;
 
 /**
  * Base class for database service features.
@@ -274,6 +275,10 @@ public abstract class AbstractDatabaseFeature extends AbstractGdkServiceFeature 
 
         if (generatorContext.isJdkVersionAtLeast(25)) {
             generatorContext.addInitializeBuildTimeClasses(new RockerWritable(JDK25FlywayInitializeAtBuildTimeClasses.template()));
+        }
+
+        if (getCloud() == OCI && generatorContext.isJdkVersionAtLeast(25)) {
+            generatorContext.setInitializePasswordConsoleHolderAtRunTime();
         }
     }
 

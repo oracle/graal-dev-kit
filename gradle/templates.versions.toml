@@ -20,16 +20,15 @@ asm = '9.9.1-oracle-00001'
 aws-msk-iam-auth = "2.3.4"
 tracing-exporter-auto = '0.36.0-alpha'
 
-com-zaxxer-HikariCP = '7.0.2'
+com-zaxxer-HikariCP = '7.0.2-oracle-00001'
 commons-io-commons-io = '2.14.0-oracle-00002'
 context-propagation = '1.2.1-oracle-00001'
 dev-jna-jna = '5.18.1'
 eclipse-angus-angus-activation = '2.0.3-oracle-00001'
 eclipse-angus-angus-mail = '2.0.5-oracle-00001'
-fn = "1.0.212"
 gax = "2.79.0"
 gax-grpc = "2.79.0"
-gg-jte = '3.2.4'
+gg-jte = '3.2.4-oracle-00001'
 github-javaparser = '3.28.0-oracle-00001'
 github-resilience4j = '1.7.1-oracle-00002'
 google-auth-library = "1.46.0"
@@ -45,11 +44,9 @@ io-opentelemetry-opentelemetry-api-incubator = '1.62.0-alpha-oracle-00001'
 io-projectreactor-reactor-core = '3.7.12-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-vavr = '0.10.2-oracle-00001'
-jackson-core = '3.1.3-oracle-00001'
+jackson-core = '3.1.4-oracle-00001'
 jackson-annotation = '2.21-oracle-00001'
-jackson-dataformat-jackson-dataformat-toml = '3.1.3-oracle-00001'
-jackson-datatype-jdk8 = '2.21.2-oracle-00001'
-jackson-datatype-jsr310 = '3.0.0-rc1-oracle-00001'
+jackson-dataformat-jackson-dataformat-toml = '3.1.4-oracle-00001'
 jakarta-activation-jakarta-activation-api = '2.1.4-oracle-00001'
 jakarta-annotation-jakarta-annotation-api = '2.1.1-oracle-00001'
 jakarta-inject-jakarta-inject-api = '2.0.1-oracle-00001'
@@ -64,11 +61,11 @@ google-errorprone-error_prone_annotations = '2.41.0-oracle-00001'
 code-gson-gson = '2.14.0-oracle-00001' 
 #
 kotlin = "2.3.21-oracle-00001" 
-logback = "1.5.32-oracle-00001"
+logback = "1.5.37-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "6.0.0-oracle-00001"
-micronaut-core = "5.0.2-oracle-00001"
-micronaut-data = "5.0.4-oracle-00001"
+micronaut-core = "5.0.5-oracle-00001"
+micronaut-data = "5.0.5-oracle-00001"
 micronaut-discovery = "5.0.0-oracle-00001"
 micronaut-email = "3.0.0-oracle-00001"
 micronaut-flyway = "8.0.0-oracle-00001"
@@ -79,34 +76,35 @@ micronaut-kubernetes = "8.0.0-oracle-00001"
 micronaut-liquibase = "7.0.0-oracle-00001"
 micronaut-maven-plugin = "5.0.0"
 micronaut-maven-test-resources-plugin = "4.0.0"
-micronaut-micrometer = "6.0.0-oracle-00001"
+micronaut-micrometer = "6.0.1-oracle-00001"
 micronaut-mongo = "6.0.1-oracle-00001"
 micronaut-object-storage = "3.0.0-oracle-00001"
 micronaut-openapi = "7.0.0-oracle-00001"
-micronaut-oracle-cloud = "6.0.0"
+micronaut-oracle-cloud = "6.0.1-oracle-00001" 
 micronaut-picocli = "6.0.0-oracle-00001"
-micronaut-platform = "5.0.2-oracle-00001"
+micronaut-platform = "5.0.4-oracle-00001"
 micronaut-reactor = "4.0.0-oracle-00001"
 micronaut-security = "5.0.0-oracle-00001"
 micronaut-serde = "3.0.0-oracle-00001"
-micronaut-servlet = "6.0.0"
-micronaut-session = "5.0.0"
+micronaut-servlet = "6.0.0-oracle-00001"
+micronaut-session = "5.0.0-oracle-00001"
 micronaut-sourcegen = "2.0.0-oracle-00001"
-micronaut-sql = "7.0.1-oracle-00001"
+micronaut-sql = "7.0.2-oracle-00001"
 micronaut-tracing = "8.0.0-oracle-00001"
 micronaut-validation = "5.0.0-oracle-00001"
 micronaut-views = "6.0.0-oracle-00001"
 micronaut-coherence = "6.0.0-oracle-00001"
-netty = "4.2.15.Final-oracle-00001" 
-okhttp = "5.1.0-oracle-00001" 
-opentelemetry-api-incubator = "2.27.0-alpha-oracle-00001" 
+netty = "4.2.16.Final-oracle-00001"
+netty-contrib = "1.0.0.Final-oracle-00001"
+okhttp = "5.1.0-oracle-00001"
+opentelemetry-api-incubator = "2.27.0-alpha-oracle-00001"
 opentelemetry-instrumentation = '2.27.0-oracle-00001'
 opentelemetry-semconv-opentelemetry-semconv = '1.40.0-oracle-00001'
-org-flywaydb = '12.6.1' #need bfs
+org-flywaydb = '12.6.1-oracle-00001'
 org-hdrhistogram-HdrHistogram = '2.2.2-oracle-00001'
 org-jetbrains-annotations = '13.0-oracle-00001'
 org-latencyutils-LatencyUtils = '2.0.3-oracle-00001'
-at-yawk-lz4-java = '1.10.1-oracle-00001'
+at-yawk-lz4-java = '1.11.1-oracle-00001'
 org-reactivestreams-reactive-streams = '1.0.4-oracle-00001'
 org-springframework-boot-spring-boot-starter-parent = "3.5.6"
 protobuf = "4.34.1-oracle-00001"
@@ -121,6 +119,7 @@ xerial-snappy-snappy-java = "1.1.10.8-oracle-00001" #'1.1.10.7'
 zipkin-reporter2 = '3.5.3-oracle-00001'
 zipkin-zipkin2-zipkin = '3.5.1-oracle-00001' 
 zstd-jni = "1.5.6-4-reduced-oracle-00001" #'1.5.7-3'
+jspecify = "1.0.0-oracle-00001"
 
 [libraries]
 ch-qos-logback-logback-classic = { module = 'ch.qos.logback:logback-classic', version.ref = 'logback'}
@@ -216,6 +215,7 @@ org-jetbrains-kotlin-kotlin-stdlib-common = { module = 'org.jetbrains.kotlin:kot
 org-jetbrains-kotlin-kotlin-stdlib-jdk7 = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk7', version.ref = 'kotlin'}
 org-jetbrains-kotlin-kotlin-stdlib-jdk8 = { module = 'org.jetbrains.kotlin:kotlin-stdlib-jdk8', version.ref = 'kotlin'}
 org-jetbrains-kotlin-kotlin-test = { module = 'org.jetbrains.kotlin:kotlin-test', version.ref = 'kotlin'}
+org-jspecify = { module = 'org.jspecify:jspecify', version.ref = 'jspecify'}
 software-amazon-msk-aws-msk-iam-auth = { module = 'software.amazon.msk:aws-msk-iam-auth', version.ref = 'aws-msk-iam-auth'}
 
 com-google-errorprone-error_prone_annotations = { module = 'com.google.errorprone:error_prone_annotations', version.ref = 'google-errorprone-error_prone_annotations' }
@@ -238,13 +238,9 @@ exclude-org-testcontainers-testcontainers-oracle-xe = { module = 'org.testcontai
 ch-qos-logback-contrib-logback-json-classic = { module = 'ch.qos.logback.contrib:logback-json-classic', version.ref = 'logback-contrib' }
 ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:logback-json-core', version.ref = 'logback-contrib' }
 com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-annotation' }
-com-fasterxml-jackson-core-jackson-core = { module = 'tools.jackson.core:jackson-core', version.ref = 'jackson-core' }
-com-fasterxml-jackson-core-jackson-databind = { module = 'tools.jackson.core:jackson-databind', version.ref = 'jackson-core' }
-com-fasterxml-jackson-dataformat-jackson-dataformat-toml = { module = 'tools.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
-com-fasterxml-jackson-datatype-jackson-datatype-jdk8 = { module = 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8', version.ref = 'jackson-datatype-jdk8' }
-com-fasterxml-jackson-datatype-jackson-datatype-jsr310 = { module = 'tools.jackson.datatype:jackson-datatype-jsr310', version.ref = 'jackson-datatype-jsr310' }
-com-fnproject-fn-api = { module = 'com.fnproject.fn:api', version.ref = 'fn' }
-com-fnproject-fn-runtime = { module = 'com.fnproject.fn:runtime', version.ref = 'fn' }
+tools-jackson-core-jackson-core = { module = 'tools.jackson.core:jackson-core', version.ref = 'jackson-core' }
+tools-jackson-core-jackson-databind = { module = 'tools.jackson.core:jackson-databind', version.ref = 'jackson-core' }
+tools-jackson-dataformat-jackson-dataformat-toml = { module = 'tools.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
 com-github-javaparser-javaparser-core = { module = 'com.github.javaparser:javaparser-core', version.ref = 'github-javaparser' }
 com-github-javaparser-javaparser-symbol-solver-core = { module = 'com.github.javaparser:javaparser-symbol-solver-core', version.ref = 'github-javaparser' }
 com-github-luben-zstd-jni={module = 'com.github.luben:zstd-jni', version.ref = 'zstd-jni' }
@@ -278,6 +274,7 @@ io-netty-netty-transport= { module = "io.netty:netty-transport", version.ref = "
 io-netty-netty-codec-marshalling= { module = "io.netty:netty-codec-marshalling", version.ref = "netty" }
 io-netty-netty-codec-protobuf= { module = "io.netty:netty-codec-protobuf", version.ref = "netty" }
 io-netty-netty-transport-native-unix-common = { module = "io.netty:netty-transport-native-unix-common", version.ref = "netty" }
+io-netty-contib = { module = "io.netty.contrib:netty-codec-multipart-core", version.ref = "netty-contrib" }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-annotations = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-annotations', version.ref = 'opentelemetry-instrumentation' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api-incubator = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api-incubator', version.ref = 'opentelemetry-api-incubator' }
 io-opentelemetry-instrumentation-opentelemetry-instrumentation-api = { module = 'io.opentelemetry.instrumentation:opentelemetry-instrumentation-api', version.ref = 'opentelemetry-instrumentation' }
