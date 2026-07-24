@@ -44,9 +44,8 @@ io-opentelemetry-opentelemetry-api-incubator = '1.62.0-alpha-oracle-00001'
 io-projectreactor-reactor-core = '3.7.12-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
 io-vavr = '0.10.2-oracle-00001'
-jackson-core = '3.1.4-oracle-00001'
+jackson-core = '3.1.5-oracle-00001'
 jackson-annotation = '2.21-oracle-00001'
-jackson-dataformat-jackson-dataformat-toml = '3.1.4-oracle-00001'
 jakarta-activation-jakarta-activation-api = '2.1.4-oracle-00001'
 jakarta-annotation-jakarta-annotation-api = '2.1.1-oracle-00001'
 jakarta-inject-jakarta-inject-api = '2.0.1-oracle-00001'
@@ -64,8 +63,8 @@ kotlin = "2.3.21-oracle-00001"
 logback = "1.5.37-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "6.0.0-oracle-00001"
-micronaut-core = "5.0.6-oracle-00001"
-micronaut-data = "5.0.5-oracle-00001"
+micronaut-core = "5.0.7-oracle-00001"
+micronaut-data = "5.0.6-oracle-00001"
 micronaut-discovery = "5.0.0-oracle-00001"
 micronaut-email = "3.0.0-oracle-00001"
 micronaut-flyway = "8.0.0-oracle-00001"
@@ -80,9 +79,9 @@ micronaut-micrometer = "6.0.1-oracle-00001"
 micronaut-mongo = "6.0.1-oracle-00001"
 micronaut-object-storage = "3.0.0-oracle-00001"
 micronaut-openapi = "7.0.0-oracle-00001"
-micronaut-oracle-cloud = "6.0.1-oracle-00001" 
+micronaut-oracle-cloud = "6.0.3-oracle-00001" 
 micronaut-picocli = "6.0.0-oracle-00001"
-micronaut-platform = "5.0.5-oracle-00001"
+micronaut-platform = "5.0.6-oracle-00001"
 micronaut-reactor = "4.0.0-oracle-00001"
 micronaut-security = "5.0.0-oracle-00001"
 micronaut-serde = "3.0.0-oracle-00001"
@@ -240,7 +239,7 @@ ch-qos-logback-contrib-logback-json-core = { module = 'ch.qos.logback.contrib:lo
 com-fasterxml-jackson-core-jackson-annotations = { module = 'com.fasterxml.jackson.core:jackson-annotations', version.ref = 'jackson-annotation' }
 tools-jackson-core-jackson-core = { module = 'tools.jackson.core:jackson-core', version.ref = 'jackson-core' }
 tools-jackson-core-jackson-databind = { module = 'tools.jackson.core:jackson-databind', version.ref = 'jackson-core' }
-tools-jackson-dataformat-jackson-dataformat-toml = { module = 'tools.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-dataformat-jackson-dataformat-toml' }
+tools-jackson-dataformat-jackson-dataformat-toml = { module = 'tools.jackson.dataformat:jackson-dataformat-toml', version.ref = 'jackson-core' }
 com-github-javaparser-javaparser-core = { module = 'com.github.javaparser:javaparser-core', version.ref = 'github-javaparser' }
 com-github-javaparser-javaparser-symbol-solver-core = { module = 'com.github.javaparser:javaparser-symbol-solver-core', version.ref = 'github-javaparser' }
 com-github-luben-zstd-jni={module = 'com.github.luben:zstd-jni', version.ref = 'zstd-jni' }
