@@ -18,7 +18,7 @@
 bouncycastle = '1.84'
 gcp = '26.48.0'
 jansi = '2.4.3'
-jline = '3.30.9'
+jline = '3.30.16'
 jsch = '0.2.26'
 micronaut-guides = '0.3.0'
 micronaut-internal-build = '8.0.0'
