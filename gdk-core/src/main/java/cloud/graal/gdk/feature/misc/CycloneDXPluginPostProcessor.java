@@ -22,7 +22,7 @@ import io.micronaut.starter.options.BuildTool;
 public class CycloneDXPluginPostProcessor implements TemplatePostProcessor {
 
     private static final String PLUGIN_START = "plugins {";
-    private static final String CYCLONE_DX_PLUGIN = "\n\tid 'org.cyclonedx.bom' version '3.2.4'";
+    private static final String CYCLONE_DX_PLUGIN = "\n\tid 'org.cyclonedx.bom' version '3.3.0'";
 
     private static final String CYCLONE_DX_CONFIG = """
 
