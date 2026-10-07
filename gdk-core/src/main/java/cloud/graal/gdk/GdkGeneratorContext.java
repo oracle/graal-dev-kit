@@ -1033,6 +1033,7 @@ public class GdkGeneratorContext extends GeneratorContext {
             case JAVA -> new JavaApplicationRenderingContext(null, eagerInitSingleton);
             case GROOVY -> new GroovyApplicationRenderingContext(null, eagerInitSingleton);
             case KOTLIN -> new KotlinApplicationRenderingContext(null, eagerInitSingleton);
+            case PYTHON -> throw new IllegalArgumentException("Language " + language + " is not supported by GDK");
         };
     }
 
