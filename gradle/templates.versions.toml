@@ -171,6 +171,7 @@ io-micronaut-micronaut-runtime = { module = 'io.micronaut:micronaut-runtime', ve
 io-micronaut-micronaut-session = { module = 'io.micronaut.session:micronaut-session', version.ref = 'micronaut-session'}
 io-micronaut-micronaut-websocket = { module = 'io.micronaut:micronaut-websocket', version.ref = 'micronaut-core'}
 io-micronaut-mongodb-micronaut-mongo-bom = { module = 'io.micronaut.mongodb:micronaut-mongo-bom', version.ref = 'micronaut-mongo'}
+io-micronaut-objectstorage-micronaut-object-storage-azure = { module = 'io.micronaut.objectstorage:micronaut-object-storage-azure', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-aws = { module = 'io.micronaut.objectstorage:micronaut-object-storage-aws', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-core = { module = 'io.micronaut.objectstorage:micronaut-object-storage-core', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-gcp = { module = 'io.micronaut.objectstorage:micronaut-object-storage-gcp', version.ref = 'micronaut-object-storage'}
