@@ -55,8 +55,8 @@ kotlin = "2.4.10-oracle-00001"
 logback = "1.5.37-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "6.1.1-oracle-00001"
-micronaut-core = "5.2.17-oracle-00001"
-micronaut-data = "5.2.3-oracle-00001"
+micronaut-core = "5.2.20-oracle-00001"
+micronaut-data = "5.2.4-oracle-00001"
 micronaut-discovery = "5.1.0-oracle-00001"
 micronaut-email = "3.2.0-oracle-00001"
 micronaut-flyway = "8.1.1-oracle-00001"
@@ -69,17 +69,17 @@ micronaut-maven-plugin = "5.0.2"
 micronaut-maven-test-resources-plugin = "4.3.1"
 micronaut-micrometer = "6.1.0-oracle-00001"
 micronaut-mongo = "6.2.0-oracle-00001"
-micronaut-object-storage = "3.1.1-oracle-00001"
+micronaut-object-storage = "3.1.2-oracle-00001"
 micronaut-openapi = "7.3.0-oracle-00001"
 micronaut-oracle-cloud = "6.1.3-oracle-00001"
 micronaut-picocli = "6.1.0-oracle-00001"
-micronaut-platform = "5.2.3-oracle-00001"
+micronaut-platform = "5.2.4-oracle-00001"
 micronaut-reactor = "4.3.0-oracle-00001"
 micronaut-security = "5.4.1-oracle-00001"
-micronaut-serde = "3.2.5-oracle-00001"
+micronaut-serde = "3.2.6-oracle-00001"
 micronaut-servlet = "6.2.2-oracle-00001"
 micronaut-session = "5.2.0-oracle-00001"
-micronaut-sourcegen = "2.2.3-oracle-00001"
+micronaut-sourcegen = "2.2.4-oracle-00001"
 micronaut-sql = "7.2.0-oracle-00001"
 micronaut-tracing = "8.3.0-oracle-00001"
 micronaut-validation = "5.2.1-oracle-00001"
@@ -171,6 +171,7 @@ io-micronaut-micronaut-runtime = { module = 'io.micronaut:micronaut-runtime', ve
 io-micronaut-micronaut-session = { module = 'io.micronaut.session:micronaut-session', version.ref = 'micronaut-session'}
 io-micronaut-micronaut-websocket = { module = 'io.micronaut:micronaut-websocket', version.ref = 'micronaut-core'}
 io-micronaut-mongodb-micronaut-mongo-bom = { module = 'io.micronaut.mongodb:micronaut-mongo-bom', version.ref = 'micronaut-mongo'}
+io-micronaut-objectstorage-micronaut-object-storage-azure = { module = 'io.micronaut.objectstorage:micronaut-object-storage-azure', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-aws = { module = 'io.micronaut.objectstorage:micronaut-object-storage-aws', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-core = { module = 'io.micronaut.objectstorage:micronaut-object-storage-core', version.ref = 'micronaut-object-storage'}
 io-micronaut-objectstorage-micronaut-object-storage-gcp = { module = 'io.micronaut.objectstorage:micronaut-object-storage-gcp', version.ref = 'micronaut-object-storage'}
