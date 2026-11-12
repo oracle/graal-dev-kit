@@ -31,8 +31,9 @@ graalvm-metadata-version = "1.0.1"
 guava = "33.6.0-jre"
 httpcore = "4.4.16-oracle-00001" 
 io-micrometer = '1.17.1-oracle-00001'
-io-opentelemetry = '1.64.0-oracle-00001'
-io-opentelemetry-opentelemetry-api-incubator = '1.64.0-alpha-oracle-00001'
+io-opentelemetry = '1.67.0-oracle-00001'
+io-opentelemetry-exporter-zipkin = '1.64.0-oracle-00001'
+io-opentelemetry-opentelemetry-api-incubator = '1.67.0-alpha-oracle-00001'
 ###io-projectreactor = '3.7.12'
 io-projectreactor-reactor-core = '3.8.7-oracle-00001'
 io-spring-gradle-dependency-management-plugin = "1.1.7"
@@ -55,8 +56,8 @@ kotlin = "2.4.10-oracle-00001"
 logback = "1.5.37-oracle-00001"
 logback-contrib = '0.1.5-oracle-00001'
 micronaut-cache = "6.1.1-oracle-00001"
-micronaut-core = "5.2.20-oracle-00001"
-micronaut-data = "5.2.4-oracle-00001"
+micronaut-core = "5.2.23-oracle-00001"
+micronaut-data = "5.2.5-oracle-00001"
 micronaut-discovery = "5.1.0-oracle-00001"
 micronaut-email = "3.2.0-oracle-00001"
 micronaut-flyway = "8.1.1-oracle-00001"
@@ -73,9 +74,9 @@ micronaut-object-storage = "3.1.2-oracle-00001"
 micronaut-openapi = "7.3.0-oracle-00001"
 micronaut-oracle-cloud = "6.1.3-oracle-00001"
 micronaut-picocli = "6.1.0-oracle-00001"
-micronaut-platform = "5.2.4-oracle-00001"
+micronaut-platform = "5.2.6-oracle-00001"
 micronaut-reactor = "4.3.0-oracle-00001"
-micronaut-security = "5.4.1-oracle-00001"
+micronaut-security = "5.4.2-oracle-00001"
 micronaut-serde = "3.2.6-oracle-00001"
 micronaut-servlet = "6.2.2-oracle-00001"
 micronaut-session = "5.2.0-oracle-00001"
@@ -85,7 +86,7 @@ micronaut-tracing = "8.3.0-oracle-00001"
 micronaut-validation = "5.2.1-oracle-00001"
 micronaut-views = "6.3.1-oracle-00001"
 micronaut-coherence = "7.0.1-oracle-00001"
-netty = "4.2.19.Final-oracle-00001"
+netty = "4.2.20.Final-oracle-00001"
 netty-contrib = "1.0.0.Final-oracle-00001"
 okhttp = "5.1.0-oracle-00001" 
 opentelemetry-api-incubator = "2.30.0-alpha-oracle-00001"
@@ -275,7 +276,7 @@ io-opentelemetry-opentelemetry-api-incubator = { module = 'io.opentelemetry:open
 io-opentelemetry-opentelemetry-common = { module = 'io.opentelemetry:opentelemetry-common', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-context = { module = 'io.opentelemetry:opentelemetry-context', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-exporter-common = { module = 'io.opentelemetry:opentelemetry-exporter-common', version.ref = 'io-opentelemetry' }
-io-opentelemetry-opentelemetry-exporter-zipkin = { module = 'io.opentelemetry:opentelemetry-exporter-zipkin', version.ref = 'io-opentelemetry' }
+io-opentelemetry-opentelemetry-exporter-zipkin = { module = 'io.opentelemetry:opentelemetry-exporter-zipkin', version.ref = 'io-opentelemetry-exporter-zipkin' }
 io-opentelemetry-opentelemetry-sdk = { module = 'io.opentelemetry:opentelemetry-sdk', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-sdk-common = { module = 'io.opentelemetry:opentelemetry-sdk-common', version.ref = 'io-opentelemetry' }
 io-opentelemetry-opentelemetry-sdk-extension-autoconfigure = { module = 'io.opentelemetry:opentelemetry-sdk-extension-autoconfigure', version.ref = 'io-opentelemetry' }
