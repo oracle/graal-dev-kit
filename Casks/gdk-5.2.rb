@@ -1,8 +1,8 @@
 cask 'gdk-5.2' do
     arch arm: 'aarch64'
 
-    version '5.2.7'
-    sha256 arm: '23d21053368fdd929d803e50811784c0c43f62bd5556124b74f99c8e5e8517e0'
+    version '5.2.8'
+    sha256 arm: '92a9de562bd8de170d1768ae90bd273934384888e41589c57d35dc7e3218e0aa'
 
     url "https://github.com/oracle/graal-dev-kit/releases/download/#{version}/gdk-cli-#{version}-macos-#{arch}.tar.gz"
     name 'Graal Development Kit for Micronaut'
